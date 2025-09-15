@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTypingAnimation();
     initCollapsibleCards();
     initCipherEffects();
+    initLazyLoading();
     
     console.log('🚀 CV loaded with Ethereum vibes');
 });
@@ -19,6 +20,7 @@ function initCollapsibleCards() {
     cards.forEach(card => {
         const toggleBtn = card.querySelector('.toggle-card-btn');
         const content = card.querySelector('.card-content');
+        const header = card.querySelector('.experience-header') || card.querySelector('.project-header') || card.querySelector('.education-header');
         
         // Set initial state (collapsed)
         card.classList.add('collapsed');
@@ -31,10 +33,33 @@ function initCollapsibleCards() {
         if (toggleBtn) {
             toggleBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 toggleCardContent(card);
+            });
+            
+            // Add touch feedback
+            toggleBtn.addEventListener('touchstart', function() {
+                this.style.backgroundColor = 'rgba(0, 246, 255, 0.3)';
+            });
+            
+            toggleBtn.addEventListener('touchend', function() {
+                this.style.backgroundColor = '';
+            });
+        }
+        
+        // Make entire header clickable on mobile
+        if (header && window.innerWidth <= 768) {
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', (e) => {
+                if (!e.target.closest('.toggle-card-btn')) {
+                    toggleCardContent(card);
+                }
             });
         }
     });
+    
+    // Add touch feedback to all interactive elements
+    addTouchFeedback();
 }
 
 // Toggle card content visibility
@@ -283,6 +308,67 @@ function initTypingAnimation() {
     
     // Start typing animation after a short delay
     setTimeout(typeText, 1000);
+}
+
+// Add touch feedback to interactive elements
+function addTouchFeedback() {
+    const touchElements = document.querySelectorAll('.social-link, .contact-link, .skill-item, .certificate-card');
+    
+    touchElements.forEach(element => {
+        element.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
+            this.style.opacity = '0.8';
+        });
+        
+        element.addEventListener('touchend', function() {
+            this.style.transform = '';
+            this.style.opacity = '';
+        });
+    });
+}
+
+// Image lazy loading
+function initLazyLoading() {
+    // Use native lazy loading if supported
+    if ('loading' in HTMLImageElement.prototype) {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            if (!img.hasAttribute('loading')) {
+                img.setAttribute('loading', 'lazy');
+            }
+        });
+    } else {
+        // Fallback for browsers that don't support native lazy loading
+        const lazyImages = document.querySelectorAll('img:not([loading="eager"])');
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const lazyImage = entry.target;
+                        if (lazyImage.dataset.src) {
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.removeAttribute('data-src');
+                        }
+                        imageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+            
+            lazyImages.forEach(image => {
+                if (!image.src && image.dataset.src) {
+                    imageObserver.observe(image);
+                }
+            });
+        }
+    }
+    
+    // Optimize image loading sequence
+    const priorityImages = document.querySelectorAll('.profile-picture, .company-logo');
+    priorityImages.forEach(img => {
+        img.setAttribute('loading', 'eager');
+        img.setAttribute('fetchpriority', 'high');
+    });
 }
 
 // Enhanced social link interactions

@@ -1,5 +1,6 @@
 /* CSS Variables - Theme */
 :root {
+    /* Colors */
     --bg-primary: #050810;
     --bg-card: #0A1020;
     --text-primary: #E6ECFF;
@@ -8,8 +9,23 @@
     --accent-success: #19C37D;
     --accent-secondary: #6E56CF;
     --cipher-accent: #001eff;
+    
+    /* Typography */
     --font-primary: 'Inter', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-base: 1rem;    /* 16px */
+    --font-size-md: 1.125rem;  /* 18px */
+    --font-size-lg: 1.25rem;   /* 20px */
+    --font-size-xl: 1.5rem;    /* 24px */
+    --font-size-2xl: 1.875rem; /* 30px */
+    --font-size-3xl: 2.25rem;  /* 36px */
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+    
+    /* Layout */
     --max-width: 900px;
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
@@ -17,6 +33,8 @@
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
     --border-radius: 12px;
+    
+    /* Effects */
     --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-glow: 0 0 15px rgba(98, 126, 234, 0.2);
@@ -34,9 +52,10 @@ body {
     font-family: var(--font-primary);
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: var(--line-height-normal);
     overflow-x: hidden;
     position: relative;
+    transition: background-color 0.3s ease;
 }
 
 /* Background Grid */
@@ -102,9 +121,10 @@ body {
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
     box-shadow: var(--shadow-card);
-    transition: var(--transition);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
     position: relative;
     overflow: hidden;
+    will-change: transform, box-shadow;
 }
 
 .card::before {
@@ -174,7 +194,7 @@ body {
 }
 
 .name {
-    font-size: 2.5rem;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     letter-spacing: 0.05em;
     margin-bottom: var(--spacing-xs);
@@ -187,12 +207,13 @@ body {
 }
 
 .title {
-    font-size: 1.2rem;
+    font-size: var(--font-size-md);
     font-weight: 400;
     color: var(--accent-eth);
     letter-spacing: 0.1em;
     margin-bottom: var(--spacing-lg);
     font-family: var(--font-mono);
+    line-height: var(--line-height-relaxed);
 }
 
 .contact-info {
@@ -230,7 +251,8 @@ body {
     gap: var(--spacing-xs);
     color: var(--text-muted);
     text-decoration: none;
-    transition: var(--transition);
+    transition: color 0.2s ease, transform 0.2s ease;
+    will-change: transform, color;
 }
 
 .contact-link:hover {
@@ -270,9 +292,10 @@ body {
 .social-link {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: var(--transition);
+    font-size: var(--font-size-sm);
+    transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
     position: relative;
+    will-change: transform, color, text-shadow;
 }
 
 .social-link:hover {
@@ -303,11 +326,12 @@ body {
 }
 
 .section-title {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     letter-spacing: 0.05em;
     color: var(--text-primary);
     margin: 0;
+    line-height: var(--line-height-tight);
 }
 
 .toggle-btn {
@@ -707,10 +731,16 @@ body {
 
 .skills-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: var(--spacing-md);
-    max-width:  100%;
+    max-width: 100%;
     margin: 0 auto;
+}
+
+@media (min-width: 576px) {
+    .skills-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (min-width: 992px) {
@@ -954,8 +984,20 @@ body {
 
 .certificates-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: var(--spacing-md);
+}
+
+@media (min-width: 480px) {
+    .certificates-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .certificates-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (min-width: 992px) {
@@ -1068,11 +1110,17 @@ body {
 @media (max-width: 768px) {
     .container {
         padding: var(--spacing-md);
+        gap: var(--spacing-lg);
     }
     
     .profile-header {
         flex-direction: column;
         gap: var(--spacing-md);
+    }
+    
+    .profile-picture-container {
+        width: 120px;
+        height: 120px;
     }
     
     .profile-title {
@@ -1081,21 +1129,31 @@ body {
     }
     
     .name {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
+        text-align: center;
     }
     
     .title {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        text-align: center;
+        margin-bottom: var(--spacing-md);
     }
     
     .contact-info {
         flex-direction: column;
-        gap: var(--spacing-xs);
+        gap: var(--spacing-sm);
+        align-items: center;
     }
     
     .social-links {
-        flex-direction: column;
-        gap: var(--spacing-xs);
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .social-link {
+        margin-bottom: var(--spacing-xs);
     }
     
     .experience-header,
@@ -1130,18 +1188,32 @@ body {
     
     .skills-container {
         grid-template-columns: 1fr;
-        margin: var(--spacing-sm);
-        gap: var(--spacing-sm);
+        gap: var(--spacing-md);
     }
     
     .card {
         padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .certificates-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .section-title {
+        font-size: 1.3rem;
+    }
+    
+    .summary-text {
+        font-size: 1rem;
+        line-height: 1.6;
     }
 }
 
 @media (max-width: 480px) {
     .name {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
     
     .container {
@@ -1150,6 +1222,58 @@ body {
     
     .card {
         padding: var(--spacing-sm);
+    }
+    
+    .profile-picture-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .title {
+        font-size: 0.8rem;
+    }
+    
+    .section-title {
+        font-size: 1.2rem;
+    }
+    
+    .contact-item span, 
+    .social-link span {
+        font-size: 0.8rem;
+    }
+    
+    .summary-text {
+        font-size: 0.9rem;
+    }
+    
+    .certificates-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .role, 
+    .company, 
+    .project-name, 
+    .project-role,
+    .degree {
+        font-size: 0.95rem;
+    }
+    
+    .skill-title {
+        font-size: 1rem;
+    }
+    
+    .skill-item {
+        font-size: 0.75rem;
+    }
+    
+    .experience-points li,
+    .project-points li {
+        font-size: 0.85rem;
+    }
+    
+    .company-website,
+    .project-website {
+        font-size: 0.7rem;
     }
 }
 
