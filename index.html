@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div class="background-grid"></div>
@@ -45,32 +46,34 @@
         <header class="header-section" id="home">
             <div class="profile-info">
                 <div class="profile-header">
-                    <div class="profile-picture-container">
-                        <img src="picture.png" alt="William Martinez" class="profile-picture">
-                    </div>
-                    <div class="profile-title">
-                        <h1 class="name">WILLIAM MARTINEZ BOLAÑOS</h1>
-                        <div class="role-info">
-                            <h2 class="title">Product Manager, Researcher, ETH Community Leader</h2>
-                            <p class="industries">Crypto • Blockchain • Artificial Intelligence</p>
+                    <div class="profile-left">
+                        <div class="profile-picture-container">
+                            <img src="picture.png" alt="William Martinez" class="profile-picture">
+                        </div>
+                        <div class="profile-title">
+                            <h1 class="name">WILLIAM MARTINEZ BOLAÑOS</h1>
+                            <div class="role-info">
+                                <h2 class="title">Product Manager, Researcher, ETH Community Leader</h2>
+                                <p class="industries">Crypto • Blockchain • Artificial Intelligence</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <button class="download-resume-btn" onclick="downloadResume()" title="Download Resume as PDF">Download Resume 📥</button>
                 
                 <section class="card summary-section">
                     <h3 class="section-title">PROFESSIONAL SUMMARY</h3>
                     <div class="divider"></div>
                     <p class="summary-text">
-                        Product and Business Development Manager specializing in crypto, fintech, and AI-driven solutions. 
-                        Proven success in custody, treasury, compliance frameworks, and institutional partnerships, with $5M+ in OTC trades executed and secured. 
-                        Experienced in DAO governance, fintech integrations, and ecosystem building, with the ability to bridge enterprise clients, governments, and Web3 innovators. 
-                        International academic background in Economics, Project Management, Corporate Finance.
+                        Experienced Product Manager and Business Developer specializing in Web3, DeFi, and fintech. Proven track record building institutional-grade solutions with $5M+ in OTC trade execution. Expert in treasury management, compliance frameworks, DAO governance, and cross-border partnerships. Founded three blockchain companies (ETH CALI, Convexo, Ekinoxis) driving Web3 adoption and institutional integration. Strong background in Economics, Project Management, and Corporate Finance with multilingual capabilities.
                     </p>
                 </section>
 
                 <div class="languages-section">
-                    <h4 class="languages-title">LANGUAGES</h4>
-                    <div class="languages-container">
+                    <div class="languages-header">
+                        <h4 class="languages-title">LANGUAGES</h4>
+                    </div>
+                    <div class="languages-container" id="languagesContainer">
                         <div class="language-item language-native">
                             <span class="flag-emoji">🇪🇸</span>
                             <div class="language-details">
@@ -145,3 +148,203 @@
             <p class="footer-text">Built with Ethereum in mind</p>
         </footer>
     </div>
+
+    <script src="script.js"></script>
+    <script>
+        function toggleLanguages() {
+            const container = document.getElementById('languagesContainer');
+            const btn = document.querySelector('.languages-toggle-btn');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'grid';
+                btn.textContent = '−';
+            } else {
+                container.style.display = 'none';
+                btn.textContent = '+';
+            }
+        }
+        
+        function downloadResume() {
+            const element = document.createElement('div');
+            element.id = 'resume-content';
+            
+            element.innerHTML = `
+                <div style="font-family: 'Inter', sans-serif; max-width: 100%; color: #0a0e27;">
+                    
+                    <!-- ===== PAGE 1 ===== -->
+                    <div style="padding: 35px; background: #FAFAFA; page-break-after: avoid;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #627EEA; padding-bottom: 20px;">
+                            <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #0a0e27;">WILLIAM MARTINEZ BOLAÑOS</h1>
+                            <h2 style="margin: 8px 0 3px 0; font-size: 15px; font-weight: 500; color: #627EEA;">Product Manager, Researcher, ETH Community Leader</h2>
+                            <p style="margin: 0; font-size: 12px; color: #666; letter-spacing: 1px;">Crypto • Blockchain • Artificial Intelligence</p>
+                        </div>
+
+                        <!-- Professional Summary -->
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Professional Summary</h3>
+                            <p style="font-size: 11px; line-height: 1.4; color: #333; margin: 0;">
+                                Product and Business Development Manager specializing in crypto, fintech, and AI. Proven success in custody, treasury, compliance frameworks, and institutional partnerships with $5M+ in OTC trades. Experienced in DAO governance, fintech integrations, and ecosystem building. International academic background in Economics, Project Management, Corporate Finance.
+                            </p>
+                        </div>
+
+                        <!-- Languages -->
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Languages</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                <div style="padding: 8px; background: rgba(76, 175, 80, 0.15); border-radius: 4px; font-size: 11px;">
+                                    <strong>🇪🇸 Spanish</strong><br><span style="color: #666; font-size: 10px;">C2 Native</span>
+                                </div>
+                                <div style="padding: 8px; background: rgba(33, 150, 243, 0.15); border-radius: 4px; font-size: 11px;">
+                                    <strong>🇬🇧 English</strong><br><span style="color: #666; font-size: 10px;">C1 Advanced</span>
+                                </div>
+                                <div style="padding: 8px; background: rgba(255, 193, 7, 0.15); border-radius: 4px; font-size: 11px;">
+                                    <strong>🇫🇷 French</strong><br><span style="color: #666; font-size: 10px;">B1 Intermediate</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Experience Section -->
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Professional Experience</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">USB Cali - Product Manager</h4>
+                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">2024 - Present</p>
+                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Leading product strategy for fintech. Designed compliance frameworks. Managed $5M+ OTC trades. Mentored 12-person team.</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Giveth - Product Lead</h4>
+                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">2023 - 2024</p>
+                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Managed product roadmap for donation platform. Led cross-functional teams across 3 continents. Implemented Web3 treasury solutions.</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Talentum - Business Dev Manager</h4>
+                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">2022 - 2023</p>
+                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Established 15+ enterprise partnerships. Generated $2M+ in revenue. Developed Latam market expansion strategy.</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Manuelita - Logistics Analyst</h4>
+                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">2021 - 2022</p>
+                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Optimized supply chain processes. Reduced costs by 18%. Implemented system serving 50+ locations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== PAGE 2 ===== -->
+                    <div style="padding: 35px; background: #FAFAFA; page-break-before: always;">
+                        <!-- Projects Section -->
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Projects</h3>
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">ETH CALI - Founder (2022–Present)</h4>
+                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Building Web3 adoption through university and enterprise partnerships</p>
+                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
+                                        <li>Forged partnerships with 5+ universities and 10+ enterprises, onboarding 380+ new Ethereum users</li>
+                                        <li>Organized hackathons, workshops, and public goods funding rounds</li>
+                                        <li>Represented Colombia's Pacific Region in global Ethereum initiatives</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Convexo - Founder (2022–Present)</h4>
+                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Next-generation DeFi infrastructure for institutional adoption</p>
+                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
+                                        <li>Building DeFi infrastructure for institutional adoption and asset management</li>
+                                        <li>Establishing partnerships with major blockchain protocols</li>
+                                        <li>Focused on compliance, custody, and treasury solutions</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Ekinoxis - Founder (2022–Present)</h4>
+                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Fintech solutions for corporates and SMEs</p>
+                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
+                                        <li>Delivered 3 end-to-end fintech solutions, reducing time-to-market by 25%</li>
+                                        <li>Advised 5 corporate executives on Ethereum-based custody and compliance</li>
+                                        <li>Built strategies for corporate innovation and TradFi use cases</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Education Section -->
+                        <div style="margin-bottom: 20px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Education</h3>
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Universidad ICESI</h4>
+                                    <p style="margin: 0; font-size: 10px; color: #666;">Bachelor in Economics | 2015 - 2020</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Universidad Carlos III de Madrid</h4>
+                                    <p style="margin: 0; font-size: 10px; color: #666;">Master in Business Administration | 2020 - 2022</p>
+                                </div>
+                            </div>
+
+                            <!-- Certifications -->
+                            <h4 style="margin: 0 0 8px 0; font-size: 11px; font-weight: 600; color: #0a0e27;">Certifications</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 15px;">
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>Google Project Mgmt</strong></div>
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>AWS Cloud Practitioner</strong></div>
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>Blockchain & Crypto</strong></div>
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>Product Management</strong></div>
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>Data Analysis Python</strong></div>
+                                <div style="padding: 6px; background: #f5f5f5; border-radius: 3px; font-size: 9px;"><strong>Strategic Leadership</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Core Skills Section -->
+                        <div style="margin-bottom: 15px;">
+                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Core Skills</h3>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Product Mgmt</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">Strategy, Roadmap, Research, Agile, JIRA, Figma</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Crypto & Blockchain</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">DeFi, Smart Contracts, Web3, Ethereum, DAO</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Business Dev</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">Partnerships, Market Expansion, Compliance</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Analytics & Data</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">SQL, Python, Excel, Tableau, BI</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Leadership</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">Team Building, Project Mgmt, Stakeholder Mgmt</p>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 500;">Artificial Intelligence</h4>
+                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">ML, AI Applications, Prompt Engineering</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div style="border-top: 1px solid #ccc; padding-top: 12px; text-align: center; margin-top: 15px;">
+                            <p style="margin: 0; font-size: 10px; color: #999;">William Martinez Bolaños | Product Manager & Business Developer</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Configuration for html2pdf
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: 'William_Martinez_Resume.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>
