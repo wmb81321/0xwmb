@@ -1,6 +1,7 @@
 // Enhanced CV/Resume Interactive Features
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all interactive features
+    initNavbar();
     initSmoothScrolling();
     initCardAnimations();
     initSkillInteractions();
@@ -67,29 +68,71 @@ function toggleCardContent(card) {
     const content = card.querySelector('.card-content');
     const toggleIcon = card.querySelector('.toggle-card-icon');
     
+    if (!content) return;
+    
     if (card.classList.contains('collapsed')) {
-        // Expand
+        // EXPAND
         card.classList.remove('collapsed');
         card.classList.add('expanded');
         if (toggleIcon) toggleIcon.textContent = '-';
-        if (content) {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            setTimeout(() => {
-                content.style.maxHeight = 'none';
-            }, 300);
-        }
+        
+        // Temporarily set auto to measure height
+        content.style.maxHeight = 'none';
+        const scrollHeight = content.scrollHeight;
+        content.style.maxHeight = '0';
+        
+        // Trigger reflow and then animate
+        setTimeout(() => {
+            content.style.maxHeight = (scrollHeight + 20) + 'px';
+        }, 0);
     } else {
-        // Collapse
+        // COLLAPSE
         card.classList.remove('expanded');
         card.classList.add('collapsed');
         if (toggleIcon) toggleIcon.textContent = '+';
-        if (content) {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            setTimeout(() => {
-                content.style.maxHeight = '0';
-            }, 10);
-        }
+        content.style.maxHeight = '0';
     }
+}
+
+// Initialize Navbar
+function initNavbar() {
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.navbar-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Toggle hamburger menu
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+    });
+    
+    // Close menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            navMenu.classList.remove('active');
+            hamburger.classList.remove('active');
+        });
+    });
+    
+    // Initial active link based on current page
+    updateActiveNavLink();
+}
+
+// Update active navigation link based on current page
+function updateActiveNavLink() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const linkPage = href.split('/').pop();
+        
+        if (linkPage === currentPage || (currentPage === '' && linkPage === 'index.html')) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
 }
 
 // Add cipher-inspired visual effects

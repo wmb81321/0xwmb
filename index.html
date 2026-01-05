@@ -19,9 +19,30 @@
     <div class="background-grid"></div>
     <div class="eth-watermark"></div>
     
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html" class="logo-link">0xwmb</a>
+            </div>
+            <ul class="navbar-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+                <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+                <li class="nav-item"><a href="experience.html" class="nav-link">Experience</a></li>
+                <li class="nav-item"><a href="academic.html" class="nav-link">Academic</a></li>
+                <li class="nav-item"><a href="skills.html" class="nav-link">Skills</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
     <div class="container">
         <!-- Header Section -->
-        <header class="header-section">
+        <header class="header-section" id="home">
             <div class="profile-info">
                 <div class="profile-header">
                     <div class="profile-picture-container">
@@ -29,515 +50,92 @@
                     </div>
                     <div class="profile-title">
                         <h1 class="name">WILLIAM MARTINEZ BOLAÑOS</h1>
-                        <h2 class="title">Product manager & Business dev with Crypto, Fintech, and AI</h2>
+                        <div class="role-info">
+                            <h2 class="title">Product Manager, Researcher, ETH Community Leader</h2>
+                            <p class="industries">Crypto • Blockchain • Artificial Intelligence</p>
+                        </div>
                     </div>
                 </div>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <a href="mailto:wmb81321@gmail.com" class="contact-link">
-                            <img src="socialsicons/gmail.png" alt="Email" class="custom-contact-icon">
-                            <span>wmb81321@gmail.com</span>
-                        </a>
-                    </div>
-                    <div class="contact-item">
-                        <a href="https://wa.me/13015041248" target="_blank" class="contact-link">
-                            <img src="socialsicons/whatsapp.png" alt="WhatsApp" class="custom-contact-icon">
-                            <span>(+1) 301 504 1248</span>
-                        </a>
-                    </div>
-                    <div class="contact-item">
-                        <a href="https://t.me/wmb81321" target="_blank" class="contact-link">
-                            <img src="socialsicons/telegram.png" alt="Telegram" class="custom-contact-icon">
-                            <span>wmb81321</span>
-                        </a>
+                
+                <section class="card summary-section">
+                    <h3 class="section-title">PROFESSIONAL SUMMARY</h3>
+                    <div class="divider"></div>
+                    <p class="summary-text">
+                        Product and Business Development Manager specializing in crypto, fintech, and AI-driven solutions. 
+                        Proven success in custody, treasury, compliance frameworks, and institutional partnerships, with $5M+ in OTC trades executed and secured. 
+                        Experienced in DAO governance, fintech integrations, and ecosystem building, with the ability to bridge enterprise clients, governments, and Web3 innovators. 
+                        International academic background in Economics, Project Management, Corporate Finance.
+                    </p>
+                </section>
+
+                <div class="languages-section">
+                    <h4 class="languages-title">LANGUAGES</h4>
+                    <div class="languages-container">
+                        <div class="language-item language-native">
+                            <span class="flag-emoji">🇪🇸</span>
+                            <div class="language-details">
+                                <span class="language-name">Spanish</span>
+                                <span class="language-level">C2 - Native</span>
+                            </div>
+                        </div>
+                        <div class="language-item language-advanced">
+                            <span class="flag-emoji">🇬🇧</span>
+                            <div class="language-details">
+                                <span class="language-name">English</span>
+                                <span class="language-level">C1 - Advanced</span>
+                            </div>
+                        </div>
+                        <div class="language-item language-intermediate">
+                            <span class="flag-emoji">🇫🇷</span>
+                            <div class="language-details">
+                                <span class="language-name">French</span>
+                                <span class="language-level">B1 - Intermediate</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="social-links">
-                    <a href="https://github.com/wmb81321" target="_blank" class="social-link">
-                        <img src="socialsicons/github.png" alt="GitHub" class="custom-social-icon">
-                        <span>wmb81321</span>
-                    </a>
-                    <a href="https://linkedin.com/in/williammartinez8" target="_blank" class="social-link">
-                        <img src="socialsicons/linkdn.png" alt="LinkedIn" class="custom-social-icon">
-                        <span>williammartinez8</span>
-                    </a>
-                    <a href="https://twitter.com/0xwmb" target="_blank" class="social-link">
-                        <img src="socialsicons/x.png" alt="X/Twitter" class="custom-social-icon">
-                        <span>@0xwmb</span>
-                    </a>
-                    <a href="https://warpcast.com/williammartinez" target="_blank" class="social-link">
-                        <img src="socialsicons/farcaster.png" alt="Farcaster" class="custom-social-icon">
-                        <span>williammartinez</span>
-                    </a>
+
+                <div class="social-media-section">
+                    <h4 class="social-media-title">SOCIAL MEDIA</h4>
+                    <div class="social-media-container">
+                        <a href="https://github.com/wmb81321" target="_blank" class="social-media-item">
+                            <img src="socialsicons/github.png" alt="GitHub" class="social-media-icon">
+                            <span class="social-media-label">GitHub</span>
+                        </a>
+                        <a href="https://linkedin.com/in/williammartinez8" target="_blank" class="social-media-item">
+                            <img src="socialsicons/linkdn.png" alt="LinkedIn" class="social-media-icon">
+                            <span class="social-media-label">LinkedIn</span>
+                        </a>
+                        <a href="https://twitter.com/0xwmb" target="_blank" class="social-media-item">
+                            <img src="socialsicons/x.png" alt="X/Twitter" class="social-media-icon">
+                            <span class="social-media-label">X</span>
+                        </a>
+                        <a href="https://warpcast.com/williammartinez" target="_blank" class="social-media-item">
+                            <img src="socialsicons/farcaster.png" alt="Farcaster" class="social-media-icon">
+                            <span class="social-media-label">Farcaster</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- Professional Summary -->
-        <section class="card summary-section">
-            <h3 class="section-title">PROFESSIONAL SUMMARY</h3>
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <h3 class="section-title">CONTACT</h3>
             <div class="divider"></div>
-            <p class="summary-text">
-            Product and Business Development Manager specializing in crypto, fintech, and AI-driven solutions. 
-            Proven success in custody, treasury, compliance frameworks, and institutional partnerships, with $5M+ in OTC trades executed and secured. 
-            Experienced in DAO governance, fintech integrations, and ecosystem building, with the ability to bridge enterprise clients, governments, and Web3 innovators. 
-            International academic background in Economics, Project Management, Corporate Finance.      
-            </p>
-            <div class="languages-section">
-                <h4 class="languages-title">LANGUAGES</h4>
-                <div class="languages-container">
-                    <div class="language-item">
-                        <span class="flag-emoji">🇪🇸</span>
-                        <div class="language-details">
-                            <span class="language-name">Spanish</span>
-                            <span class="language-level">C2 - Native</span>
-                        </div>
-                    </div>
-                    <div class="language-item">
-                        <span class="flag-emoji">🇬🇧</span>
-                        <div class="language-details">
-                            <span class="language-name">English</span>
-                            <span class="language-level">C1 - Advanced</span>
-                        </div>
-                    </div>
-                    <div class="language-item">
-                        <span class="flag-emoji">🇫🇷</span>
-                        <div class="language-details">
-                            <span class="language-name">French</span>
-                            <span class="language-level">B1 - Intermediate</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section class="experience-section">
-            <h3 class="section-title">WORKING EXPERIENCE</h3>
-            <div class="divider"></div>
-            
-            <div class="experience-grid">
-
-                <div class="card experience-card collapsible-card">
-                    <div class="experience-header">
-                        <div class="company-info">
-                            <img src="workexperience/usbcali.png" alt="usbcali" class="company-logo">
-                            <div>
-                                <h4 class="role">Teacher & Mentor</h4>
-                                <span class="company">Universidad Buenaventura de Cali</span>
-                                <a href="https://usbcali.edu.co" target="_blank" class="company-website">usbcali.edu.co</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="years">June 2025 - Present</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="experience-points">
-                            <li>Teaching +30 students about Descentralized Finance and Blockchain</li>
-                            <li>Design and implementing hands-on workshops using top EVM protocols like Uniswap, Across, Bnkr, Remix, Open Zepelin.</li>
-                            <li>Focusing on Superchain Base, Optimism and Unichain.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card experience-card collapsible-card">
-                    <div class="experience-header">
-                        <div class="company-info">
-                            <img src="workexperience/giveth.png" alt="Giveth" class="company-logo">
-                            <div>
-                                <h4 class="role">Token Analyst</h4>
-                                <span class="company">Giveth</span>
-                                <a href="https://giveth.io/" target="_blank" class="company-website">giveth.io</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="years">Apr 2024 - Apr 2025</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="experience-points">
-                            <li>Audited DAO treasuries and contracts across 4 EVM-compatible chains, safeguarding millions in governance balances and ensuring transparency.</li>
-                            <li>Negotiated token listings and custody integrations with 1 exchange Tier 2, +5 Market Makers, +5 DeFi bridges, and +5 wallets to improve token holders UX.</li>
-                            <li>Secured reward programs based on tracking analysis to donations, avoiding recirculations of  +$20.000 value in rewards given to donors</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card experience-card collapsible-card">
-                    <div class="experience-header">
-                        <div class="company-info">
-                            <img src="workexperience/talentum.png" alt="Corporación Talentum" class="company-logo">
-                            <div>
-                                <h4 class="role">IT Project Manager</h4>
-                                <span class="company">Corporación Talentum</span>
-                                <a href="https://talentum.edu.co/es/" target="_blank" class="company-website">talentum.edu.co</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="years">Feb 2024 - Dec 2024</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="experience-points">
-                            <li>Coordinated IT teams (front-end, back-end, DevOps) to deliver 2 products: Business Intelligence system for Government Funding Programs and tokenized digital experiences within an event manager software.</li>
-                            <li>Integrated tokenized assets with BI dashboards, enabling data-driven financial insights for partner organizations</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card experience-card collapsible-card">
-                    <div class="experience-header">
-                        <div class="company-info">
-                            <img src="workexperience/manuelita.png" alt="Manuelita" class="company-logo">
-                            <div>
-                                <h4 class="role">Brand Manager</h4>
-                                <span class="company">Manuelita</span>
-                                <a href="https://www.manuelita.com/" target="_blank" class="company-website">manuelita.com</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="years">Sep 2021 - Aug 2022</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="experience-points">
-                            <li>Developing and analyzing trade marketing strategies for national clients</li>
-                            <li>CRM with HubSpot and analyzing national and international sales</li>
-                            <li>Supporting product development</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section class="projects-section">
-            <h3 class="section-title">PROJECTS</h3>
-            <div class="divider"></div>
-            
-            <div class="card project-card collapsible-card">
-                <div class="project-header">
-                    <div class="project-info">
-                        <img src="projects/ethcali.png" alt="ETH CALI - COLOMBIA" class="project-logo">
-                        <div class="project-details">
-                            <h4 class="project-name">ETH CALI - COLOMBIA</h4>
-                            <span class="project-role">Steward & Educator</span>
-                            <a href="https://ethcali.org" target="_blank" class="project-website">ethcali.org</a>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <span class="project-years">2022–Present</span>
-                        <button class="toggle-card-btn" aria-label="Toggle details">
-                            <span class="toggle-card-icon">+</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-content">
-                    <ul class="project-points">
-                        <li>Forged partnerships with 5+ universities, +10 enterprises, and global sponsors (Ethereum Support Program, PSE, local gov) to expand Web3 adoption.</li>
-                        <li>Organized hackathons, workshops, and public goods funding rounds, onboarding 380+ new users into Ethereum and financing 10+ community projects.</li>
-                        <li>Represented Colombia’s Pacific Region in global Ethereum initiatives, building ecosystem bridges between academia, enterprises, and developers.</li>
-
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="projects-grid">
-                <div class="card project-card collapsible-card">
-                    <div class="project-header">
-                        <div class="project-info">
-                            <img src="projects/echosystem.png" alt="EchoTechnology" class="project-logo">
-                            <div class="project-details">
-                                <h4 class="project-name">EchoTechnology</h4>
-                                <span class="project-role">CEO & Founder</span>
-                                <a href="https://echotechnology.xyz" target="_blank" class="project-website">echotechnology.xyz</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="project-years">2022–Present</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="project-points">
-                            <li>Executed and secured $5M+ in compliant OTC digital asset trades, establishing custody processes that built trust with institutional counterparties.</li>
-                            <li>Ensuring custody and compliance frameworks with AML/KYC alignment to reduce onboarding time for clients by 30%.</li>
-                            <li>Negotiated structured partnerships with +10 corporate and institutional clients.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card project-card collapsible-card">
-                    <div class="project-header">
-                        <div class="project-info">
-                            <img src="projects/ekinoxis.png" alt="Ekinoxis" class="project-logo">
-                            <div class="project-details">
-                                <h4 class="project-name">Ekinoxis</h4>
-                                <span class="project-role">CEO & Founder</span>
-                                <a href="https://ekinoxis.com" target="_blank" class="project-website">ekinoxis.com</a>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <span class="project-years">2022–Present</span>
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <ul class="project-points">
-                            <li>Delivered 3 end-to-end fintech solutions for corporates and SMEs, reducing time-to-market by 25% through optimized product lifecycles.</li>
-                            <li>Advised 5 Corporate executives on Ethereum-based custody and compliance adoption, enabling secure blockchain integration into financial operations.</li>
-                            <li>Built business development strategies that positioned Ethereum technologies for corporate innovation and TradFi use cases.</li>
-                        </ul>
-                    </div>
-                </div>
-        </section>
-
-                <!-- Education Section -->
-                <section class="education-section">
-                    <h3 class="section-title">ACADEMIC BACKGROUND</h3>
-                    <div class="divider"></div>
-                    
-                <div class="education-grid">
-                <div class="card education-card collapsible-card">
-                    <div class="education-header">
-                        <div class="degree-info-container">
-                            <a href="https://www.icesi.edu.co/" target="_blank" class="university-link">
-                                <img src="universities/icesi.png" alt="Universidad ICESI" class="university-logo">
-                            </a>
-                            <div class="degree-info">
-                                <h4 class="degree">B.A. Economics & International Business</h4>
-                                <span class="institution">Universidad ICESI</span>
-                                <span class="edu-years">2014 - 2021</span>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="abroad-program">
-                            <a href="https://www.skema.edu/en/skema-business-school-brand" target="_blank" class="abroad-link">
-                                <img src="universities/skema.png" alt="SKEMA Business School" class="abroad-logo">
-                            </a>
-                            <p class="abroad">Abroad Program: MSc Project Management & Business Development, SKEMA Business School, Paris</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card education-card collapsible-card">
-                    <div class="education-header">
-                        <div class="degree-info-container">
-                            <a href="https://www.icesi.edu.co/" target="_blank" class="university-link">
-                                <img src="universities/icesi.png" alt="Universidad ICESI" class="university-logo">
-                            </a>
-                            <div class="degree-info">
-                                <h4 class="degree">B.A Management & International Business</h4>
-                                <span class="institution">Universidad ICESI</span>
-                                <span class="edu-years">2017–2021</span>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="toggle-card-btn" aria-label="Toggle details">
-                                <span class="toggle-card-icon">+</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-content">
-                        <div class="abroad-program">
-                            <a href="https://www.mbs-education.com/international/en/" target="_blank" class="abroad-link">
-                                <img src="universities/montpellierbussines.png" alt="Montpellier Business School" class="abroad-logo">
-                            </a>
-                            <p class="abroad">Abroad Program: MSc Corporate Finance, Montpellier Business School, Montpellier</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>  
-
-        <!-- Certificates Section -->
-        <section class="Certificates-section">
-            <h3 class="section-title">CERTIFICATES & ACHIEVEMENTS</h3>
-            <div class="divider"></div>
-            <div class="certificates-container">
-                <div class="certificates-grid">
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/atrium.png" alt="Atrium Academy" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">Uniswap Hooks Incubator</span>
-                                <span class="certificate-issuer">Atrium Academy (Q3 2025)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/talentotech.png" alt="TalentoTech" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">Bootcamp Full-Stack Beginner</span>
-                                <span class="certificate-issuer">TalentoTech Valle (2024)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/esp.png" alt="Ethereum Support Program" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">Grantee</span>
-                                <span class="certificate-issuer">QF for Public Goods in Colombia with Privacy Scaling Solution (2024)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/ethereumf.png" alt="Ethereum foundation" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">DEVCON Volunteer</span>
-                                <span class="certificate-issuer">DEVCON VI (2022), DEVCON VII (2024)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/ethglobal.png" alt="ETHGlobal" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">Hackathon Finalist</span>
-                                <span class="certificate-issuer">ETHGlobal Bogotá (2022)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="certificate-card">
-                        <div class="certificate-content">
-                            <img src="certificates/bloomberg.png" alt="Bloomberg" class="certificate-logo">
-                            <div class="certificate-details">
-                                <span class="certificate-name">Bloomberg BMC</span>
-                                <span class="certificate-issuer">Bloomberg (2020)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section class="Skills-section">
-            <h3 class="section-title">SKILLS</h3>
-            <div class="divider"></div>
-            
-            <div class="skills-container">
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Custody & Treasury</h4>
-                        <div class="skill-icon">💼</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">DAO Governance</span>
-                        <span class="skill-item">OTC Institutional Ramps</span>
-                        <span class="skill-item">Compliance Frameworks</span>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Programming Languages</h4>
-                        <div class="skill-icon">💻</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">JavaScript</span>
-                        <span class="skill-item">HTML</span>
-                        <span class="skill-item">CSS</span>
-                        <span class="skill-item">TypeScript</span>
-                        <span class="skill-item">Solidity</span>
-                        <span class="skill-item">Python</span>
-                        <span class="skill-item">SQL</span>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Programming Tools</h4>
-                        <div class="skill-icon">💻</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">Remix</span>
-                        <span class="skill-item">OpenZeppelin</span>
-                        <span class="skill-item">Vercel</span>
-                        <span class="skill-item">Figma</span>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Product Management</h4>
-                        <div class="skill-icon">📊</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">Notion</span>
-                        <span class="skill-item">Airtable</span>
-                        <span class="skill-item">Jira</span>
-                        <span class="skill-item">Google Workspace</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Business Development</h4>
-                        <div class="skill-icon">⛓️</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item"></span>Institutional negotiations</span>
-                        <span class="skill-item">C-suite consulting</span>
-                        <span class="skill-item">Deal execution</span>
-                        <span class="skill-item">Strategic partnerships</span>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">Blockchain & Web3</h4>
-                        <div class="skill-icon">⛓️</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">DeFi</span>
-                        <span class="skill-item">Tokenization</span>
-                        <span class="skill-item">Custody Integrations</span>
-                        <span class="skill-item">RWA</span>
-                    </div>
-                </div>
-                
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <h4 class="skill-title">CRM & Growth</h4>
-                        <div class="skill-icon">📈</div>
-                    </div>
-                    <div class="skill-items">
-                        <span class="skill-item">HubSpot</span>
-                        <span class="skill-item">Mailchimp</span>
-                        <span class="skill-item">Canva</span>
-                    </div>
-                </div>
+            <div class="contact-container">
+                <a href="mailto:wmb81321@gmail.com" class="contact-item">
+                    <img src="socialsicons/gmail.png" alt="Email" class="contact-icon">
+                    <span class="contact-label">Email</span>
+                </a>
+                <a href="https://wa.me/13015041248" target="_blank" class="contact-item">
+                    <img src="socialsicons/whatsapp.png" alt="WhatsApp" class="contact-icon">
+                    <span class="contact-label">WhatsApp</span>
+                </a>
+                <a href="https://t.me/wmb81321" target="_blank" class="contact-item">
+                    <img src="socialsicons/telegram.png" alt="Telegram" class="contact-icon">
+                    <span class="contact-label">Telegram</span>
+                </a>
             </div>
         </section>
 
@@ -547,7 +145,3 @@
             <p class="footer-text">Built with Ethereum in mind</p>
         </footer>
     </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
