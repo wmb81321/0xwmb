@@ -65,7 +65,11 @@
                     <h3 class="section-title">PROFESSIONAL SUMMARY</h3>
                     <div class="divider"></div>
                     <p class="summary-text">
-                        Experienced Product Manager and Business Developer specializing in Web3, DeFi, and fintech. Proven track record building institutional-grade solutions with $5M+ in OTC trade execution. Expert in treasury management, compliance frameworks, DAO governance, and cross-border partnerships. Founded three blockchain companies (ETH CALI, Convexo, Ekinoxis) driving Web3 adoption and institutional integration. Strong background in Economics, Project Management, and Corporate Finance with multilingual capabilities.
+                        Experienced product manager, Researcher and community leader focused in Crypto, DeFi and AI. 
+                        Proven track record understanding institutionals to explore web3 solutions.
+                        Deep technical understanding about Ethereum technologies and communities across the world. 
+                        Founded 3 projects: ETH CALI to free-access web3 education, Ekinoxis to empower innovation, Convexo to enable secure DeFi experiencies.
+                        Background in Economics, Project Management, and Corporate Finance with multilingual capabilities.
                     </p>
                 </section>
 
@@ -164,186 +168,357 @@
             }
         }
         
-        function downloadResume() {
-            const element = document.createElement('div');
-            element.id = 'resume-content';
-            
+        async function downloadResume() {
+            // Fetch data from all pages
+            const experienceData = await fetchExperienceData();
+            const projectsData = await fetchProjectsData();
+            const academicData = await fetchAcademicData();
+            const skillsData = await fetchSkillsData();
+
             // Get data from the current page
             const nameEl = document.querySelector('.name');
             const titleEl = document.querySelector('.title');
             const industriesEl = document.querySelector('.industries');
             const summaryEl = document.querySelector('.summary-text');
             const languagesContainer = document.getElementById('languagesContainer');
-            
+
             const name = nameEl ? nameEl.textContent.trim() : 'WILLIAM MARTINEZ BOLAÑOS';
             const title = titleEl ? titleEl.textContent.trim() : 'Product Manager, Researcher, ETH Community Leader';
             const industries = industriesEl ? industriesEl.textContent.trim() : 'Crypto • Blockchain • Artificial Intelligence';
             const summary = summaryEl ? summaryEl.textContent.trim() : '';
-            
-            // Extract languages from the page
-            let languagesHTML = '';
+
+            // Extract languages
+            let languagesText = '';
             if (languagesContainer) {
                 const langItems = languagesContainer.querySelectorAll('.language-item');
+                const langs = [];
                 langItems.forEach(item => {
-                    const flag = item.querySelector('.flag-emoji').textContent;
                     const name = item.querySelector('.language-name').textContent;
                     const level = item.querySelector('.language-level').textContent;
-                    const bgColor = item.classList.contains('language-native') ? 'rgba(76, 175, 80, 0.15)' : 
-                                   item.classList.contains('language-advanced') ? 'rgba(33, 150, 243, 0.15)' : 
-                                   'rgba(255, 193, 7, 0.15)';
-                    languagesHTML += `<div style="padding: 8px; background: ${bgColor}; border-radius: 4px; font-size: 11px;">
-                        <strong>${flag} ${name}</strong><br><span style="color: #666; font-size: 10px;">${level}</span>
-                    </div>`;
+                    langs.push(`${name} (${level})`);
                 });
+                languagesText = langs.join(' • ');
             }
-            
+
+            // Contact info
+            const contactHTML = `
+                <div style="margin-bottom: 15px; text-align: center;">
+                    <p style="margin: 0; font-size: 10px; color: #333;">
+                        <strong>Email:</strong> wmb81321@gmail.com |
+                        <strong>Phone:</strong> +1 (301) 504-1248 |
+                        <strong>LinkedIn:</strong> linkedin.com/in/williammartinez8 |
+                        <strong>GitHub:</strong> github.com/wmb81321
+                    </p>
+                </div>
+            `;
+
+            const element = document.createElement('div');
+            element.id = 'resume-content';
+
             element.innerHTML = `
-                <div style="font-family: 'Inter', sans-serif; max-width: 100%; color: #0a0e27;">
-                    
-                    <!-- ===== PAGE 1 ===== -->
-                    <div style="padding: 35px; background: #FAFAFA; page-break-after: avoid;">
-                        <!-- Header -->
-                        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #627EEA; padding-bottom: 20px;">
-                            <h1 style="margin: 0; font-size: 26px; font-weight: 700; color: #0a0e27;">${name}</h1>
-                            <h2 style="margin: 8px 0 3px 0; font-size: 15px; font-weight: 500; color: #627EEA;">${title}</h2>
-                            <p style="margin: 0; font-size: 12px; color: #666; letter-spacing: 1px;">${industries}</p>
-                        </div>
+                <div style="font-family: 'Arial', 'Helvetica', sans-serif; max-width: 100%; color: #000; background: #fff; line-height: 1.4;">
 
-                        <!-- Professional Summary -->
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Professional Summary</h3>
-                            <p style="font-size: 11px; line-height: 1.4; color: #333; margin: 0;">
-                                ${summary}
-                            </p>
-                        </div>
-
-                        <!-- Languages -->
-                        ${languagesHTML ? `<div style="margin-bottom: 20px;">
-                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Languages</h3>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                                ${languagesHTML}
-                            </div>
-                        </div>` : ''}
-
-                        <!-- Professional Experience Section -->
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Professional Experience</h3>
-                            <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">USB Cali - Teacher & Mentor</h4>
-                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">June 2025 - December 2025</p>
-                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Teaching +30 students about Decentralized Finance and Blockchain. Design and implementing hands-on workshops using top EVM protocols.</p>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Giveth - Token Analyst</h4>
-                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">Apr 2024 - Apr 2025</p>
-                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Audited DAO treasuries and contracts across 4 EVM-compatible chains. Negotiated token listings and custody integrations with multiple exchanges and market makers.</p>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Talentum - IT Project Manager</h4>
-                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">Feb 2024 - Dec 2024</p>
-                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Coordinated IT teams to deliver 2 products. Integrated tokenized assets with BI dashboards for data-driven financial insights.</p>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Manuelita - Brand Manager</h4>
-                                    <p style="margin: 0 0 4px 0; font-size: 10px; color: #666;">Sep 2021 - Aug 2022</p>
-                                    <p style="font-size: 10px; line-height: 1.3; color: #333; margin: 0;">Developed trade marketing strategies for national clients. Analyzed national and international sales with CRM systems.</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Header -->
+                    <div style="text-align: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #000;">
+                        <h1 style="margin: 0 0 5px 0; font-size: 24px; font-weight: 700; color: #000; text-transform: uppercase;">${name}</h1>
+                        <h2 style="margin: 0 0 5px 0; font-size: 14px; font-weight: 600; color: #333;">${title}</h2>
+                        <p style="margin: 0 0 5px 0; font-size: 11px; color: #555;">${industries}</p>
                     </div>
 
-                    <!-- ===== PAGE 2 ===== -->
-                    <div style="padding: 35px; background: #FAFAFA; page-break-before: always;">
-                        <!-- Projects Section -->
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Projects</h3>
-                            <div style="display: flex; flex-direction: column; gap: 14px;">
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">ETH CALI - Founder (2022–Present)</h4>
-                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Building Web3 adoption through partnerships with universities, enterprises, and global sponsors</p>
-                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
-                                        <li>Forged partnerships with 5+ universities, +10 enterprises, and global sponsors to expand Web3 adoption</li>
-                                        <li>Organized hackathons, workshops, and public goods funding rounds, onboarding 380+ new users</li>
-                                        <li>Represented Colombia's Pacific Region in global Ethereum initiatives</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Convexo - Founder (2022–Present)</h4>
-                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Next-generation DeFi infrastructure for institutional adoption and asset management</p>
-                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
-                                        <li>Building next-generation DeFi infrastructure for institutional adoption</li>
-                                        <li>Establishing partnerships with major blockchain protocols and financial institutions</li>
-                                        <li>Focused on compliance, custody, and treasury solutions for enterprise clients</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Ekinoxis - Founder (2022–Present)</h4>
-                                    <p style="font-size: 10px; color: #666; margin: 0 0 4px 0; font-style: italic;">Fintech solutions for corporates and SMEs with focus on Ethereum-based custody and compliance</p>
-                                    <ul style="margin: 0; padding-left: 16px; font-size: 9px; color: #333; line-height: 1.3;">
-                                        <li>Delivered 3 end-to-end crypto based solutions for corporates and SMEs</li>
-                                        <li>Advised 5 Corporate executives about Ethereum based solutions</li>
-                                        <li>Built business development strategies for corporate innovation and TradFi use cases</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    ${contactHTML}
 
-                        <!-- Education Section -->
-                        <div style="margin-bottom: 20px;">
-                            <h3 style="font-size: 13px; font-weight: 600; color: #0a0e27; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Education</h3>
-                            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Universidad ICESI</h4>
-                                    <p style="margin: 0; font-size: 10px; color: #666;">Bachelor in Economics | 2015 - 2020</p>
-                                </div>
-                                <div>
-                                    <h4 style="margin: 0 0 2px 0; font-size: 11px; font-weight: 600;">Universidad Carlos III de Madrid</h4>
-                                    <p style="margin: 0; font-size: 10px; color: #666;">Master in Business Administration | 2020 - 2022</p>
-                                </div>
-                            </div>
+                    <!-- Languages -->
+                    ${languagesText ? `<div style="margin-bottom: 15px; text-align: center;">
+                        <p style="margin: 0; font-size: 10px; color: #333;"><strong>LANGUAGES:</strong> ${languagesText}</p>
+                    </div>` : ''}
 
-                            <!-- Skills Overview -->
-                            <h4 style="margin: 0 0 8px 0; font-size: 11px; font-weight: 600; color: #0a0e27;">Core Skills</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                <div>
-                                    <h5 style="margin: 0 0 2px 0; font-size: 10px; font-weight: 500;">Tooling</h5>
-                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">JavaScript, TypeScript, Solidity, Python, Figma, Remix, OpenZeppelin, JIRA, Notion</p>
-                                </div>
-                                <div>
-                                    <h5 style="margin: 0 0 2px 0; font-size: 10px; font-weight: 500;">AI Tools</h5>
-                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">Claude Code, Cursor, V0, Chat GPT, Gemini</p>
-                                </div>
-                                <div>
-                                    <h5 style="margin: 0 0 2px 0; font-size: 10px; font-weight: 500;">Business Development</h5>
-                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">Institutional Negotiations, C-Suite Consulting, Deal Execution, Strategic Partnerships</p>
-                                </div>
-                                <div>
-                                    <h5 style="margin: 0 0 2px 0; font-size: 10px; font-weight: 500;">Blockchain & Web3</h5>
-                                    <p style="margin: 0; font-size: 9px; color: #666; line-height: 1.2;">DeFi, Smart Contracts, DAO Governance, Custody, Treasury Management</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Professional Summary -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">PROFESSIONAL SUMMARY</h3>
+                        <p style="font-size: 10px; line-height: 1.5; color: #000; margin: 0; text-align: justify;">
+                            ${summary}
+                        </p>
+                    </div>
 
-                        <!-- Footer -->
-                        <div style="border-top: 1px solid #ccc; padding-top: 12px; text-align: center; margin-top: 15px;">
-                            <p style="margin: 0; font-size: 10px; color: #999;">William Martinez Bolaños | Product Manager & Business Developer | www.0xwmb.com</p>
-                        </div>
+                    <!-- Professional Experience -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">PROFESSIONAL EXPERIENCE</h3>
+                        ${experienceData.workExperience}
+                    </div>
+
+                    <!-- Volunteering -->
+                    ${experienceData.volunteering ? `<div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">VOLUNTEERING & ACHIEVEMENTS</h3>
+                        ${experienceData.volunteering}
+                    </div>` : ''}
+
+                    <!-- Projects -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">PROJECTS</h3>
+                        ${projectsData}
+                    </div>
+
+                    <!-- Education -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">EDUCATION</h3>
+                        ${academicData.education}
+                    </div>
+
+                    <!-- Certificates -->
+                    ${academicData.certificates ? `<div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">CERTIFICATES</h3>
+                        ${academicData.certificates}
+                    </div>` : ''}
+
+                    <!-- Technical Skills -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">TECHNICAL SKILLS</h3>
+                        ${skillsData.technical}
+                    </div>
+
+                    <!-- Soft Skills -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 12px; font-weight: 700; color: #000; text-transform: uppercase; margin: 0 0 8px 0; border-bottom: 1px solid #000; padding-bottom: 3px;">CORE COMPETENCIES</h3>
+                        ${skillsData.soft}
                     </div>
                 </div>
             `;
 
-            // Configuration for html2pdf
+            // Configuration for html2pdf - optimized for ATS
             const opt = {
-                margin: [10, 10, 10, 10],
-                filename: 'William_Martinez_Resume.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, allowTaint: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
+                margin: [12, 12, 12, 12],
+                filename: 'William_Martinez_Bolanos_Resume.pdf',
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait',
+                    compress: false // Better for text extraction
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
             // Generate PDF
             html2pdf().set(opt).from(element).save();
+        }
+
+        async function fetchExperienceData() {
+            try {
+                const response = await fetch('experience.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract work experience
+                const workCards = doc.querySelectorAll('.experience-card');
+                let workHTML = '';
+                workCards.forEach(card => {
+                    const role = card.querySelector('.role')?.textContent || '';
+                    const company = card.querySelector('.company')?.textContent || '';
+                    const years = card.querySelector('.years')?.textContent || '';
+                    const website = card.querySelector('.company-website')?.textContent || '';
+                    const points = card.querySelectorAll('.experience-points li');
+
+                    let pointsHTML = '';
+                    points.forEach(point => {
+                        pointsHTML += `<li style="margin-bottom: 3px;">${point.textContent.trim()}</li>`;
+                    });
+
+                    workHTML += `
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <h4 style="margin: 0; font-size: 11px; font-weight: 700; color: #000;">${role} - ${company}</h4>
+                                <span style="font-size: 9px; color: #555; white-space: nowrap;">${years}</span>
+                            </div>
+                            <p style="margin: 2px 0; font-size: 9px; color: #555; font-style: italic;">${website}</p>
+                            <ul style="margin: 5px 0 0 0; padding-left: 18px; font-size: 9px; color: #000; line-height: 1.4;">
+                                ${pointsHTML}
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                // Extract volunteering
+                const achievementCards = doc.querySelectorAll('.achievement-card');
+                let volunteerHTML = '';
+                achievementCards.forEach(card => {
+                    const name = card.querySelector('.achievement-name')?.textContent || '';
+                    const issuer = card.querySelector('.achievement-issuer')?.textContent || '';
+                    volunteerHTML += `
+                        <div style="margin-bottom: 8px;">
+                            <p style="margin: 0; font-size: 10px; color: #000;"><strong>${name}:</strong> ${issuer}</p>
+                        </div>
+                    `;
+                });
+
+                return {
+                    workExperience: workHTML,
+                    volunteering: volunteerHTML
+                };
+            } catch (error) {
+                console.error('Error fetching experience data:', error);
+                return { workExperience: '', volunteering: '' };
+            }
+        }
+
+        async function fetchProjectsData() {
+            try {
+                const response = await fetch('projects.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                const projectCards = doc.querySelectorAll('.project-card');
+                let projectsHTML = '';
+
+                projectCards.forEach(card => {
+                    const name = card.querySelector('.project-name')?.textContent || '';
+                    const role = card.querySelector('.project-role')?.textContent || '';
+                    const years = card.querySelector('.project-years')?.textContent || '';
+                    const website = card.querySelector('.project-website')?.textContent || '';
+                    const brief = card.querySelector('.project-brief')?.textContent || '';
+                    const points = card.querySelectorAll('.project-points li');
+
+                    let pointsHTML = '';
+                    points.forEach(point => {
+                        pointsHTML += `<li style="margin-bottom: 3px;">${point.textContent.trim()}</li>`;
+                    });
+
+                    projectsHTML += `
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <h4 style="margin: 0; font-size: 11px; font-weight: 700; color: #000;">${name} - ${role}</h4>
+                                <span style="font-size: 9px; color: #555; white-space: nowrap;">${years}</span>
+                            </div>
+                            <p style="margin: 2px 0; font-size: 9px; color: #555; font-style: italic;">${website}</p>
+                            <p style="margin: 4px 0; font-size: 9px; color: #000;">${brief}</p>
+                            <ul style="margin: 5px 0 0 0; padding-left: 18px; font-size: 9px; color: #000; line-height: 1.4;">
+                                ${pointsHTML}
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                return projectsHTML;
+            } catch (error) {
+                console.error('Error fetching projects data:', error);
+                return '';
+            }
+        }
+
+        async function fetchAcademicData() {
+            try {
+                const response = await fetch('academic.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract education
+                const eduCards = doc.querySelectorAll('.education-card');
+                let eduHTML = '';
+
+                eduCards.forEach(card => {
+                    const degree = card.querySelector('.degree')?.textContent || '';
+                    const institution = card.querySelector('.institution')?.textContent || '';
+                    const years = card.querySelector('.edu-years')?.textContent || '';
+                    const abroad = card.querySelector('.abroad')?.textContent || '';
+
+                    eduHTML += `
+                        <div style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                <h4 style="margin: 0; font-size: 11px; font-weight: 700; color: #000;">${degree}</h4>
+                                <span style="font-size: 9px; color: #555;">${years}</span>
+                            </div>
+                            <p style="margin: 2px 0 0 0; font-size: 10px; color: #000;">${institution}</p>
+                            ${abroad ? `<p style="margin: 3px 0 0 0; font-size: 9px; color: #555; font-style: italic;">${abroad}</p>` : ''}
+                        </div>
+                    `;
+                });
+
+                // Extract certificates
+                const certCards = doc.querySelectorAll('.certificate-card');
+                let certHTML = '';
+
+                certCards.forEach(card => {
+                    const name = card.querySelector('.certificate-name')?.textContent || '';
+                    const issuer = card.querySelector('.certificate-issuer')?.textContent || '';
+                    certHTML += `
+                        <div style="margin-bottom: 6px;">
+                            <p style="margin: 0; font-size: 10px; color: #000;"><strong>${name}</strong> - ${issuer}</p>
+                        </div>
+                    `;
+                });
+
+                return {
+                    education: eduHTML,
+                    certificates: certHTML
+                };
+            } catch (error) {
+                console.error('Error fetching academic data:', error);
+                return { education: '', certificates: '' };
+            }
+        }
+
+        async function fetchSkillsData() {
+            try {
+                const response = await fetch('skills.html');
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract tooling skills
+                const toolingGroup = doc.querySelector('.skills-category-group');
+                const toolingCategories = toolingGroup?.querySelectorAll('.skill-category') || [];
+
+                let technicalHTML = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
+                toolingCategories.forEach(category => {
+                    const title = category.querySelector('.skill-title')?.textContent || '';
+                    const items = category.querySelectorAll('.skill-item');
+                    const skillsList = Array.from(items).map(item => item.textContent.trim()).join(', ');
+
+                    technicalHTML += `
+                        <div style="margin-bottom: 8px;">
+                            <h5 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 700; color: #000;">${title}</h5>
+                            <p style="margin: 0; font-size: 9px; color: #000; line-height: 1.3;">${skillsList}</p>
+                        </div>
+                    `;
+                });
+                technicalHTML += '</div>';
+
+                // Extract soft skills
+                const softGroups = doc.querySelectorAll('.skills-category-group');
+                const softGroup = softGroups.length > 1 ? softGroups[1] : null;
+                const softCategories = softGroup?.querySelectorAll('.skill-category') || [];
+
+                let softHTML = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
+                softCategories.forEach(category => {
+                    const title = category.querySelector('.skill-title')?.textContent || '';
+                    const items = category.querySelectorAll('.skill-item');
+                    const skillsList = Array.from(items).map(item => item.textContent.trim()).join(', ');
+
+                    softHTML += `
+                        <div style="margin-bottom: 8px;">
+                            <h5 style="margin: 0 0 3px 0; font-size: 10px; font-weight: 700; color: #000;">${title}</h5>
+                            <p style="margin: 0; font-size: 9px; color: #000; line-height: 1.3;">${skillsList}</p>
+                        </div>
+                    `;
+                });
+                softHTML += '</div>';
+
+                return {
+                    technical: technicalHTML,
+                    soft: softHTML
+                };
+            } catch (error) {
+                console.error('Error fetching skills data:', error);
+                return { technical: '', soft: '' };
+            }
         }
     </script>
 </body>

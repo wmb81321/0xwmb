@@ -137,40 +137,14 @@ function updateActiveNavLink() {
 
 // Add cipher-inspired visual effects
 function initCipherEffects() {
-    // Random binary/hex code effect for section titles
-    const sectionTitles = document.querySelectorAll('.section-title');
-    
-    sectionTitles.forEach(title => {
-        title.addEventListener('mouseenter', function() {
-            const originalText = this.textContent;
-            let iterations = 0;
-            
-            const interval = setInterval(() => {
-                this.textContent = originalText.split('')
-                    .map((letter, index) => {
-                        if (index < iterations) {
-                            return originalText[index];
-                        }
-                        return ['0', '1', 'A', 'F', '7', 'E', '9'][Math.floor(Math.random() * 7)];
-                    })
-                    .join('');
-                
-                if (iterations >= originalText.length) {
-                    clearInterval(interval);
-                    this.textContent = originalText;
-                }
-                
-                iterations += 1 / 3;
-            }, 30);
-        });
-    });
-    
+    // Cipher effect disabled - no scrambling text on section titles
+
     // Add subtle glow effect to cards
     document.querySelectorAll('.card').forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.boxShadow = '0 0 15px rgba(0, 246, 255, 0.15), 0 10px 15px -3px rgba(0, 0, 0, 0.1)';
         });
-        
+
         card.addEventListener('mouseleave', function() {
             this.style.boxShadow = '';
         });
@@ -334,23 +308,7 @@ document.head.appendChild(particleStyle);
 
 // Typing animation for the title
 function initTypingAnimation() {
-    const titleElement = document.querySelector('.title');
-    const originalText = titleElement.textContent;
-    titleElement.textContent = '';
-    
-    let index = 0;
-    const typingSpeed = 100;
-    
-    function typeText() {
-        if (index < originalText.length) {
-            titleElement.textContent += originalText.charAt(index);
-            index++;
-            setTimeout(typeText, typingSpeed);
-        }
-    }
-    
-    // Start typing animation after a short delay
-    setTimeout(typeText, 1000);
+    // Typing animation disabled - title displays immediately without animation
 }
 
 // Add touch feedback to interactive elements
