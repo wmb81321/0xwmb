@@ -54,6 +54,13 @@
   --font-sans:     var(--font-space-grotesk), monospace;
   --font-mono:     var(--font-space-grotesk), monospace;
   --font-headline: var(--font-space-grotesk), monospace;
+
+  /* ── Text scale — bumped up one step for readability ── */
+  --text-xs:   0.875rem;   /* 12px → 14px */
+  --text-sm:   1rem;       /* 14px → 16px */
+  --text-base: 1.125rem;   /* 16px → 18px */
+  --text-lg:   1.25rem;    /* 18px → 20px */
+  --text-xl:   1.5rem;     /* 20px → 24px */
 }
 
 @layer base {
