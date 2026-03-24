@@ -78,7 +78,7 @@ export function CVDocument({ data }: { data: PortfolioData }) {
             <SectionTitle sm>Languages</SectionTitle>
             {languages.map((l) => (
               <Text key={l.id} style={{ fontSize: 7.5, marginBottom: 1.5 }}>
-                {l.flag} {l.name} — {l.level}
+                {l.name} — {l.level}
               </Text>
             ))}
 
