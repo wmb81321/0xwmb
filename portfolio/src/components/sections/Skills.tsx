@@ -1,4 +1,33 @@
+import Image from 'next/image'
 import type { Skill } from '@/lib/types'
+
+function SkillTag({ name, logoUrl }: { name: string; logoUrl?: string }) {
+  return (
+    <span className="flex items-center gap-1 text-xs font-mono bg-surface-2 border border-border px-2 py-0.5 rounded text-text-dim">
+      {logoUrl && (
+        <Image src={logoUrl} alt={name} width={12} height={12} className="object-contain opacity-80" />
+      )}
+      {name}
+    </span>
+  )
+}
+
+function SkillGroup({ skills }: { skills: Skill[] }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {skills.map((sk) => (
+        <div key={sk.id}>
+          <p className="text-xs text-text-dim font-medium mb-1">{sk.category}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {sk.items.map((item) => (
+              <SkillTag key={item} name={item} logoUrl={sk.logos?.[item]} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function SkillsSection({ skills }: { skills: Skill[] }) {
   const technical = skills.filter((sk) => sk.type === 'technical')
@@ -10,37 +39,11 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
       <div className="grid md:grid-cols-2 gap-8">
         <div>
           <h3 className="text-xs font-mono text-muted uppercase tracking-wider mb-4">Tooling</h3>
-          <div className="flex flex-col gap-4">
-            {technical.map((sk) => (
-              <div key={sk.id}>
-                <p className="text-xs text-text-dim font-medium mb-1">{sk.category}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {sk.items.map((item) => (
-                    <span key={item} className="text-xs font-mono bg-surface-2 border border-border px-2 py-0.5 rounded text-text-dim">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <SkillGroup skills={technical} />
         </div>
         <div>
           <h3 className="text-xs font-mono text-muted uppercase tracking-wider mb-4">Core Competencies</h3>
-          <div className="flex flex-col gap-4">
-            {soft.map((sk) => (
-              <div key={sk.id}>
-                <p className="text-xs text-text-dim font-medium mb-1">{sk.category}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {sk.items.map((item) => (
-                    <span key={item} className="text-xs font-mono bg-surface-2 border border-border px-2 py-0.5 rounded text-text-dim">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <SkillGroup skills={soft} />
         </div>
       </div>
     </section>

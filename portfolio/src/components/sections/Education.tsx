@@ -21,6 +21,22 @@ export default function EducationSection({ education }: { education: Education[]
               {e.abroad_program && (
                 <p className="text-xs text-muted mt-1 italic">{e.abroad_program}</p>
               )}
+              <div className="flex items-center gap-2 mt-1">
+                {e.website && (
+                  <a href={e.website} target="_blank" rel="noopener noreferrer" title="Website"
+                    className="text-xs font-mono text-muted hover:text-accent transition-colors">↗</a>
+                )}
+                {e.linkedin && (
+                  <a href={e.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                    <Image src="/socials/linkdn.png" alt="LinkedIn" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
+                  </a>
+                )}
+                {e.twitter && (
+                  <a href={e.twitter} target="_blank" rel="noopener noreferrer" title="X / Twitter">
+                    <Image src="/socials/x.png" alt="X" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         ))}

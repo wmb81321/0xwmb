@@ -1,6 +1,27 @@
 import Image from 'next/image'
 import type { Experience } from '@/lib/types'
 
+function SocialLinks({ website, linkedin, twitter }: { website?: string; linkedin?: string; twitter?: string }) {
+  return (
+    <div className="flex items-center gap-2 mt-1">
+      {website && (
+        <a href={website} target="_blank" rel="noopener noreferrer" title="Website"
+          className="text-xs font-mono text-muted hover:text-accent transition-colors">↗</a>
+      )}
+      {linkedin && (
+        <a href={linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <Image src="/socials/linkdn.png" alt="LinkedIn" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
+        </a>
+      )}
+      {twitter && (
+        <a href={twitter} target="_blank" rel="noopener noreferrer" title="X / Twitter">
+          <Image src="/socials/x.png" alt="X" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
+        </a>
+      )}
+    </div>
+  )
+}
+
 export default function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
     <section id="experience" className="section-anchor py-12 px-6 max-w-5xl mx-auto border-t border-border">
@@ -22,6 +43,7 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
                 </div>
                 <span className="text-xs font-mono text-muted flex-shrink-0">{exp.years}</span>
               </div>
+              <SocialLinks linkedin={exp.linkedin} twitter={exp.twitter} />
               <ul className="mt-2 flex flex-col gap-1">
                 {exp.points.map((pt, i) => (
                   <li key={i} className="text-sm text-text-dim flex gap-2">

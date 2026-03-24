@@ -15,6 +15,8 @@ export interface Experience {
   points: string[]
   website: string
   logo_url: string
+  linkedin?: string
+  twitter?: string
   order: number
 }
 
@@ -38,6 +40,9 @@ export interface Education {
   years: string
   abroad_program: string | null
   logo_url: string
+  website?: string
+  linkedin?: string
+  twitter?: string
   order: number
 }
 
@@ -47,6 +52,9 @@ export interface Certificate {
   issuer: string
   year: string
   logo_url: string
+  website?: string
+  linkedin?: string
+  twitter?: string
   order: number
 }
 
@@ -63,6 +71,7 @@ export interface Skill {
   id: number
   category: string
   items: string[]
+  logos?: Record<string, string>
   type: 'technical' | 'soft'
   order: number
 }

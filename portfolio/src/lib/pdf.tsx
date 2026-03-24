@@ -1,39 +1,28 @@
 import {
-  Document, Page, Text, View, StyleSheet, Font
+  Document, Page, Text, View, StyleSheet
 } from '@react-pdf/renderer'
 import type { PortfolioData } from './types'
 
-// react-pdf requires .ttf/.otf — NOT .woff/.woff2 (those will crash at render time)
-// Fonts must exist at portfolio/public/fonts/Inter-Regular.ttf and Inter-Bold.ttf
-Font.register({
-  family: 'Inter',
-  fonts: [
-    { src: '/fonts/Inter-Regular.ttf', fontWeight: 400 },
-    { src: '/fonts/Inter-Bold.ttf', fontWeight: 700 },
-  ],
-})
-
-// Named 'pdf' to avoid shadowing arrow-function parameter names
+// Using built-in PDF fonts — no external files needed
 const pdf = StyleSheet.create({
-  page: { fontFamily: 'Inter', fontSize: 9, color: '#111', padding: '12mm 12mm', backgroundColor: '#fff' },
-  header: { textAlign: 'center', borderBottom: '1.5pt solid #111', paddingBottom: 8, marginBottom: 8 },
-  name: { fontSize: 18, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 },
-  title: { fontSize: 10, color: '#444', marginTop: 2 },
-  contact: { fontSize: 8, color: '#666', marginTop: 3 },
-  cols: { flexDirection: 'row', gap: 12, flex: 1 },
-  left: { width: '30%', paddingRight: 10, borderRight: '0.5pt solid #e5e7eb' },
-  right: { flex: 1 },
-  sectionTitle: { fontSize: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, color: '#111', borderBottom: '0.5pt solid #ddd', paddingBottom: 2, marginBottom: 5, marginTop: 10 },
-  entry: { marginBottom: 7 },
-  entryHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  entryTitle: { fontWeight: 700, fontSize: 9 },
-  entryDate: { fontSize: 7.5, color: '#777' },
-  entrySub: { fontSize: 8, color: '#555', marginTop: 1 },
-  bullet: { flexDirection: 'row', marginTop: 2, gap: 4 },
-  dot: { color: '#6366f1', fontSize: 8 },
-  bulletText: { fontSize: 8, color: '#333', flex: 1, lineHeight: 1.4 },
-  tag: { backgroundColor: '#f3f4f6', color: '#374151', fontSize: 7, padding: '1pt 4pt', marginRight: 3, marginBottom: 3, borderRadius: 2 },
-  tagsRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 2 },
+  page:         { fontFamily: 'Helvetica', fontSize: 8.5, color: '#111', padding: '10mm 11mm', backgroundColor: '#fff' },
+  header:       { textAlign: 'center', borderBottom: '1pt solid #111', paddingBottom: 6, marginBottom: 6 },
+  name:         { fontFamily: 'Helvetica-Bold', fontSize: 15, textTransform: 'uppercase', letterSpacing: 1 },
+  title:        { fontSize: 9, color: '#444', marginTop: 1.5 },
+  contact:      { fontSize: 7.5, color: '#666', marginTop: 2 },
+  cols:         { flexDirection: 'row', gap: 10 },
+  left:         { width: '31%', paddingRight: 8, borderRight: '0.5pt solid #e5e7eb' },
+  right:        { flex: 1 },
+  sectionTitle: { fontFamily: 'Helvetica-Bold', fontSize: 7, textTransform: 'uppercase', letterSpacing: 0.8,
+                  color: '#111', borderBottom: '0.5pt solid #ddd', paddingBottom: 1.5, marginBottom: 4, marginTop: 8 },
+  entry:        { marginBottom: 5 },
+  entryRow:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  entryTitle:   { fontFamily: 'Helvetica-Bold', fontSize: 8.5, flex: 1 },
+  entryDate:    { fontSize: 7, color: '#777', marginLeft: 6, flexShrink: 0 },
+  entrySub:     { fontSize: 7.5, color: '#555', marginTop: 1 },
+  bullet:       { flexDirection: 'row', marginTop: 1.5, gap: 3 },
+  dot:          { color: '#6366f1', fontSize: 7.5 },
+  bulletText:   { fontSize: 7.5, color: '#333', flex: 1, lineHeight: 1.35 },
 })
 
 function SectionTitle({ children }: { children: string }) {
@@ -51,89 +40,96 @@ function Bullet({ text }: { text: string }) {
 
 export function CVDocument({ data }: { data: PortfolioData }) {
   const { profile, contact, experiences, projects, education, certificates, volunteering, skills, languages } = data
-  const technical = skills.filter((sk) => sk.type === 'technical')
-  const soft = skills.filter((sk) => sk.type === 'soft')
+  const allSkills = skills.map(sk => `${sk.category}: ${sk.items.join(', ')}`).join('\n')
 
   return (
     <Document>
       <Page size="A4" style={pdf.page}>
+
+        {/* Header */}
         <View style={pdf.header}>
           <Text style={pdf.name}>{profile.name}</Text>
           <Text style={pdf.title}>{profile.title}</Text>
           <Text style={pdf.contact}>
-            {contact.email} · {contact.linkedin?.replace('https://', '')} · {contact.github?.replace('https://', '')}
+            {contact.email}{'  ·  '}{contact.linkedin?.replace('https://linkedin.com/in/', 'linkedin.com/in/')}{'  ·  '}{contact.github?.replace('https://github.com/', 'github.com/')}{'  ·  '}{contact.twitter?.replace('https://twitter.com/', '@')}
           </Text>
         </View>
 
         <View style={pdf.cols}>
+
+          {/* Left column */}
           <View style={pdf.left}>
+
             <SectionTitle>Education</SectionTitle>
             {education.map((e) => (
               <View key={e.id} style={pdf.entry}>
                 <Text style={pdf.entryTitle}>{e.degree}</Text>
                 <Text style={pdf.entrySub}>{e.institution}</Text>
                 <Text style={pdf.entryDate}>{e.years}</Text>
-                {e.abroad_program && <Text style={{ ...pdf.entrySub, fontStyle: 'italic' }}>{e.abroad_program}</Text>}
-              </View>
-            ))}
-
-            <SectionTitle>Skills</SectionTitle>
-            {[...technical, ...soft].map((sk) => (
-              <View key={sk.id} style={{ marginBottom: 5 }}>
-                <Text style={{ fontSize: 7.5, fontWeight: 700, color: '#444', marginBottom: 2 }}>{sk.category}</Text>
-                <View style={pdf.tagsRow}>
-                  {sk.items.map((item) => <Text key={item} style={pdf.tag}>{item}</Text>)}
-                </View>
+                {e.abroad_program && (
+                  <Text style={{ ...pdf.entrySub, color: '#888', marginTop: 1 }}>{e.abroad_program}</Text>
+                )}
               </View>
             ))}
 
             <SectionTitle>Languages</SectionTitle>
             {languages.map((l) => (
-              <Text key={l.id} style={{ fontSize: 8, marginBottom: 2 }}>{l.flag} {l.name} — {l.level}</Text>
+              <Text key={l.id} style={{ fontSize: 7.5, marginBottom: 1.5 }}>
+                {l.flag} {l.name} — {l.level}
+              </Text>
             ))}
 
             <SectionTitle>Certificates</SectionTitle>
             {certificates.map((c) => (
-              <View key={c.id} style={pdf.entry}>
-                <Text style={{ fontSize: 8, fontWeight: 700 }}>{c.name}</Text>
+              <View key={c.id} style={{ marginBottom: 4 }}>
+                <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 7.5 }}>{c.name}</Text>
                 <Text style={pdf.entrySub}>{c.issuer} · {c.year}</Text>
               </View>
             ))}
+
+            <SectionTitle>Volunteering</SectionTitle>
+            {volunteering.map((v) => (
+              <View key={v.id} style={{ marginBottom: 3 }}>
+                <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 7.5 }}>{v.name}</Text>
+                <Text style={pdf.entrySub}>{v.issuer}</Text>
+              </View>
+            ))}
+
           </View>
 
+          {/* Right column */}
           <View style={pdf.right}>
-            <SectionTitle>Professional Summary</SectionTitle>
-            <Text style={{ fontSize: 8.5, color: '#333', lineHeight: 1.5 }}>{profile.summary}</Text>
+
+            <SectionTitle>Summary</SectionTitle>
+            <Text style={{ fontSize: 8, color: '#333', lineHeight: 1.4 }}>
+              {profile.summary}
+            </Text>
 
             <SectionTitle>Experience</SectionTitle>
             {experiences.map((e) => (
               <View key={e.id} style={pdf.entry}>
-                <View style={pdf.entryHeader}>
+                <View style={pdf.entryRow}>
                   <Text style={pdf.entryTitle}>{e.role} — {e.company}</Text>
                   <Text style={pdf.entryDate}>{e.years}</Text>
                 </View>
-                {e.points.map((pt, i) => <Bullet key={i} text={pt} />)}
+                {e.points.slice(0, 2).map((pt, i) => <Bullet key={i} text={pt} />)}
               </View>
             ))}
 
             <SectionTitle>Projects</SectionTitle>
             {projects.map((p) => (
               <View key={p.id} style={pdf.entry}>
-                <View style={pdf.entryHeader}>
+                <View style={pdf.entryRow}>
                   <Text style={pdf.entryTitle}>{p.name} · {p.role}</Text>
                   <Text style={pdf.entryDate}>{p.years}</Text>
                 </View>
-                {p.points.slice(0, 2).map((pt, i) => <Bullet key={i} text={pt} />)}
+                {p.brief && <Text style={{ ...pdf.entrySub, marginTop: 1 }}>{p.brief}</Text>}
               </View>
             ))}
 
-            <SectionTitle>Volunteering</SectionTitle>
-            {volunteering.map((v) => (
-              <View key={v.id} style={pdf.entry}>
-                <Text style={pdf.entryTitle}>{v.name}</Text>
-                <Text style={pdf.entrySub}>{v.issuer}</Text>
-              </View>
-            ))}
+            <SectionTitle>Skills</SectionTitle>
+            <Text style={{ fontSize: 7.5, color: '#444', lineHeight: 1.5 }}>{allSkills}</Text>
+
           </View>
         </View>
       </Page>

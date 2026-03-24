@@ -7,14 +7,22 @@ interface HeroProps {
   languages: Language[]
 }
 
+const SOCIAL_ICONS: Record<string, string> = {
+  linkedin:  '/socials/linkdn.png',
+  github:    '/socials/github.png',
+  twitter:   '/socials/x.png',
+  farcaster: '/socials/farcaster.png',
+  telegram:  '/socials/telegram.png',
+}
+
 const socialLinks = (contact: Contact) => [
-  { href: `mailto:${contact.email}`, label: 'Email' },
-  { href: contact.linkedin, label: 'LinkedIn' },
-  { href: contact.github, label: 'GitHub' },
-  { href: contact.twitter, label: 'X' },
-  { href: contact.farcaster, label: 'Farcaster' },
-  { href: contact.telegram, label: 'Telegram' },
-]
+  { href: contact.linkedin,  label: 'LinkedIn',  icon: SOCIAL_ICONS.linkedin },
+  { href: contact.github,    label: 'GitHub',    icon: SOCIAL_ICONS.github },
+  { href: contact.twitter,   label: 'X',         icon: SOCIAL_ICONS.twitter },
+  { href: contact.farcaster, label: 'Farcaster', icon: SOCIAL_ICONS.farcaster },
+  { href: contact.telegram,  label: 'Telegram',  icon: SOCIAL_ICONS.telegram },
+  { href: contact.email ? `mailto:${contact.email}` : null, label: contact.email, icon: null },
+].filter((l) => l.href)
 
 export default function Hero({ profile, contact, languages }: HeroProps) {
   return (
@@ -33,16 +41,20 @@ export default function Hero({ profile, contact, languages }: HeroProps) {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{profile.name}</h1>
           <p className="mt-1 text-lg text-accent font-mono">{profile.title}</p>
           <p className="mt-1 text-sm text-text-dim">{profile.industries}</p>
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             {socialLinks(contact).map((l) => (
               <a
                 key={l.label}
-                href={l.href}
-                target={l.href.startsWith('mailto') ? undefined : '_blank'}
+                href={l.href!}
+                target={l.href!.startsWith('mailto') ? undefined : '_blank'}
                 rel="noopener noreferrer"
-                className="text-xs font-mono text-text-dim border border-border px-2 py-1 rounded hover:border-accent hover:text-accent transition-colors"
+                title={l.label ?? undefined}
+                className="flex items-center gap-1.5 text-xs font-mono text-text-dim border border-border px-2 py-1 rounded hover:border-accent hover:text-accent transition-colors"
               >
-                {l.label}
+                {l.icon
+                  ? <Image src={l.icon} alt={l.label ?? ''} width={13} height={13} className="opacity-60" />
+                  : null}
+                {l.icon ? null : l.label}
               </a>
             ))}
           </div>

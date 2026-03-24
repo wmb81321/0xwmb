@@ -9,7 +9,7 @@ import ProjectsSection from '@/components/sections/Projects'
 import EducationSection from '@/components/sections/Education'
 import CertificatesSection from '@/components/sections/Certificates'
 import SkillsSection from '@/components/sections/Skills'
-import DownloadCV from '@/components/DownloadCV'
+import DownloadCV from '@/components/DownloadCVNoSSR'
 
 async function getPortfolioData(): Promise<PortfolioData> {
   const supabase = await createServerSupabaseClient()
