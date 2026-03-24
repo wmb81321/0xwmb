@@ -266,7 +266,7 @@ function RecordForm({ table, initial, onSave, onCancel }: {
             <div className="flex gap-2">
               <input type="url" value={(val as string) ?? ''} onChange={e => set(f.key, e.target.value)}
                 placeholder="https://…" className={inputCls} />
-              {val && (
+              {!!(val as string) && (
                 <a href={val as string} target="_blank" rel="noopener noreferrer"
                   className="text-text-dim hover:text-accent flex-shrink-0 flex items-center px-2">↗</a>
               )}
