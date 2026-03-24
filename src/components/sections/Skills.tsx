@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import type { Skill } from '@/lib/types'
 import SectionHeader from '@/components/SectionHeader'
 
@@ -6,7 +5,8 @@ function SkillTag({ name, logoUrl }: { name: string; logoUrl?: string }) {
   return (
     <span className="flex items-center gap-1.5 text-xs text-on-surface-variant bg-surface-container px-2 py-1 border border-outline-variant/20 hover:border-primary-container/40 hover:text-primary transition-colors">
       {logoUrl && (
-        <Image src={logoUrl} alt={name} width={11} height={11} className="object-contain opacity-70" />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logoUrl} alt={name} width={11} height={11} className="object-contain opacity-70" />
       )}
       {name}
     </span>
