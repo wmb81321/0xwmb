@@ -1,34 +1,139 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #050810;
-  --color-surface: #0d1117;
-  --color-surface-2: #111827;
-  --color-accent: #6366f1;
-  --color-accent-dim: #4f46e5;
-  --color-muted: #6b7280;
-  --color-border: #1f2937;
-  --color-text: #f9fafb;
-  --color-text-dim: #9ca3af;
+  /* ── Semantic aliases (admin + legacy components) ── */
+  --color-bg:          #10131c;
+  --color-surface:     #181c24;
+  --color-surface-2:   #262a33;
+  --color-accent:      #00D1FF;
+  --color-accent-dim:  #00b8d9;
+  --color-muted:       #b2c8cc;
+  --color-border:      #32434d;
+  --color-text:        #e0e2ee;
+  --color-text-dim:    #b2c8cc;
 
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  /* ── Sovereign Terminal palette ── */
+  --color-background:                  #10131c;
+  --color-surface-dim:                 #10131c;
+  --color-surface-container-lowest:    #0a0e16;
+  --color-surface-container-low:       #181c24;
+  --color-surface-container:           #1c2028;
+  --color-surface-container-high:      #262a33;
+  --color-surface-container-highest:   #31353e;
+  --color-surface-bright:              #353943;
+  --color-surface-variant:             #31353e;
+  --color-surface-tint:                #00D1FF;
+
+  --color-primary:               #e2f8ff;
+  --color-primary-container:     #00D1FF;
+  --color-primary-fixed:         #80eaff;
+  --color-primary-fixed-dim:     #00D1FF;
+  --color-on-primary:            #003642;
+  --color-on-primary-container:  #002a33;
+
+  --color-secondary:             #d3fbff;
+  --color-secondary-container:   #00eefc;
+  --color-on-secondary:          #00363a;
+
+  --color-tertiary:              #fff7fc;
+  --color-tertiary-container:    #f2d2ff;
+  --color-on-tertiary:           #4f0077;
+  --color-on-tertiary-container: #9700df;
+
+  --color-on-surface:            #e0e2ee;
+  --color-on-surface-variant:    #b2c8cc;
+  --color-on-background:         #e0e2ee;
+
+  --color-outline:               #7f909e;
+  --color-outline-variant:       #32434d;
+
+  --color-error:                 #ffb4ab;
+  --color-error-container:       #93000a;
+
+  /* ── Fonts ── */
+  --font-sans:     var(--font-space-grotesk), monospace;
+  --font-mono:     var(--font-space-grotesk), monospace;
+  --font-headline: var(--font-space-grotesk), monospace;
 }
 
 @layer base {
-  body {
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font-sans);
-  }
   * {
-    border-color: var(--color-border);
+    border-color: var(--color-outline-variant);
+    box-sizing: border-box;
   }
+
+  html {
+    background-color: var(--color-background);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 0px border-radius everywhere — enforced globally */
+  *, *::before, *::after {
+    border-radius: 0 !important;
+  }
+  /* Exception: pills, avatars, and full-circle elements */
+  .rounded-full { border-radius: 9999px !important; }
 }
 
 @layer utilities {
   .section-anchor {
     scroll-margin-top: 64px;
   }
+
+  /* Data Pulse — the 4×4px cyan square that breathes */
+  .data-pulse {
+    width: 4px;
+    height: 4px;
+    background-color: var(--color-primary-container);
+    animation: data-pulse 2s ease-in-out infinite;
+  }
+
+  /* Ghost border — outline-variant at 15% opacity */
+  .ghost-border {
+    border: 1px solid rgba(50, 67, 77, 0.15);
+  }
+
+  /* Glow shadow */
+  .shadow-glow {
+    box-shadow: 0 0 32px 0 rgba(0, 209, 255, 0.08);
+  }
+  .shadow-glow-md {
+    box-shadow: 0 0 24px 0 rgba(0, 209, 255, 0.15);
+  }
+
+  /* CTA gradient — primary LED effect */
+  .bg-cta {
+    background: linear-gradient(135deg, #e2f8ff 0%, #00D1FF 100%);
+  }
+
+  /* Glassmorphism HUD */
+  .glass {
+    background: rgba(24, 28, 36, 0.70);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Tonal surface separator (no lines — use depth instead) */
+  .surface-low  { background-color: var(--color-surface-container-low); }
+  .surface-mid  { background-color: var(--color-surface-container); }
+  .surface-high { background-color: var(--color-surface-container-high); }
+}
+
+@keyframes data-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
 }

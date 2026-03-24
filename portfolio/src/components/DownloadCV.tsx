@@ -8,9 +8,9 @@ export default function DownloadCV({ data }: { data: PortfolioData }) {
     <PDFDownloadLink
       document={<CVDocument data={data} />}
       fileName="William_Martinez_Bolanos_CV.pdf"
-      className="px-6 py-3 bg-accent text-white text-sm font-mono rounded hover:bg-accent-dim transition-colors"
+      className="block border border-outline-variant/40 text-on-surface-variant text-xs font-semibold tracking-widest uppercase px-8 py-3 hover:border-primary-container hover:text-primary-container transition-colors"
     >
-      {({ loading }) => loading ? 'Generating CV...' : 'Download CV (PDF)'}
+      {({ loading }) => loading ? 'Generating...' : 'Download_CV'}
     </PDFDownloadLink>
   )
 }

@@ -179,20 +179,54 @@ function ArrayField({ label, value, onChange }: { label: string; value: string[]
   )
 }
 
-function KeyValueField({ label, value, onChange }: { label: string; value: Record<string, string>; onChange: (v: Record<string, string>) => void }) {
+function KeyValueField({ label, value, onChange, uploadValues = false }: {
+  label: string
+  value: Record<string, string>
+  onChange: (v: Record<string, string>) => void
+  uploadValues?: boolean
+}) {
   const entries = Object.entries(value)
+  const [uploading, setUploading] = useState<number | null>(null)
+  const refs = useRef<(HTMLInputElement | null)[]>([])
+
   function set(idx: number, k: string, v: string) {
     onChange(Object.fromEntries(entries.map(([ek, ev], i) => i === idx ? [k, v] : [ek, ev])))
   }
+
+  async function handleUpload(idx: number, file: File) {
+    setUploading(idx)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const url = await uploadLogo(fd)
+      set(idx, entries[idx][0], url)
+    } catch (e) { alert(String(e)) }
+    setUploading(null)
+    if (refs.current[idx]) refs.current[idx]!.value = ''
+  }
+
   return (
     <div>
       <label className={labelCls}>{label}</label>
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         {entries.map(([k, v], i) => (
-          <div key={i} className="flex gap-2">
-            <input value={k} onChange={e => set(i, e.target.value, v)} placeholder="key"
-              className="w-1/3 bg-surface border border-border rounded px-2 py-2 text-xs font-mono text-text focus:outline-none focus:border-accent" />
-            <input value={v} onChange={e => set(i, k, e.target.value)} placeholder="value" className={`flex-1 ${inputCls}`} />
+          <div key={i} className="flex items-center gap-2">
+            <input value={k} onChange={e => set(i, e.target.value, v)} placeholder="skill name"
+              className="w-[28%] bg-surface border border-border rounded px-2 py-2 text-xs font-mono text-text focus:outline-none focus:border-accent flex-shrink-0" />
+            {v && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={v} alt={k} className="w-6 h-6 object-contain rounded border border-border bg-surface-2 p-0.5 flex-shrink-0" />
+            )}
+            <input value={v} onChange={e => set(i, k, e.target.value)} placeholder="image url"
+              className={`flex-1 min-w-0 ${inputCls}`} />
+            {uploadValues && (
+              <label className="cursor-pointer whitespace-nowrap text-xs text-accent border border-accent px-2 py-2 rounded font-mono hover:bg-accent hover:text-white transition-colors flex-shrink-0">
+                {uploading === i ? '…' : '↑'}
+                <input ref={el => { refs.current[i] = el }} type="file" accept="image/*" className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleUpload(i, f) }}
+                  disabled={uploading !== null} />
+              </label>
+            )}
             <button type="button"
               onClick={() => onChange(Object.fromEntries(entries.filter((_, j) => j !== i)))}
               className="text-red-400 hover:text-red-300 px-2 flex-shrink-0">✕</button>
@@ -244,7 +278,7 @@ function RecordForm({ table, initial, onSave, onCancel }: {
           <ArrayField key={f.key} label={f.label} value={(val as string[]) ?? []} onChange={v => set(f.key, v)} />
         )
         if (f.type === 'keyvalue') return (
-          <KeyValueField key={f.key} label={f.label} value={(val as Record<string, string>) ?? {}} onChange={v => set(f.key, v)} />
+          <KeyValueField key={f.key} label={f.label} value={(val as Record<string, string>) ?? {}} onChange={v => set(f.key, v)} uploadValues={f.key === 'logos'} />
         )
         if (f.type === 'select') return (
           <div key={f.key}>

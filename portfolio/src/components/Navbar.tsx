@@ -4,44 +4,57 @@ import { useState } from 'react'
 
 const links = [
   { href: '#experience', label: 'Experience' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#education', label: 'Education' },
-  { href: '#skills', label: 'Skills' },
+  { href: '#projects',   label: 'Projects' },
+  { href: '#skills',     label: 'Skills' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-bg/90 backdrop-blur border-b border-border">
-      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-mono text-accent font-medium tracking-wider">
-          0xwmb
+    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-outline-variant/20">
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+
+        <Link href="/" className="text-primary-container font-semibold tracking-[0.2em] text-sm uppercase">
+          0xwomb
         </Link>
-        <div className="hidden md:flex items-center gap-8">
+
+        <div className="hidden md:flex items-center gap-10">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-text-dim hover:text-text transition-colors">
+            <a key={l.href} href={l.href}
+              className="text-xs tracking-[0.15em] text-on-surface-variant hover:text-primary transition-colors uppercase">
               {l.label}
             </a>
           ))}
-          <a href="#download-cv" className="text-sm px-4 py-2 border border-accent text-accent rounded hover:bg-accent hover:text-white transition-colors">
-            Download CV
-          </a>
         </div>
-        <button className="md:hidden text-text-dim" onClick={() => setOpen(!open)}>
-          <span className="block w-5 h-0.5 bg-current mb-1" />
-          <span className="block w-5 h-0.5 bg-current mb-1" />
-          <span className="block w-5 h-0.5 bg-current" />
+
+        <a href="#contact"
+          className="hidden md:block bg-cta text-on-primary text-xs font-semibold tracking-widest uppercase px-4 py-2 hover:opacity-90 transition-opacity">
+          Download_CV
+        </a>
+
+        {/* Mobile hamburger */}
+        <button className="md:hidden text-on-surface-variant flex flex-col gap-1.5" onClick={() => setOpen(!open)} aria-label="Menu">
+          <span className="block w-5 h-px bg-current" />
+          <span className="block w-5 h-px bg-current" />
+          <span className="block w-5 h-px bg-current" />
         </button>
       </div>
+
       {open && (
-        <div className="md:hidden bg-surface border-b border-border px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden glass border-t border-outline-variant/20 px-6 py-5 flex flex-col gap-5">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-text-dim" onClick={() => setOpen(false)}>
+            <a key={l.href} href={l.href}
+              className="text-xs tracking-[0.15em] uppercase text-on-surface-variant"
+              onClick={() => setOpen(false)}>
               {l.label}
             </a>
           ))}
-          <a href="#download-cv" className="text-sm text-accent" onClick={() => setOpen(false)}>Download CV</a>
+          <a href="#contact"
+            className="text-xs text-primary-container tracking-widest uppercase"
+            onClick={() => setOpen(false)}>
+            Download_CV
+          </a>
         </div>
       )}
     </nav>

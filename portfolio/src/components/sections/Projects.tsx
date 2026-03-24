@@ -1,42 +1,63 @@
 import Image from 'next/image'
 import type { Project } from '@/lib/types'
+import SectionHeader from '@/components/SectionHeader'
 
 export default function ProjectsSection({ projects }: { projects: Project[] }) {
   return (
-    <section id="projects" className="section-anchor py-12 px-6 max-w-5xl mx-auto border-t border-border">
-      <h2 className="text-xs font-mono text-text-dim uppercase tracking-widest mb-8">Projects</h2>
-      <div className="grid md:grid-cols-3 gap-6">
+    <section id="projects" className="section-anchor py-20 px-6 max-w-6xl mx-auto">
+      <SectionHeader label="PROJECTS" />
+
+      <div className="grid md:grid-cols-3 gap-px">
         {projects.map((p) => (
-          <div key={p.id} className="bg-surface border border-border rounded-lg p-5 flex flex-col gap-3 hover:border-accent/50 transition-colors">
+          <div key={p.id}
+            className="bg-surface-container-low border border-outline-variant/20 p-5 flex flex-col gap-4 group hover:bg-surface-container hover:border-outline-variant/50 transition-colors">
+
+            {/* Card header */}
             <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 {p.logo_url && (
-                  <Image src={p.logo_url} alt={p.name} width={32} height={32}
-                    className="rounded border border-border object-contain bg-surface-2 p-0.5" />
+                  <div className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-surface-container border border-outline-variant/20 p-2">
+                    <Image src={p.logo_url} alt={p.name} width={36} height={36}
+                      className="object-contain w-full h-full grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all" />
+                  </div>
                 )}
-                <div>
-                  <h3 className="font-semibold text-sm">{p.name}</h3>
-                  <span className="text-xs text-text-dim">{p.role}</span>
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold text-on-surface truncate">{p.name}</h3>
+                  <p className="text-xs text-on-surface-variant">{p.role}</p>
                 </div>
               </div>
-              <span className="text-xs font-mono text-muted flex-shrink-0">{p.years}</span>
+              <span className="text-xs text-outline font-mono flex-shrink-0">{p.years}</span>
             </div>
-            <p className="text-xs text-text-dim">{p.brief}</p>
-            <ul className="flex flex-col gap-1">
+
+            {/* Brief */}
+            {p.brief && (
+              <p className="text-xs text-on-surface-variant leading-relaxed">{p.brief}</p>
+            )}
+
+            {/* Bullets */}
+            <ul className="flex flex-col gap-1 flex-1">
               {p.points.slice(0, 2).map((pt, i) => (
-                <li key={i} className="text-xs text-text-dim flex gap-2">
-                  <span className="text-accent flex-shrink-0">·</span>
+                <li key={i} className="text-xs text-on-surface-variant flex gap-2 leading-relaxed">
+                  <span className="text-primary-container flex-shrink-0">▸</span>
                   <span>{pt}</span>
                 </li>
               ))}
             </ul>
-            <div className="flex gap-2 mt-auto pt-2 border-t border-border">
+
+            {/* Footer links */}
+            <div className="flex gap-3 pt-3 border-t border-outline-variant/20 mt-auto">
               {Object.entries(p.socials || {}).map(([key, url]) => (
                 <a key={key} href={url as string} target="_blank" rel="noopener noreferrer"
-                  className="text-xs font-mono text-muted hover:text-accent transition-colors capitalize">{key}</a>
+                  className="text-xs text-outline hover:text-primary-container transition-colors capitalize tracking-widest">
+                  {key}
+                </a>
               ))}
-              <a href={p.website} target="_blank" rel="noopener noreferrer"
-                className="text-xs font-mono text-muted hover:text-accent transition-colors ml-auto">site →</a>
+              {p.website && (
+                <a href={p.website} target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-outline hover:text-primary-container transition-colors ml-auto">
+                  site ↗
+                </a>
+              )}
             </div>
           </div>
         ))}

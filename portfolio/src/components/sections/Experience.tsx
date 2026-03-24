@@ -1,57 +1,53 @@
 import Image from 'next/image'
 import type { Experience } from '@/lib/types'
-
-function SocialLinks({ website, linkedin, twitter }: { website?: string; linkedin?: string; twitter?: string }) {
-  return (
-    <div className="flex items-center gap-2 mt-1">
-      {website && (
-        <a href={website} target="_blank" rel="noopener noreferrer" title="Website"
-          className="text-xs font-mono text-muted hover:text-accent transition-colors">↗</a>
-      )}
-      {linkedin && (
-        <a href={linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
-          <Image src="/socials/linkdn.png" alt="LinkedIn" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
-        </a>
-      )}
-      {twitter && (
-        <a href={twitter} target="_blank" rel="noopener noreferrer" title="X / Twitter">
-          <Image src="/socials/x.png" alt="X" width={14} height={14} className="opacity-50 hover:opacity-100 transition-opacity" />
-        </a>
-      )}
-    </div>
-  )
-}
+import SectionHeader from '@/components/SectionHeader'
 
 export default function ExperienceSection({ experiences }: { experiences: Experience[] }) {
   return (
-    <section id="experience" className="section-anchor py-12 px-6 max-w-5xl mx-auto border-t border-border">
-      <h2 className="text-xs font-mono text-text-dim uppercase tracking-widest mb-8">Experience</h2>
-      <div className="flex flex-col gap-8">
+    <section id="experience" className="section-anchor py-20 px-6 max-w-6xl mx-auto">
+      <SectionHeader label="Experience_Logs" />
+
+      <div className="flex flex-col gap-px">
         {experiences.map((exp) => (
-          <div key={exp.id} className="flex gap-4">
-            {exp.logo_url && (
-              <Image src={exp.logo_url} alt={exp.company} width={40} height={40}
-                className="rounded border border-border object-contain flex-shrink-0 mt-1 bg-surface p-1" />
-            )}
-            <div className="flex-1">
-              <div className="flex items-baseline justify-between gap-4 flex-wrap">
-                <div>
-                  <span className="font-semibold text-text">{exp.role}</span>
-                  <span className="text-text-dim"> — </span>
-                  <a href={exp.website} target="_blank" rel="noopener noreferrer"
-                    className="text-text-dim hover:text-accent transition-colors">{exp.company}</a>
+          <div key={exp.id}
+            className="bg-surface-container-low border border-outline-variant/20 px-6 py-5 group hover:bg-surface-container hover:border-outline-variant/50 transition-colors">
+            <div className="flex items-start gap-5">
+
+              {/* Logo */}
+              {exp.logo_url && (
+                <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-surface-container border border-outline-variant/20 p-2">
+                  <Image src={exp.logo_url} alt={exp.company} width={40} height={40}
+                    className="object-contain w-full h-full grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all" />
                 </div>
-                <span className="text-xs font-mono text-muted flex-shrink-0">{exp.years}</span>
+              )}
+
+              <div className="flex-1 min-w-0">
+                {/* Role row */}
+                <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+                  <div className="flex items-baseline gap-2 flex-wrap min-w-0">
+                    <span className="font-semibold text-on-surface text-sm">{exp.role}</span>
+                    <span className="text-outline text-xs">—</span>
+                    {exp.website
+                      ? <a href={exp.website} target="_blank" rel="noopener noreferrer"
+                          className="text-xs text-on-surface-variant hover:text-primary-container transition-colors truncate">
+                          {exp.company}
+                        </a>
+                      : <span className="text-xs text-on-surface-variant truncate">{exp.company}</span>
+                    }
+                  </div>
+                  <span className="text-xs text-outline tracking-widest flex-shrink-0 font-mono">{exp.years}</span>
+                </div>
+
+                {/* Bullet points */}
+                <ul className="flex flex-col gap-1">
+                  {exp.points.map((pt, i) => (
+                    <li key={i} className="text-xs text-on-surface-variant flex gap-2 leading-relaxed">
+                      <span className="text-primary-container flex-shrink-0 mt-px">▸</span>
+                      <span>{pt}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <SocialLinks linkedin={exp.linkedin} twitter={exp.twitter} />
-              <ul className="mt-2 flex flex-col gap-1">
-                {exp.points.map((pt, i) => (
-                  <li key={i} className="text-sm text-text-dim flex gap-2">
-                    <span className="text-accent mt-1 flex-shrink-0">·</span>
-                    <span>{pt}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         ))}
