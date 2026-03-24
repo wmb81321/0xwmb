@@ -85,7 +85,7 @@ outline-variant:          #32434d   ← ghost borders (use at 15% opacity)
 ### Typography
 - **Font:** Space Grotesk (all levels — headline, body, label)
 - Display: 3.5rem, letter-spacing -0.02em
-- Body: 0.875rem
+- Body: 1rem (text scale bumped up — `text-xs`=14px, `text-sm`=16px via `@theme` overrides in globals.css)
 - `primary` (#e2f8ff) for command/label text; `on-surface-variant` (#b2c8cc) for metadata
 
 ### Layout Rules
@@ -134,5 +134,5 @@ SUPABASE_SERVICE_ROLE_KEY      # server only, never expose to client
 
 ## Vercel Project
 - Project name: `0xwmb` (team: ekinoxis-team)
-- Root Directory must be set to `portfolio` in Vercel project settings
+- Root Directory must be **blank / repo root** (app was moved from `portfolio/` to root in March 2026)
 - Auto-deploys from `main` branch of `wmb81321/0xwmb` repo
