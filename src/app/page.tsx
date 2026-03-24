@@ -8,7 +8,6 @@ import ProjectsSection from '@/components/sections/Projects'
 import EducationSection from '@/components/sections/Education'
 import CertificatesSection from '@/components/sections/Certificates'
 import SkillsSection from '@/components/sections/Skills'
-import DownloadCV from '@/components/DownloadCVNoSSR'
 
 async function getPortfolioData(): Promise<PortfolioData> {
   const supabase = await createServerSupabaseClient()
@@ -57,7 +56,7 @@ export default async function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar data={data} />
 
       <main>
         {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -87,31 +86,6 @@ export default async function Page() {
           </div>
         </section>
 
-        {/* ── Contact CTA ──────────────────────────────────────────── */}
-        <section id="contact" className="py-24 px-6 bg-surface-container-lowest">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <div className="data-pulse" />
-              <span className="text-xs tracking-[0.2em] text-on-surface-variant uppercase">
-                Initiate_Contact
-              </span>
-            </div>
-            <p className="text-on-surface-variant text-sm leading-relaxed mb-10 max-w-md mx-auto">
-              Ready to connect, collaborate, or explore opportunities in Web3, DeFi, and beyond.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-              {data.contact.email && (
-                <a href={`mailto:${data.contact.email}`}
-                  className="bg-cta text-on-primary text-xs font-semibold tracking-widest uppercase px-8 py-3 hover:opacity-90 transition-opacity">
-                  Send_Message
-                </a>
-              )}
-              <div id="download-cv">
-                <DownloadCV data={data} />
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* ── Footer ───────────────────────────────────────────────── */}

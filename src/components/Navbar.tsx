@@ -1,6 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { useState } from 'react'
+import type { PortfolioData } from '@/lib/types'
+import DownloadCV from '@/components/DownloadCVNoSSR'
 
 const links = [
   { href: '#experience', label: 'Experience' },
@@ -8,7 +10,7 @@ const links = [
   { href: '#skills',     label: 'Skills' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ data }: { data: PortfolioData }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -28,10 +30,9 @@ export default function Navbar() {
           ))}
         </div>
 
-        <a href="#contact"
-          className="hidden md:block bg-cta text-on-primary text-xs font-semibold tracking-widest uppercase px-4 py-2 hover:opacity-90 transition-opacity">
-          Download_CV
-        </a>
+        <div className="hidden md:block">
+          <DownloadCV data={data} />
+        </div>
 
         {/* Mobile hamburger */}
         <button className="md:hidden text-on-surface-variant flex flex-col gap-1.5" onClick={() => setOpen(!open)} aria-label="Menu">
@@ -50,11 +51,9 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href="#contact"
-            className="text-xs text-primary-container tracking-widest uppercase"
-            onClick={() => setOpen(false)}>
-            Download_CV
-          </a>
+          <div onClick={() => setOpen(false)}>
+            <DownloadCV data={data} />
+          </div>
         </div>
       )}
     </nav>
