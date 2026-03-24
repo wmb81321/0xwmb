@@ -107,6 +107,23 @@ alter table languages enable row level security;
 create policy "Public read" on languages for select using (true);
 create policy "Admin write" on languages for all to authenticated using (true) with check (true);
 
+-- Job Applications
+create table if not exists job_applications (
+  id serial primary key,
+  company text not null,
+  position text not null,
+  website text,
+  application_url text,
+  description text,
+  status text not null default 'saved' check (status in ('saved', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn')),
+  applied_at text,
+  notes text,
+  "order" int not null default 0,
+  created_at timestamptz not null default now()
+);
+alter table job_applications enable row level security;
+create policy "Admin only" on job_applications for all to authenticated using (true) with check (true);
+
 -- Contact
 create table if not exists contact (
   id serial primary key,

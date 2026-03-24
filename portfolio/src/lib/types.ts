@@ -95,6 +95,20 @@ export interface Contact {
   farcaster: string
 }
 
+export interface JobApplication {
+  id: number
+  company: string
+  position: string
+  website?: string
+  application_url?: string
+  description?: string
+  status: 'saved' | 'applied' | 'interviewing' | 'offered' | 'rejected' | 'withdrawn'
+  applied_at?: string
+  notes?: string
+  order: number
+  created_at: string
+}
+
 export interface PortfolioData {
   profile: Profile
   experiences: Experience[]

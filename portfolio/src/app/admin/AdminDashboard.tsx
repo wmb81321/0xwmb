@@ -91,15 +91,26 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'twitter',   label: 'X / Twitter', type: 'url' },
     { key: 'farcaster', label: 'Farcaster',   type: 'url' },
   ],
+  job_applications: [
+    { key: 'company',         label: 'Company',          type: 'text' },
+    { key: 'position',        label: 'Position',         type: 'text' },
+    { key: 'website',         label: 'Company website',  type: 'url' },
+    { key: 'application_url', label: 'Application link', type: 'url' },
+    { key: 'status',          label: 'Status',           type: 'select', options: ['saved', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn'] },
+    { key: 'applied_at',      label: 'Applied on',       type: 'text' },
+    { key: 'description',     label: 'Job description',  type: 'textarea' },
+    { key: 'notes',           label: 'My notes',         type: 'textarea' },
+    { key: 'order',           label: 'Order',            type: 'number' },
+  ],
 }
 
 const TABLE_MAP: Record<string, string> = {
   Profile: 'profile', Experience: 'experiences', Projects: 'projects',
   Education: 'education', Certificates: 'certificates', Volunteering: 'volunteering',
-  Skills: 'skills', Languages: 'languages', Contact: 'contact',
+  Skills: 'skills', Languages: 'languages', Contact: 'contact', Jobs: 'job_applications',
 }
 
-const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages'])
+const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages', 'Jobs'])
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
@@ -298,7 +309,8 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'certificates') return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
   if (table === 'volunteering') return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
   if (table === 'skills')       return { title: item.category as string, sub: `${item.type} · ${(item.items as string[])?.join(', ')}` }
-  if (table === 'languages')    return { title: `${item.flag ?? ''} ${item.name}`, sub: item.level as string }
+  if (table === 'languages')         return { title: `${item.flag ?? ''} ${item.name}`, sub: item.level as string }
+  if (table === 'job_applications')  return { title: `${item.position}`, sub: `${item.company} · ${item.status}` }
   return { title: JSON.stringify(item), sub: '' }
 }
 
@@ -379,7 +391,7 @@ function ListEditor({ table, initialItems }: { table: string; initialItems: Reco
 
 // ─── Dashboard shell ─────────────────────────────────────────────────────────
 
-const TABS = ['Profile', 'Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages', 'Contact']
+const TABS = ['Profile', 'Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages', 'Contact', 'Jobs']
 
 export default function AdminDashboard({ initialData }: { initialData: Partial<PortfolioData> }) {
   const [tab, setTab] = useState('Profile')

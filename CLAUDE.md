@@ -23,9 +23,23 @@ Rebuild from static HTML → Next.js 14 + Supabase + Tailwind + react-pdf + Verc
 - `portfolio/supabase/seed.sql` — initial content seed
 
 ## Supabase Tables
-`profile`, `experiences`, `projects`, `education`, `certificates`, `volunteering`, `skills`, `languages`, `contact`
+`profile`, `experiences`, `projects`, `education`, `certificates`, `volunteering`, `skills`, `languages`, `contact`, `job_applications`
 
 RLS: public SELECT (anon key), writes restricted to `authenticated` role.
+`job_applications` is admin-only (no public SELECT — private job tracking).
+
+## Job Applications (`job_applications` table)
+Private table for tracking job opportunities. Admin-only (no public RLS).
+Fields: `company`, `position`, `website` (company site), `application_url` (link to apply),
+`description` (full job posting text), `status` (saved/applied/interviewing/offered/rejected/withdrawn),
+`applied_at` (date string), `notes` (personal notes), `order`, `created_at`.
+
+When adding a new job from a file in `jobs/`:
+1. Parse the markdown to extract company, position, description, and application link.
+2. Use the admin panel `/admin` → Jobs tab to create a new entry.
+3. Set `status = 'saved'` initially.
+
+Source files for job postings live in `jobs/` at the repo root (markdown files, one per job).
 
 ## Design Tokens (Tailwind)
 - `bg` = `#050810` (page background)
@@ -51,6 +65,15 @@ SUPABASE_SERVICE_ROLE_KEY      # server only, never expose to client
 - Login: `/admin/login` (Supabase Auth email/password)
 - Middleware matcher: `['/admin', '/admin/:path*']` — both needed in Next.js 14
 - Uses server actions (`actions.ts`) with `revalidatePath('/')` after writes
+
+### Adding a new admin section
+The admin dashboard is fully driven by config in `AdminDashboard.tsx`. To add a new table:
+1. Add it to `FIELDS` (field definitions with types)
+2. Add it to `TABLE_MAP` (tab label → Supabase table name)
+3. Add it to `LIST_TABS` if it's a multi-record table (vs single-record like Profile/Contact)
+4. Add the tab label to `TABS`
+5. Add a `cardSummary` case for how the collapsed card looks
+No changes needed to `actions.ts` — upsert/delete are fully generic.
 
 ## Legacy Files
 Old static HTML files are in `legacy/` — do not modify. The active site is `portfolio/`.
