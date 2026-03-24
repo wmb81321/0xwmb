@@ -35,8 +35,18 @@ jspm_packages/
 *.tgz
 
 # dotenv environment variable files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*
+
+# next.js
+/.next/
+/out/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# vercel
+.vercel
+
+# testing
+/coverage
