@@ -10,18 +10,17 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
       <div className="flex flex-col gap-px">
         {experiences.map((exp) => (
           <div key={exp.id}
-            className="bg-surface-container-low border border-outline-variant/20 px-6 py-5 group hover:bg-surface-container hover:border-outline-variant/50 transition-colors">
-            <div className="flex items-start gap-5">
+            className="bg-surface-container-low border border-outline-variant/20 group hover:bg-surface-container hover:border-outline-variant/50 transition-colors flex">
 
-              {/* Logo */}
+              {/* Logo — full-height left pillar */}
               {exp.logo_url && (
-                <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-surface-container border border-outline-variant/20 p-2">
-                  <Image src={exp.logo_url} alt={exp.company} width={40} height={40}
-                    className="object-contain w-full h-full grayscale group-hover:grayscale-0 opacity-60 group-hover:opacity-100 transition-all" />
+                <div className="relative flex-shrink-0 w-32 self-stretch bg-surface-container border-r border-outline-variant/30 overflow-hidden">
+                  <Image src={exp.logo_url} alt={exp.company} fill
+                    className="object-cover grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all" />
                 </div>
               )}
 
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 px-6 py-5">
                 {/* Role row */}
                 <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
                   <div className="flex items-baseline gap-2 flex-wrap min-w-0">
@@ -47,9 +46,26 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
                     </li>
                   ))}
                 </ul>
+
+                {/* Social icons */}
+                {(exp.linkedin || exp.twitter) && (
+                  <div className="flex gap-2 mt-3">
+                    {exp.linkedin && (
+                      <a href={exp.linkedin} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center justify-center w-7 h-7 border border-outline-variant/20 hover:border-primary-container transition-colors">
+                        <Image src="/socials/linkdn.png" alt="LinkedIn" width={13} height={13} className="opacity-50 hover:opacity-100 transition-opacity" />
+                      </a>
+                    )}
+                    {exp.twitter && (
+                      <a href={exp.twitter} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center justify-center w-7 h-7 border border-outline-variant/20 hover:border-primary-container transition-colors">
+                        <Image src="/socials/x.png" alt="X / Twitter" width={13} height={13} className="opacity-50 hover:opacity-100 transition-opacity" />
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          </div>
         ))}
       </div>
     </section>

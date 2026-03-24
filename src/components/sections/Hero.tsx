@@ -82,9 +82,8 @@ export default function Hero({ profile, contact, languages }: HeroProps) {
           {socials.map((s) => (
             <a key={s.key} href={s.href}
               target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 border border-outline-variant/40 text-on-surface-variant text-xs tracking-widest uppercase hover:border-primary-container hover:text-primary-container transition-colors">
-              <Image src={s.icon} alt={s.label} width={11} height={11} className="opacity-60" />
-              {s.label}
+              className="flex items-center justify-center w-8 h-8 border border-outline-variant/40 hover:border-primary-container transition-colors">
+              <Image src={s.icon} alt={s.label} width={14} height={14} className="opacity-60 hover:opacity-100 transition-opacity" />
             </a>
           ))}
           {contact.email && (
