@@ -37,6 +37,9 @@ export interface Education {
   id: number
   degree: string
   institution: string
+  field_of_study?: string
+  start_date?: string
+  end_date?: string
   years: string
   abroad_program: string | null
   logo_url: string
@@ -64,6 +67,17 @@ export interface Volunteering {
   issuer: string
   year: string
   logo_url: string
+  order: number
+}
+
+export interface Achievement {
+  id: number
+  title: string
+  description?: string
+  year?: string
+  logo_url?: string
+  link?: string
+  type: 'achievement' | 'goal'
   order: number
 }
 
@@ -116,6 +130,7 @@ export interface PortfolioData {
   education: Education[]
   certificates: Certificate[]
   volunteering: Volunteering[]
+  achievements: Achievement[]
   skills: Skill[]
   languages: Language[]
   contact: Contact

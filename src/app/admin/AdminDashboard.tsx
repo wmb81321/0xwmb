@@ -42,13 +42,15 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'order',   label: 'Order',                   type: 'number' },
   ],
   education: [
+    { key: 'institution',    label: 'School name',     type: 'text' },
+    { key: 'field_of_study', label: 'Field of Study',  type: 'text' },
     { key: 'degree',         label: 'Degree',          type: 'text' },
-    { key: 'institution',    label: 'Institution',     type: 'text' },
-    { key: 'years',          label: 'Period',           type: 'text' },
+    { key: 'start_date',     label: 'Start Date',      type: 'text' },
+    { key: 'end_date',       label: 'End Date',        type: 'text' },
     { key: 'abroad_program', label: 'Abroad program',  type: 'text' },
     { key: 'website',        label: 'Website',         type: 'url' },
     { key: 'linkedin',       label: 'LinkedIn',        type: 'url' },
-    { key: 'twitter',        label: 'X / Twitter',     type: 'url' },
+    { key: 'twitter',        label: 'X Account',       type: 'url' },
     { key: 'logo_url',       label: 'Logo',            type: 'image' },
     { key: 'order',          label: 'Order',           type: 'number' },
   ],
@@ -68,6 +70,15 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'year',    label: 'Year',   type: 'text' },
     { key: 'logo_url',label: 'Logo',   type: 'image' },
     { key: 'order',   label: 'Order',  type: 'number' },
+  ],
+  achievements: [
+    { key: 'title',       label: 'Title',       type: 'text' },
+    { key: 'description', label: 'Description', type: 'textarea' },
+    { key: 'year',        label: 'Year',        type: 'text' },
+    { key: 'logo_url',    label: 'Logo',        type: 'image' },
+    { key: 'link',        label: 'Link',        type: 'url' },
+    { key: 'type',        label: 'Type',        type: 'select', options: ['achievement', 'goal'] },
+    { key: 'order',       label: 'Order',       type: 'number' },
   ],
   skills: [
     { key: 'category', label: 'Category', type: 'text' },
@@ -107,10 +118,11 @@ const FIELDS: Record<string, FieldDef[]> = {
 const TABLE_MAP: Record<string, string> = {
   Profile: 'profile', Experience: 'experiences', Projects: 'projects',
   Education: 'education', Certificates: 'certificates', Volunteering: 'volunteering',
+  Achievements: 'achievements',
   Skills: 'skills', Languages: 'languages', Contact: 'contact', Jobs: 'job_applications',
 }
 
-const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages', 'Jobs'])
+const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs'])
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
@@ -341,7 +353,8 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'projects')     return { title: item.name as string, sub: `${item.role} · ${item.years}` }
   if (table === 'education')    return { title: item.degree as string, sub: `${item.institution} · ${item.years}` }
   if (table === 'certificates') return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
-  if (table === 'volunteering') return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
+  if (table === 'volunteering')  return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
+  if (table === 'achievements')  return { title: item.title as string, sub: `${item.type} · ${item.year ?? ''}` }
   if (table === 'skills')       return { title: item.category as string, sub: `${item.type} · ${(item.items as string[])?.join(', ')}` }
   if (table === 'languages')         return { title: `${item.flag ?? ''} ${item.name}`, sub: item.level as string }
   if (table === 'job_applications')  return { title: `${item.position}`, sub: `${item.company} · ${item.status}` }
@@ -425,7 +438,7 @@ function ListEditor({ table, initialItems }: { table: string; initialItems: Reco
 
 // ─── Dashboard shell ─────────────────────────────────────────────────────────
 
-const TABS = ['Profile', 'Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Skills', 'Languages', 'Contact', 'Jobs']
+const TABS = ['Profile', 'Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Contact', 'Jobs']
 
 export default function AdminDashboard({ initialData }: { initialData: Partial<PortfolioData> }) {
   const [tab, setTab] = useState('Profile')

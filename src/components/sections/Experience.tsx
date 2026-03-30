@@ -12,11 +12,13 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
           <div key={exp.id}
             className="bg-surface-container-low border border-outline-variant/20 group hover:bg-surface-container hover:border-outline-variant/50 transition-colors flex">
 
-              {/* Logo — full-height left pillar */}
+              {/* Logo — full-height left pillar, logo contained and centered */}
               {exp.logo_url && (
-                <div className="relative flex-shrink-0 w-32 self-stretch bg-surface-container border-r border-outline-variant/30 overflow-hidden">
-                  <Image src={exp.logo_url} alt={exp.company} fill
-                    className="object-cover grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all" />
+                <div className="flex-shrink-0 w-28 self-stretch bg-surface-container border-r border-outline-variant/30 flex items-center justify-center p-3">
+                  <div className="relative w-full h-16">
+                    <Image src={exp.logo_url} alt={exp.company} fill
+                      className="object-contain grayscale group-hover:grayscale-0 opacity-70 group-hover:opacity-100 transition-all" />
+                  </div>
                 </div>
               )}
 
