@@ -39,8 +39,10 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
 
   return (
     <>
-      {technical.length > 0 && <SkillGroup title="Technical_Grid" skills={technical} />}
-      {soft.length > 0 && <SkillGroup title="Core_Competencies" skills={soft} />}
+      <div className="grid md:grid-cols-2 gap-10">
+        {technical.length > 0 && <SkillGroup title="Technical_Grid" skills={technical} />}
+        {soft.length > 0 && <SkillGroup title="Core_Competencies" skills={soft} />}
+      </div>
     </>
   )
 }

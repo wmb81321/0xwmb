@@ -31,15 +31,16 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'order',    label: 'Order',        type: 'number' },
   ],
   projects: [
-    { key: 'name',    label: 'Name',                    type: 'text' },
-    { key: 'role',    label: 'Role',                    type: 'text' },
-    { key: 'years',   label: 'Period',                  type: 'text' },
-    { key: 'brief',   label: 'Brief',                   type: 'text' },
-    { key: 'website', label: 'Website',                 type: 'url' },
-    { key: 'logo_url',label: 'Logo',                    type: 'image' },
-    { key: 'socials', label: 'Socials (key → url)',     type: 'keyvalue' },
-    { key: 'points',  label: 'Bullet points',           type: 'array' },
-    { key: 'order',   label: 'Order',                   type: 'number' },
+    { key: 'name',       label: 'Name',              type: 'text' },
+    { key: 'role',       label: 'Role',              type: 'text' },
+    { key: 'start_date', label: 'Start Date',        type: 'text' },
+    { key: 'end_date',   label: 'End Date',          type: 'text' },
+    { key: 'brief',      label: 'Brief',             type: 'text' },
+    { key: 'website',    label: 'Website',           type: 'url' },
+    { key: 'logo_url',   label: 'Logo',              type: 'image' },
+    { key: 'socials',    label: 'Socials (key → url)', type: 'keyvalue' },
+    { key: 'points',     label: 'Bullet points',     type: 'array' },
+    { key: 'order',      label: 'Order',             type: 'number' },
   ],
   education: [
     { key: 'institution',    label: 'School name',     type: 'text' },
@@ -47,7 +48,7 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'degree',         label: 'Degree',          type: 'text' },
     { key: 'start_date',     label: 'Start Date',      type: 'text' },
     { key: 'end_date',       label: 'End Date',        type: 'text' },
-    { key: 'abroad_program', label: 'Abroad program',  type: 'text' },
+    { key: 'description',    label: 'Description',     type: 'textarea' },
     { key: 'website',        label: 'Website',         type: 'url' },
     { key: 'linkedin',       label: 'LinkedIn',        type: 'url' },
     { key: 'twitter',        label: 'X Account',       type: 'url' },
@@ -65,11 +66,12 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'order',   label: 'Order',            type: 'number' },
   ],
   volunteering: [
-    { key: 'name',    label: 'Name',   type: 'text' },
-    { key: 'issuer',  label: 'Issuer', type: 'text' },
-    { key: 'year',    label: 'Year',   type: 'text' },
-    { key: 'logo_url',label: 'Logo',   type: 'image' },
-    { key: 'order',   label: 'Order',  type: 'number' },
+    { key: 'reason',  label: 'Reason',       type: 'text' },
+    { key: 'role',    label: 'Role',         type: 'text' },
+    { key: 'issuer',  label: 'Organization', type: 'text' },
+    { key: 'year',    label: 'Year',         type: 'text' },
+    { key: 'logo_url',label: 'Logo',         type: 'image' },
+    { key: 'order',   label: 'Order',        type: 'number' },
   ],
   achievements: [
     { key: 'title',       label: 'Title',       type: 'text' },
@@ -353,7 +355,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'projects')     return { title: item.name as string, sub: `${item.role} · ${item.years}` }
   if (table === 'education')    return { title: item.degree as string, sub: `${item.institution} · ${item.years}` }
   if (table === 'certificates') return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
-  if (table === 'volunteering')  return { title: item.name as string, sub: `${item.issuer} · ${item.year}` }
+  if (table === 'volunteering')  return { title: item.reason as string, sub: `${item.role ?? ''} · ${item.issuer} · ${item.year}` }
   if (table === 'achievements')  return { title: item.title as string, sub: `${item.type} · ${item.year ?? ''}` }
   if (table === 'skills')       return { title: item.category as string, sub: `${item.type} · ${(item.items as string[])?.join(', ')}` }
   if (table === 'languages')         return { title: `${item.flag ?? ''} ${item.name}`, sub: item.level as string }

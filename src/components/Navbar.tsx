@@ -4,11 +4,7 @@ import { useState } from 'react'
 import type { PortfolioData } from '@/lib/types'
 import DownloadCV from '@/components/DownloadCVNoSSR'
 
-const links = [
-  { href: '#experience', label: 'Experience' },
-  { href: '#projects',   label: 'Projects' },
-  { href: '#skills',     label: 'Skills' },
-]
+const links: { href: string; label: string }[] = []
 
 export default function Navbar({ data }: { data: PortfolioData }) {
   const [open, setOpen] = useState(false)

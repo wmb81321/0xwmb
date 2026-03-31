@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { PortfolioData } from '@/lib/types'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import Hero from '@/components/sections/Hero'
 import ExperienceSection from '@/components/sections/Experience'
 import ProjectsSection from '@/components/sections/Projects'
@@ -76,17 +77,15 @@ export default async function Page() {
         {/* ── Achievements ─────────────────────────────────────────── */}
         <AchievementsSection achievements={data.achievements} />
 
-        {/* ── Skills + Education / Certs / Volunteering ────────────── */}
-        <section id="skills" className="section-anchor py-20 px-6 max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-16">
-            {/* Left: Technical + Core competencies */}
-            <div className="flex flex-col gap-12">
-              <SkillsSection skills={data.skills} />
-            </div>
+        {/* ── Education ────────────────────────────────────────────── */}
+        <section className="py-10 px-6 max-w-6xl mx-auto">
+          <EducationSection education={data.education} />
+        </section>
 
-            {/* Right: Education + Credentials + Volunteering */}
-            <div className="flex flex-col gap-12">
-              <EducationSection education={data.education} />
+        {/* ── Certification + Volunteering (side by side, below Education) ── */}
+        {(data.certificates.length > 0 || data.volunteering.length > 0) && (
+          <section className="py-10 px-6 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-10">
               {data.certificates.length > 0 && (
                 <CertificatesSection certificates={data.certificates} />
               )}
@@ -94,18 +93,17 @@ export default async function Page() {
                 <VolunteeringSection volunteering={data.volunteering} />
               )}
             </div>
-          </div>
+          </section>
+        )}
+
+        {/* ── Skills ───────────────────────────────────────────────── */}
+        <section id="skills" className="section-anchor py-10 px-6 max-w-6xl mx-auto">
+          <SkillsSection skills={data.skills} />
         </section>
 
       </main>
 
-      {/* ── Footer ───────────────────────────────────────────────── */}
-      <footer className="py-6 px-6 border-t border-outline-variant/20">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <span className="text-xs text-outline tracking-widest">0xwmb</span>
-          <span className="text-xs text-outline">Built on Ethereum</span>
-        </div>
-      </footer>
+      <Footer contact={data.contact} profile={data.profile} />
     </>
   )
 }

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { Education } from '@/lib/types'
 import SectionHeader from '@/components/SectionHeader'
+import WebIcon from '@/components/WebIcon'
 
 export default function EducationSection({ education }: { education: Education[] }) {
   return (
@@ -31,14 +32,16 @@ export default function EducationSection({ education }: { education: Education[]
                   <p className="text-xs text-primary-container mt-0.5">{e.field_of_study}</p>
                 )}
                 <p className="text-xs text-on-surface-variant mt-0.5">{e.institution}</p>
-                {e.abroad_program && (
-                  <p className="text-xs text-outline mt-1">{e.abroad_program}</p>
+                {e.description && (
+                  <p className="text-xs text-outline mt-1">{e.description}</p>
                 )}
                 {(e.website || e.linkedin || e.twitter) && (
                   <div className="flex items-center gap-3 mt-2">
                     {e.website && (
                       <a href={e.website} target="_blank" rel="noopener noreferrer"
-                        className="text-xs text-outline hover:text-primary-container transition-colors">↗</a>
+                        className="text-outline hover:text-primary-container transition-colors">
+                        <WebIcon size={12} />
+                      </a>
                     )}
                     {e.linkedin && (
                       <a href={e.linkedin} target="_blank" rel="noopener noreferrer">

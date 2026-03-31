@@ -24,7 +24,9 @@ export interface Project {
   id: number
   name: string
   role: string
-  years: string
+  years?: string
+  start_date?: string
+  end_date?: string
   brief: string
   points: string[]
   website: string
@@ -41,7 +43,7 @@ export interface Education {
   start_date?: string
   end_date?: string
   years: string
-  abroad_program: string | null
+  description: string | null
   logo_url: string
   website?: string
   linkedin?: string
@@ -63,7 +65,8 @@ export interface Certificate {
 
 export interface Volunteering {
   id: number
-  name: string
+  reason: string
+  role?: string
   issuer: string
   year: string
   logo_url: string

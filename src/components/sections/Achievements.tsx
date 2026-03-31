@@ -1,12 +1,13 @@
 import Image from 'next/image'
 import type { Achievement } from '@/lib/types'
 import SectionHeader from '@/components/SectionHeader'
+import WebIcon from '@/components/WebIcon'
 
 export default function AchievementsSection({ achievements }: { achievements: Achievement[] }) {
   if (!achievements.length) return null
 
   return (
-    <section id="achievements" className="section-anchor py-20 px-6 max-w-6xl mx-auto">
+    <section id="achievements" className="section-anchor py-10 px-6 max-w-6xl mx-auto">
       <SectionHeader label="Achievements" />
 
       <div className="flex flex-col gap-px">
@@ -35,7 +36,9 @@ export default function AchievementsSection({ achievements }: { achievements: Ac
 
             {a.link && (
               <a href={a.link} target="_blank" rel="noopener noreferrer"
-                className="text-xs text-outline hover:text-primary-container transition-colors flex-shrink-0">↗</a>
+                className="text-outline hover:text-primary-container transition-colors flex-shrink-0">
+                <WebIcon />
+              </a>
             )}
           </div>
         ))}

@@ -43,7 +43,11 @@ function ProjectRow({ p }: { p: Project }) {
               : <span className="text-xs text-on-surface-variant truncate">{p.role}</span>
             }
           </div>
-          <span className="text-xs text-outline tracking-widest flex-shrink-0 font-mono">{p.years}</span>
+          <span className="text-xs text-outline tracking-widest flex-shrink-0 font-mono">
+            {(p.start_date || p.end_date)
+              ? `${p.start_date ?? ''}${p.end_date ? ` – ${p.end_date}` : ''}`
+              : p.years}
+          </span>
         </div>
 
         {/* Brief */}
@@ -99,7 +103,7 @@ function ProjectRow({ p }: { p: Project }) {
 
 export default function ProjectsSection({ projects }: { projects: Project[] }) {
   return (
-    <section id="projects" className="section-anchor py-20 px-6 max-w-6xl mx-auto">
+    <section id="projects" className="section-anchor py-10 px-6 max-w-6xl mx-auto">
       <SectionHeader label="PROJECTS" />
 
       <div className="flex flex-col gap-px">
