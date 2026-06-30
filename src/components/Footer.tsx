@@ -16,7 +16,7 @@ export default function Footer({ contact, profile }: { contact: Contact; profile
 
         {/* Left — identity */}
         <div className="flex flex-col gap-1">
-          <span className="text-sm font-semibold text-primary-container tracking-[0.2em] uppercase">0xwmb</span>
+          <span className="text-sm font-semibold text-primary-container tracking-[0.2em] uppercase">0xwomb</span>
           <span className="text-xs text-on-surface-variant">{profile.name}</span>
           <span className="text-xs text-outline">{profile.title}</span>
         </div>

@@ -482,7 +482,7 @@ export default function AdminDashboard({ initialData }: { initialData: Partial<P
     <div className="min-h-screen bg-bg text-text">
       <div className="max-w-3xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="font-mono text-accent text-lg tracking-wide">0xwmb / admin</h1>
+          <h1 className="font-mono text-accent text-lg tracking-wide">0xwomb / admin</h1>
           <div className="flex gap-4">
             <a href="/" className="text-xs text-text-dim hover:text-text transition-colors">← View site</a>
             <button onClick={handleLogout} className="text-xs text-red-400 hover:text-red-300 transition-colors">Logout</button>
