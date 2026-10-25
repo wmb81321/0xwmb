@@ -12,7 +12,7 @@ export const AREA_TABS: Record<string, TabDef> = {
   Degrees: { table: 'education' },
   'Career tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'job' }, defaults: { domain: 'job' } },
   'Money tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'in', val: ['money', 'debt'] }, defaults: { domain: 'money' } },
-  'Tax deadlines': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'tax' }, defaults: { domain: 'tax' } },
+  'Tax deadlines': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'tax' }, defaults: { domain: 'tax', priority: 'high' } },
   'Pension & cesantías': { table: 'personal_affiliations', filter: { col: 'kind', op: 'neq', val: 'eps' }, defaults: { kind: 'pension' } },
   'Social security tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'pension' }, defaults: { domain: 'pension' } },
   'Company tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'entity' }, defaults: { domain: 'entity' } },
@@ -24,6 +24,8 @@ export const AREA_TABS: Record<string, TabDef> = {
   'Social security documents': { table: 'personal_documents', filter: { col: 'area', op: 'eq', val: 'social' }, defaults: { area: 'social' } },
   'Company documents': { table: 'personal_documents', filter: { col: 'area', op: 'eq', val: 'companies' }, defaults: { area: 'companies' } },
   'Home documents': { table: 'personal_documents', filter: { col: 'area', op: 'eq', val: 'home' }, defaults: { area: 'home' } },
+  Appointments: { table: 'personal_health', filter: { col: 'kind', op: 'in', val: ['appointment', 'exam', 'vaccine', 'procedure', 'other'] }, defaults: { kind: 'appointment' } },
+  Medications: { table: 'personal_health', filter: { col: 'kind', op: 'eq', val: 'medication' }, defaults: { kind: 'medication', status: 'ongoing' } },
   'Needs you': { table: 'personal_inbox', filter: { col: 'status', op: 'eq', val: 'needs_you' } },
   'All mail': { table: 'personal_inbox' },
   'Digital tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'identity' }, defaults: { domain: 'identity' } },
@@ -39,7 +41,7 @@ export interface Area {
 
 export const AREAS: Area[] = [
   { slug: 'identity', name: 'Identity & Documents', blurb: 'Cédula, passport, visa, ITIN, RUT and their expiry dates.', tabs: ['ID documents', 'Document tasks'], domains: ['us'] },
-  { slug: 'health', name: 'Health', blurb: 'EPS, appointments, medications, exams and insurance.', tabs: ['EPS', 'Health documents', 'Health tasks'], domains: ['health'] },
+  { slug: 'health', name: 'Health', blurb: 'EPS, appointments, medications, exams and insurance.', tabs: ['Appointments', 'Medications', 'EPS', 'Health documents', 'Health tasks'], domains: ['health'] },
   { slug: 'career', name: 'Education & Career', blurb: 'Degrees, certificates, job applications and the CV.', tabs: ['Jobs', 'Career tasks', 'Degrees', 'Certificates', 'Career documents'], domains: ['job'] },
   { slug: 'finances', name: 'Finances', blurb: 'Accounts, payments, subscriptions and debts.', tabs: ['Payments', 'Subscriptions', 'Accounts', 'Debts', 'Money tasks', 'Finance documents'], domains: ['money', 'debt'] },
   { slug: 'taxes', name: 'Taxes', blurb: 'DIAN, RUT, declaración de renta, IRS and US filings.', tabs: ['Tax deadlines', 'Tax documents'], domains: ['tax'] },

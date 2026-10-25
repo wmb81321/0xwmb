@@ -3,7 +3,7 @@ import { debtTotals, expiringDocs, fmt, monthlyFixed, paidThisYear, todayISO, up
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const shortDate = (iso: string) => `${MONTHS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(8, 10)}`
 
-const KIND_LABEL: Record<string, string> = { subscription: 'sub', debt: 'debt', task: 'task', entity: 'entity', phone: 'line' }
+const KIND_LABEL: Record<string, string> = { subscription: 'sub', debt: 'debt', task: 'task', entity: 'entity', phone: 'line', health: 'health' }
 const AFF_LABEL: Record<string, string> = { eps: 'HEALTH · EPS', pension: 'PENSION · AFP', cesantias: 'CESANTÍAS', arl: 'ARL', caja: 'CAJA', other: 'OTHER' }
 
 function Totals({ totals, unknown, empty }: { totals: Record<string, number>; unknown: number; empty: string }) {
@@ -21,7 +21,7 @@ function Totals({ totals, unknown, empty }: { totals: Record<string, number>; un
 }
 
 export default function Overview(props: {
-  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]; pendingBills: Row[]; documents: Row[]
+  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]; pendingBills: Row[]; documents: Row[]; health: Row[]
 }) {
   const today = todayISO()
   const next = upcoming(props)

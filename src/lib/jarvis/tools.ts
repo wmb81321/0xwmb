@@ -6,7 +6,7 @@ import { debtTotals, monthlyFixed, paidThisYear, todayISO, upcoming } from '@/li
 export const JARVIS_TABLES = [
   'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_payments',
   'personal_debts', 'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities',
-  'personal_inbox', 'job_applications', 'personal_documents',
+  'personal_inbox', 'job_applications', 'personal_documents', 'personal_health',
 ] as const
 type JarvisTable = (typeof JARVIS_TABLES)[number]
 const isTable = (t: unknown): t is JarvisTable => typeof t === 'string' && (JARVIS_TABLES as readonly string[]).includes(t)
@@ -27,6 +27,7 @@ const SCHEMA: Record<JarvisTable, Record<string, string>> = {
   personal_entities: { name: 'text', legal_form: 'text', country: 'CO|US|OTHER', my_role: 'text', ownership_pct: 'number', tax_id_last4: 'text', status: 'active|dormant|dissolving|closed', next_obligation: 'text', next_obligation_due: 'date', url: 'text', notes: 'text' },
   personal_inbox: { category: 'bill|receipt|alert|person|noise|unknown', status: 'needs_you|auto_logged|forwarded|archived', notes: 'text' },
   personal_documents: { title: 'text', kind: 'cedula|passport|visa|itin|rut|license|insurance|contract|certificate|tax_return|other', area: 'identity|health|career|finances|taxes|social|companies|home|digital|people|goals', issuer: 'text', country: 'CO|US|OTHER', number_last4: 'text', issued_at: 'date', expires_at: 'date', renew_lead_days: 'int', status: 'active|renewing|pending|archived', file_path: 'text', notes: 'text' },
+  personal_health: { kind: 'appointment|exam|medication|vaccine|procedure|other', title: 'text', provider: 'text', location: 'text', scheduled_at: 'timestamp (ISO with -05:00 offset, Bogotá)', ends_on: 'date', dose: 'text', status: 'scheduled|done|cancelled|ongoing', file_path: 'text', notes: 'text' },
   job_applications: { company: 'text', position: 'text', website: 'text', application_url: 'text', description: 'text', status: 'saved|applied|interviewing|offered|rejected|withdrawn', applied_at: 'text', notes: 'text' },
 }
 const SCHEMA_TEXT = Object.entries(SCHEMA)
@@ -185,7 +186,7 @@ export async function runTool(
 
   if (name === 'get_overview') {
     const year = todayISO().slice(0, 4)
-    const [subs, debts, tasks, entities, phones, payments, pending] = await Promise.all([
+    const [subs, debts, tasks, entities, phones, payments, pending, health] = await Promise.all([
       db.from('personal_subscriptions').select('*'),
       db.from('personal_debts').select('*'),
       db.from('personal_tasks').select('*'),
@@ -193,10 +194,11 @@ export async function runTool(
       db.from('personal_phone_lines').select('*'),
       db.from('personal_payments').select('paid_at, amount, currency, status').eq('status', 'paid').gte('paid_at', `${year}-01-01`),
       db.from('personal_payments').select('provider, amount, currency, due_at, status').eq('status', 'pending'),
+      db.from('personal_health').select('title, provider, scheduled_at, status').eq('status', 'scheduled'),
     ])
     const data = {
       subscriptions: subs.data ?? [], debts: debts.data ?? [], tasks: tasks.data ?? [],
-      entities: entities.data ?? [], phones: phones.data ?? [], pendingBills: pending.data ?? [],
+      entities: entities.data ?? [], phones: phones.data ?? [], pendingBills: pending.data ?? [], health: health.data ?? [],
     }
     return {
       content: JSON.stringify({
