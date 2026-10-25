@@ -50,3 +50,9 @@ next-env.d.ts
 
 # testing
 /coverage
+
+# private — tailored CVs / job hunt (never push to public repo)
+/applications/
+# private personal documents (never commit: public repo)
+/docs/itin/
+/WILLIAM_MARTINEZ_BOLANOS_*.pdf
