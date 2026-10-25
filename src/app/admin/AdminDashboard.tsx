@@ -5,6 +5,7 @@ import { upsertRecord, deleteRecord, uploadLogo, uploadPrivateDoc, signedDocUrl 
 import { createClient } from '@/lib/supabase'
 import type { PortfolioData } from '@/lib/types'
 import { SITE_TABS } from './tabs'
+import { AREA_TABS, applyFilter } from './areas'
 
 // ─── Field config ────────────────────────────────────────────────────────────
 
@@ -567,7 +568,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   return { title: JSON.stringify(item), sub: '' }
 }
 
-function ListEditor({ table, initialItems }: { table: string; initialItems: Record<string, unknown>[] }) {
+function ListEditor({ table, initialItems, defaults = {} }: { table: string; initialItems: Record<string, unknown>[]; defaults?: Record<string, unknown> }) {
   const [list, setList] = useState(initialItems)
   const [editing, setEditing] = useState<number | null>(null) // -1 = new
 
@@ -633,7 +634,7 @@ function ListEditor({ table, initialItems }: { table: string; initialItems: Reco
         </button>
         {editing === -1 && (
           <div className="px-4 py-4 border-t border-border bg-bg">
-            <RecordForm table={table} initial={{}}
+            <RecordForm table={table} initial={defaults}
               onSave={(s) => handleSaved(s, null)} onCancel={() => setEditing(null)} />
           </div>
         )}
@@ -656,10 +657,11 @@ export default function AdminDashboard({ initialData = {}, tabs = SITE_TABS, tit
 
   const fetchTab = useCallback(async (t: string) => {
     setLoading(true)
-    const table = TABLE_MAP[t]
-    const isList = LIST_TABS.has(t)
+    const def = AREA_TABS[t]
+    const table = def?.table ?? TABLE_MAP[t]
+    const isList = def ? true : LIST_TABS.has(t)
     try {
-      const q = supabase.from(table).select('*')
+      const q = applyFilter(supabase.from(table).select('*'), def?.filter)
       const { data } = isList ? await q.order('order') : await q.single()
       setTabData(data)
     } finally {
@@ -676,15 +678,18 @@ export default function AdminDashboard({ initialData = {}, tabs = SITE_TABS, tit
   useEffect(() => { fetchTab(tabs[0]) }, [fetchTab, tabs])
 
 
-  const table = TABLE_MAP[tab]
-  const isList = LIST_TABS.has(tab)
+  const def = AREA_TABS[tab]
+  const table = def?.table ?? TABLE_MAP[tab]
+  const isList = def ? true : LIST_TABS.has(tab)
 
   return (
     <div>
       <div className="max-w-3xl">
-        <h1 className="flex items-center gap-4 text-4xl font-semibold tracking-tight text-primary mb-6">
-          <span className="data-pulse" />{title}
-        </h1>
+        {title && (
+          <h1 className="flex items-center gap-4 text-4xl font-semibold tracking-tight text-primary mb-6">
+            <span className="data-pulse" />{title}
+          </h1>
+        )}
 
         <div className="flex flex-wrap gap-0.5 mb-8">
           {tabs.length > 1 && tabs.map((t) => (
@@ -702,7 +707,7 @@ export default function AdminDashboard({ initialData = {}, tabs = SITE_TABS, tit
           {loading ? (
             <p className="text-xs font-mono text-muted animate-pulse">Loading…</p>
           ) : isList ? (
-            <ListEditor key={tab} table={table} initialItems={(tabData as Record<string, unknown>[]) ?? []} />
+            <ListEditor key={tab} table={table} defaults={def?.defaults} initialItems={(tabData as Record<string, unknown>[]) ?? []} />
           ) : (
             <RecordForm key={tab} table={table} initial={(tabData as Record<string, unknown>) ?? {}} onSave={() => {}} />
           )}

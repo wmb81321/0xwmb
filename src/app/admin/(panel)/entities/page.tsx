@@ -1,6 +1,5 @@
-import AdminDashboard from '../../AdminDashboard'
-import { ENTITY_TABS } from '../../tabs'
+import { redirect } from 'next/navigation'
 
 export default function EntitiesPage() {
-  return <AdminDashboard tabs={ENTITY_TABS} title="Entities" />
+  redirect('/admin/areas/companies')
 }
