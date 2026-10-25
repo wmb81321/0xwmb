@@ -45,7 +45,7 @@ const money = (amount: unknown, currency: unknown) => {
 }
 
 export function upcoming(
-  data: { subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[] },
+  data: { subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; pendingBills?: Row[] },
   days = 30,
   from = todayISO(),
 ): UpcomingItem[] {
@@ -62,6 +62,11 @@ export function upcoming(
     if (d.status === 'paid' || !num(d.due_day)) continue
     const date = nextMonthlyDate(num(d.due_day)!, from)
     if (inRange(date)) items.push({ date, title: `${d.creditor} payment`, kind: 'debt', amount: money(d.min_payment, d.currency) })
+  }
+  for (const b of data.pendingBills ?? []) {
+    const date = b.due_at as string | null
+    // Unpaid bills surface by their last day to pay; overdue ones are pinned to today.
+    if (date && date <= until) items.push({ date: date < from ? from : date, title: `${b.provider} bill due`, kind: 'debt', amount: money(b.amount, b.currency), flag: date < from ? 'OVERDUE' : 'UNPAID' })
   }
   for (const t of data.tasks) {
     if (t.status === 'done' || !t.due_at) continue
@@ -123,7 +128,7 @@ export function paidThisYear(payments: Row[], from = todayISO()) {
   const totals: Record<string, number> = {}
   let count = 0
   for (const p of payments) {
-    if ((p.paid_at as string) < start) continue
+    if (p.status === 'pending' || !p.paid_at || (p.paid_at as string) < start) continue
     const a = num(p.amount)
     if (a === null) continue
     const c = (p.currency as string) || '?'
