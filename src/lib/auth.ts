@@ -15,9 +15,13 @@ export async function getRole(): Promise<Role | null> {
   return (data?.role as Role) ?? null
 }
 
-// Throws unless the caller has one of the given roles. Use at the top of every server action.
+// Throws unless the caller has one of the given roles and passed 2FA (aal2) this session.
+// Use at the top of every server action.
 export async function requireRole(roles: Role[]): Promise<Role> {
   const role = await getRole()
   if (!role || !roles.includes(role)) throw new Error('Unauthorized')
+  const supabase = await createServerSupabaseClient()
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  if (aal?.currentLevel !== 'aal2') throw new Error('Second factor required')
   return role
 }

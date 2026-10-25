@@ -9,7 +9,10 @@ const admin = () => createAdminSupabaseClient()
 const WRITABLE_TABLES = new Set([
   'profile', 'experiences', 'projects', 'education', 'certificates', 'volunteering',
   'achievements', 'skills', 'languages', 'contact', 'job_applications',
+  'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_debts',
+  'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities',
 ])
+const isPublicTable = (table: string) => !table.startsWith('personal_')
 
 const IMAGE_TYPES: Record<string, string> = {
   'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/svg+xml': 'svg', 'image/gif': 'gif',
@@ -42,8 +45,8 @@ export async function upsertRecord(table: string, data: Record<string, unknown>)
   assertWritable(table)
   const { error } = await admin().from(table).upsert(data)
   if (error) throw new Error(error.message)
-  revalidatePath('/')
-  revalidatePath('/admin')
+  if (isPublicTable(table)) revalidatePath('/')
+  revalidatePath('/admin', 'layout')
 }
 
 export async function deleteRecord(table: string, id: number) {
@@ -51,6 +54,6 @@ export async function deleteRecord(table: string, id: number) {
   assertWritable(table)
   const { error } = await admin().from(table).delete().eq('id', id)
   if (error) throw new Error(error.message)
-  revalidatePath('/')
-  revalidatePath('/admin')
+  if (isPublicTable(table)) revalidatePath('/')
+  revalidatePath('/admin', 'layout')
 }
