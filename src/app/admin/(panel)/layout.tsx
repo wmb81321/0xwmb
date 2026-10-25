@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { isStrongSession } from '@/lib/auth'
 import AdminShell from './AdminShell'
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
@@ -15,9 +16,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     .maybeSingle()
   if (!roleRow) redirect('/admin/login?error=unauthorized')
 
-  // Every panel page requires the second factor (TOTP) for this session.
-  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-  if (aal?.currentLevel !== 'aal2') redirect('/admin/login/mfa')
+  // Every panel page requires a strong session: passkey sign-in, or password/OAuth + TOTP (recovery).
+  if (!(await isStrongSession(supabase))) redirect('/admin/login/mfa')
 
   return (
     <AdminShell email={user.email ?? ''} role={roleRow.role}>

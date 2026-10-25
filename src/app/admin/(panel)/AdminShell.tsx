@@ -14,6 +14,7 @@ const NAV = [
       { href: '/admin/jarvis', label: 'Jarvis', short: 'JARVIS' },
     ],
   },
+  { group: 'SYSTEM', items: [{ href: '/admin/security', label: 'Security', short: 'KEYS' }] },
 ]
 const ALL = NAV.flatMap((g) => g.items)
 
