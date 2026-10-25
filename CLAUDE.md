@@ -120,6 +120,12 @@ outline-variant:          #32434d   ← ghost borders (use at 15% opacity)
   every server action calls `requireRole()` from `src/lib/auth.ts` and checks the `WRITABLE_TABLES` allowlist.
   New tables must be added to `WRITABLE_TABLES` and get a `(select private.is_owner())` (or `has_role`) RLS policy.
 - Supabase project: `nfzppyfqtcvwwokrrvca` ("Portafolio"). Apply migrations via the Supabase MCP.
+- Admin panel = route group `src/app/admin/(panel)/` (layout requires role + TOTP aal2; `/admin/login/mfa` enrolls/verifies).
+  Sections: `/admin/site` (public CV), `/admin/personal`, `/admin/entities`, `/admin/inbox`, `/admin/jarvis`.
+- Private tables are `public.personal_*` with owner-only RLS and no anon grants. They reuse the config-driven editor:
+  add FIELDS + TABLE_MAP + LIST_TABS + cardSummary in `AdminDashboard.tsx`, the tab in `src/app/admin/tabs.ts`,
+  and the table in `WRITABLE_TABLES` (`actions.ts`). Never store secrets: last-4 + password-manager links only.
+  Personal seed data is applied directly to the DB and is NOT committed (public repo).
 
 ### Adding a new admin section
 Config-driven — all changes go in `AdminDashboard.tsx`:

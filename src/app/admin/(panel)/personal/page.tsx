@@ -1,5 +1,6 @@
-import ComingSoon from '../ComingSoon'
+import AdminDashboard from '../../AdminDashboard'
+import { PERSONAL_TABS } from '../../tabs'
 
-export default function Page() {
-  return <ComingSoon title="Personal overview" phase="PHASE 1" items={['Social security — EPS Sanitas, Skandia, cesantías (find)', 'Accounts & cards — CO, US, exchanges', 'Subscriptions & bills — billing day, renewal, cancel link', 'Debts — ICETEX and others, payoff view', 'Phone lines — which logins get codes', 'Identities — which email and phone each service uses', 'Next 30 days']} />
+export default function PersonalPage() {
+  return <AdminDashboard tabs={PERSONAL_TABS} title="Personal" />
 }

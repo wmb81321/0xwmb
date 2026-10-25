@@ -4,10 +4,11 @@ import Image from 'next/image'
 import { upsertRecord, deleteRecord, uploadLogo } from './actions'
 import { createClient } from '@/lib/supabase'
 import type { PortfolioData } from '@/lib/types'
+import { SITE_TABS } from './tabs'
 
 // ─── Field config ────────────────────────────────────────────────────────────
 
-type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'image' | 'array' | 'keyvalue' | 'select'
+type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'date' | 'image' | 'array' | 'keyvalue' | 'select'
 interface FieldDef { key: string; label: string; type: FieldType; options?: string[] }
 
 const FIELDS: Record<string, FieldDef[]> = {
@@ -114,6 +115,121 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'notes',           label: 'My notes',         type: 'textarea' },
     { key: 'order',           label: 'Order',            type: 'number' },
   ],
+
+  // ─── Personal (private, owner-only) ───
+  personal_tasks: [
+    { key: 'title',    label: 'Task',     type: 'text' },
+    { key: 'status',   label: 'Status',   type: 'select', options: ['open', 'snoozed', 'done'] },
+    { key: 'priority', label: 'Priority', type: 'select', options: ['high', 'normal', 'low'] },
+    { key: 'domain',   label: 'Area',     type: 'select', options: ['personal', 'health', 'pension', 'money', 'debt', 'entity', 'us', 'identity', 'other'] },
+    { key: 'due_at',   label: 'Due',      type: 'date' },
+    { key: 'steps',    label: 'Steps',    type: 'array' },
+    { key: 'notes',    label: 'Notes',    type: 'textarea' },
+    { key: 'order',    label: 'Order',    type: 'number' },
+  ],
+  personal_affiliations: [
+    { key: 'kind',             label: 'Type',             type: 'select', options: ['eps', 'pension', 'cesantias', 'arl', 'caja', 'other'] },
+    { key: 'entity',           label: 'Entity',           type: 'text' },
+    { key: 'regime',           label: 'Regime / fund',    type: 'text' },
+    { key: 'status',           label: 'Status',           type: 'select', options: ['active', 'inactive', 'unknown'] },
+    { key: 'affiliate_last4',  label: 'ID (last 4 only)', type: 'text' },
+    { key: 'since',            label: 'Since',            type: 'date' },
+    { key: 'last_verified_at', label: 'Last verified',    type: 'date' },
+    { key: 'next_action',      label: 'Next action',      type: 'text' },
+    { key: 'url',              label: 'Portal',           type: 'url' },
+    { key: 'notes',            label: 'Notes',            type: 'textarea' },
+    { key: 'order',            label: 'Order',            type: 'number' },
+  ],
+  personal_accounts: [
+    { key: 'institution', label: 'Institution',          type: 'text' },
+    { key: 'kind',        label: 'Type',                 type: 'select', options: ['bank', 'exchange', 'fintech', 'card', 'wallet', 'broker', 'other'] },
+    { key: 'country',     label: 'Country',              type: 'select', options: ['CO', 'US', 'GLOBAL'] },
+    { key: 'currency',    label: 'Currency',             type: 'text' },
+    { key: 'alias',       label: 'Alias',                type: 'text' },
+    { key: 'last4',       label: 'Last 4 digits only',   type: 'text' },
+    { key: 'status',      label: 'Status',               type: 'select', options: ['active', 'pending', 'closed'] },
+    { key: 'login_email', label: 'Login email',          type: 'text' },
+    { key: 'vault_ref',   label: 'Password manager link',type: 'url' },
+    { key: 'url',         label: 'Website',              type: 'url' },
+    { key: 'notes',       label: 'Notes',                type: 'textarea' },
+    { key: 'order',       label: 'Order',                type: 'number' },
+  ],
+  personal_subscriptions: [
+    { key: 'provider',     label: 'Provider',        type: 'text' },
+    { key: 'category',     label: 'Category',        type: 'select', options: ['telecom', 'internet', 'entertainment', 'software', 'utility', 'insurance', 'finance', 'other'] },
+    { key: 'amount',       label: 'Amount',          type: 'number' },
+    { key: 'currency',     label: 'Currency',        type: 'select', options: ['COP', 'USD', 'EUR', 'USDC'] },
+    { key: 'cadence',      label: 'Cadence',         type: 'select', options: ['monthly', 'yearly', 'quarterly', 'weekly'] },
+    { key: 'billing_day',  label: 'Billing day',     type: 'number' },
+    { key: 'next_renewal', label: 'Next renewal',    type: 'date' },
+    { key: 'paid_with',    label: 'Paid with',       type: 'text' },
+    { key: 'status',       label: 'Status',          type: 'select', options: ['active', 'trial', 'paused', 'cancelled'] },
+    { key: 'email_alias',  label: 'Billing email',   type: 'text' },
+    { key: 'cancel_url',   label: 'Cancel link',     type: 'url' },
+    { key: 'notes',        label: 'Notes',           type: 'textarea' },
+    { key: 'order',        label: 'Order',           type: 'number' },
+  ],
+  personal_debts: [
+    { key: 'creditor',    label: 'Creditor',        type: 'text' },
+    { key: 'kind',        label: 'Type',            type: 'select', options: ['student_loan', 'credit_card', 'personal', 'mortgage', 'other'] },
+    { key: 'currency',    label: 'Currency',        type: 'select', options: ['COP', 'USD'] },
+    { key: 'principal',   label: 'Original amount', type: 'number' },
+    { key: 'balance',     label: 'Balance',         type: 'number' },
+    { key: 'rate',        label: 'Rate (e.g. IPC+7, 28% EA)', type: 'text' },
+    { key: 'min_payment', label: 'Monthly payment', type: 'number' },
+    { key: 'due_day',     label: 'Due day',         type: 'number' },
+    { key: 'phase',       label: 'Phase',           type: 'text' },
+    { key: 'status',      label: 'Status',          type: 'select', options: ['active', 'negotiating', 'paid', 'defaulted'] },
+    { key: 'portal_url',  label: 'Portal',          type: 'url' },
+    { key: 'notes',       label: 'Notes',           type: 'textarea' },
+    { key: 'order',       label: 'Order',           type: 'number' },
+  ],
+  personal_phone_lines: [
+    { key: 'label',        label: 'Label',            type: 'text' },
+    { key: 'country',      label: 'Country',          type: 'select', options: ['CO', 'US', 'OTHER'] },
+    { key: 'number_e164',  label: 'Number (+57…)',    type: 'text' },
+    { key: 'carrier',      label: 'Carrier',          type: 'text' },
+    { key: 'plan_kind',    label: 'Plan',             type: 'select', options: ['prepaid', 'postpaid', 'esim', 'voip'] },
+    { key: 'billing_day',  label: 'Billing day',      type: 'number' },
+    { key: 'expires_at',   label: 'Expires / renews', type: 'date' },
+    { key: 'used_for_2fa', label: 'Receives 2FA codes for', type: 'array' },
+    { key: 'status',       label: 'Status',           type: 'select', options: ['active', 'suspended', 'cancelled'] },
+    { key: 'notes',        label: 'Notes',            type: 'textarea' },
+    { key: 'order',        label: 'Order',            type: 'number' },
+  ],
+  personal_emails: [
+    { key: 'address',    label: 'Address',        type: 'text' },
+    { key: 'role',       label: 'Role',           type: 'select', options: ['vault', 'private', 'public', 'legacy', 'domain'] },
+    { key: 'provider',   label: 'Provider',       type: 'text' },
+    { key: 'mfa_method', label: '2FA method',     type: 'text' },
+    { key: 'recovery',   label: 'Recovery (email/phone)', type: 'text' },
+    { key: 'notes',      label: 'Notes',          type: 'textarea' },
+    { key: 'order',      label: 'Order',          type: 'number' },
+  ],
+  personal_account_links: [
+    { key: 'service',   label: 'Service',               type: 'text' },
+    { key: 'category',  label: 'Category',              type: 'text' },
+    { key: 'email',     label: 'Email used',            type: 'text' },
+    { key: 'phone',     label: 'Phone for codes',       type: 'text' },
+    { key: 'vault_ref', label: 'Password manager link', type: 'url' },
+    { key: 'status',    label: 'Status',                type: 'select', options: ['review', 'ok', 'move_to_vault', 'close'] },
+    { key: 'notes',     label: 'Notes',                 type: 'textarea' },
+    { key: 'order',     label: 'Order',                 type: 'number' },
+  ],
+  personal_entities: [
+    { key: 'name',                label: 'Name',             type: 'text' },
+    { key: 'legal_form',          label: 'Legal form',       type: 'text' },
+    { key: 'country',             label: 'Country',          type: 'select', options: ['CO', 'US', 'OTHER'] },
+    { key: 'my_role',             label: 'My role',          type: 'text' },
+    { key: 'ownership_pct',       label: 'Ownership %',      type: 'number' },
+    { key: 'tax_id_last4',        label: 'NIT / EIN (last 4)', type: 'text' },
+    { key: 'status',              label: 'Status',           type: 'select', options: ['active', 'dormant', 'dissolving', 'closed'] },
+    { key: 'next_obligation',     label: 'Next obligation',  type: 'text' },
+    { key: 'next_obligation_due', label: 'Due',              type: 'date' },
+    { key: 'url',                 label: 'Website',          type: 'url' },
+    { key: 'notes',               label: 'Notes',            type: 'textarea' },
+    { key: 'order',               label: 'Order',            type: 'number' },
+  ],
 }
 
 const TABLE_MAP: Record<string, string> = {
@@ -121,9 +237,14 @@ const TABLE_MAP: Record<string, string> = {
   Education: 'education', Certificates: 'certificates', Volunteering: 'volunteering',
   Achievements: 'achievements',
   Skills: 'skills', Languages: 'languages', Contact: 'contact', Jobs: 'job_applications',
+  Tasks: 'personal_tasks', 'Social security': 'personal_affiliations', Accounts: 'personal_accounts',
+  Subscriptions: 'personal_subscriptions', Debts: 'personal_debts', 'Phone lines': 'personal_phone_lines',
+  Emails: 'personal_emails', Identities: 'personal_account_links', Entities: 'personal_entities',
 }
 
-const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs'])
+const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs',
+  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities'])
+
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
@@ -297,6 +418,7 @@ function RecordForm({ table, initial, onSave, onCancel }: {
           <div key={f.key}>
             <label className={labelCls}>{f.label}</label>
             <select value={(val as string) ?? ''} onChange={e => set(f.key, e.target.value)} className={inputCls}>
+              {!val && <option value="">—</option>}
               {f.options?.map(o => <option key={o} value={o}>{o}</option>)}
             </select>
           </div>
@@ -323,9 +445,15 @@ function RecordForm({ table, initial, onSave, onCancel }: {
         return (
           <div key={f.key}>
             <label className={labelCls}>{f.label}</label>
-            <input type={f.type === 'number' ? 'number' : 'text'}
+            <input type={f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : 'text'}
               value={(val as string | number) ?? ''}
-              onChange={e => set(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value)}
+              onChange={e => {
+                const raw = e.target.value
+                // Empty number/date fields must be null, not '' or 0, for numeric/date columns.
+                if (f.type === 'number') set(f.key, raw === '' ? null : Number(raw))
+                else if (f.type === 'date') set(f.key, raw === '' ? null : raw)
+                else set(f.key, raw)
+              }}
               className={inputCls} />
           </div>
         )
@@ -359,6 +487,16 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'skills')       return { title: item.category as string, sub: `${item.type} · ${(item.items as string[])?.join(', ')}` }
   if (table === 'languages')         return { title: `${item.flag ?? ''} ${item.name}`, sub: item.level as string }
   if (table === 'job_applications')  return { title: `${item.position}`, sub: `${item.company} · ${item.status}` }
+  const j = (...xs: unknown[]) => xs.filter((x) => x !== null && x !== undefined && x !== '').join(' · ')
+  if (table === 'personal_tasks')         return { title: `${item.status === 'done' ? '✓ ' : ''}${item.title}`, sub: j(item.priority, item.domain, item.due_at) }
+  if (table === 'personal_affiliations')  return { title: (item.entity as string) || `${item.kind} — unknown`, sub: j(item.kind, item.regime, item.status, item.next_action) }
+  if (table === 'personal_accounts')      return { title: item.institution as string, sub: j(item.kind, item.country, item.currency, item.last4 && `••${item.last4}`, item.status) }
+  if (table === 'personal_subscriptions') return { title: item.provider as string, sub: j(item.amount && `${item.amount} ${item.currency}`, item.cadence, item.billing_day && `day ${item.billing_day}`, item.status) }
+  if (table === 'personal_debts')         return { title: item.creditor as string, sub: j(item.kind, item.balance && `balance ${item.balance} ${item.currency}`, item.min_payment && `${item.min_payment}/mo`, item.status) }
+  if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
+  if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
+  if (table === 'personal_account_links') return { title: item.service as string, sub: j(item.email, item.phone, item.status) }
+  if (table === 'personal_entities')      return { title: item.name as string, sub: j(item.legal_form, item.country, item.my_role, item.next_obligation) }
   return { title: JSON.stringify(item), sub: '' }
 }
 
@@ -439,11 +577,13 @@ function ListEditor({ table, initialItems }: { table: string; initialItems: Reco
 
 // ─── Dashboard shell ─────────────────────────────────────────────────────────
 
-const TABS = ['Profile', 'Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Contact', 'Jobs']
-
-export default function AdminDashboard({ initialData }: { initialData: Partial<PortfolioData> }) {
-  const [tab, setTab] = useState('Profile')
-  const [tabData, setTabData] = useState<unknown>(initialData.profile)
+export default function AdminDashboard({ initialData = {}, tabs = SITE_TABS, title = 'Site & CV' }: {
+  initialData?: Partial<PortfolioData>
+  tabs?: string[]
+  title?: string
+}) {
+  const [tab, setTab] = useState(tabs[0])
+  const [tabData, setTabData] = useState<unknown>(tabs[0] === 'Profile' ? initialData.profile : undefined)
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
 
@@ -466,7 +606,7 @@ export default function AdminDashboard({ initialData }: { initialData: Partial<P
   }
 
   // Fetch initial tab data fresh on mount too
-  useEffect(() => { fetchTab('Profile') }, [fetchTab])
+  useEffect(() => { fetchTab(tabs[0]) }, [fetchTab, tabs])
 
 
   const table = TABLE_MAP[tab]
@@ -476,11 +616,11 @@ export default function AdminDashboard({ initialData }: { initialData: Partial<P
     <div>
       <div className="max-w-3xl">
         <h1 className="flex items-center gap-4 text-4xl font-semibold tracking-tight text-primary mb-6">
-          <span className="data-pulse" />Site &amp; CV
+          <span className="data-pulse" />{title}
         </h1>
 
         <div className="flex flex-wrap gap-0.5 mb-8">
-          {TABS.map((t) => (
+          {tabs.length > 1 && tabs.map((t) => (
             <button key={t} onClick={() => switchTab(t)}
               className={`text-xs font-mono px-3 py-2 transition-colors ${
                 tab === t ? 'bg-surface-container-high text-primary shadow-[inset_0_-2px_0_#00D1FF]' : 'bg-surface-container-low text-on-surface-variant hover:text-primary'
