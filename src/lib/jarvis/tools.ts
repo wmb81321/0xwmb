@@ -6,7 +6,7 @@ import { debtTotals, monthlyFixed, paidThisYear, todayISO, upcoming } from '@/li
 export const JARVIS_TABLES = [
   'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_payments',
   'personal_debts', 'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities',
-  'personal_inbox',
+  'personal_inbox', 'job_applications',
 ] as const
 type JarvisTable = (typeof JARVIS_TABLES)[number]
 const isTable = (t: unknown): t is JarvisTable => typeof t === 'string' && (JARVIS_TABLES as readonly string[]).includes(t)
@@ -24,8 +24,9 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
       type: 'object',
       properties: {
         table: { type: 'string', enum: [...JARVIS_TABLES] },
+        columns: { type: 'array', items: { type: 'string' }, description: 'Only these columns (recommended, saves tokens). Omit for all.' },
         filters: { type: 'object', description: 'Exact-match column filters, e.g. {"status":"active"}', additionalProperties: true },
-        limit: { type: 'integer', minimum: 1, maximum: 200 },
+        limit: { type: 'integer', minimum: 1, maximum: 200, description: 'Default 25' },
       },
       required: ['table'],
       additionalProperties: false,
@@ -68,7 +69,9 @@ export async function runTool(
 
   if (name === 'query_records') {
     if (!isTable(input.table)) return { content: 'Unknown table', isError: true }
-    let q = db.from(input.table).select('*').limit(Math.min(Number(input.limit) || 50, 200))
+    const cols = Array.isArray(input.columns) ? (input.columns as unknown[]).filter((c): c is string => typeof c === 'string' && /^[a-z_0-9]+$/.test(c)) : []
+    let q = db.from(input.table).select(cols.length ? ['id', ...cols.filter((c) => c !== 'id')].join(',') : '*')
+      .limit(Math.min(Number(input.limit) || 25, 200))
     const filters = (input.filters ?? {}) as Record<string, unknown>
     for (const [k, v] of Object.entries(filters)) {
       if (!/^[a-z_]+$/.test(k)) return { content: `Bad filter column: ${k}`, isError: true }
@@ -76,7 +79,11 @@ export async function runTool(
     }
     const { data, error } = await q
     if (error) return { content: error.message, isError: true }
-    return { content: JSON.stringify(data) }
+    // Drop null/empty fields and timestamps to keep tool results small.
+    const slim = (data as unknown as Record<string, unknown>[]).map((row) => Object.fromEntries(
+      Object.entries(row).filter(([k, v]) => v !== null && v !== '' && k !== 'created_at' && k !== 'order' && !(Array.isArray(v) && !v.length)),
+    ))
+    return { content: JSON.stringify(slim) }
   }
 
   if (name === 'propose_change') {

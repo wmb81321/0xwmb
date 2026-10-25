@@ -121,7 +121,7 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'title',    label: 'Task',     type: 'text' },
     { key: 'status',   label: 'Status',   type: 'select', options: ['open', 'snoozed', 'done'] },
     { key: 'priority', label: 'Priority', type: 'select', options: ['high', 'normal', 'low'] },
-    { key: 'domain',   label: 'Area',     type: 'select', options: ['personal', 'health', 'pension', 'money', 'debt', 'entity', 'us', 'identity', 'other'] },
+    { key: 'domain',   label: 'Area',     type: 'select', options: ['personal', 'health', 'pension', 'money', 'debt', 'entity', 'tax', 'job', 'us', 'identity', 'other'] },
     { key: 'due_at',   label: 'Due',      type: 'date' },
     { key: 'steps',    label: 'Steps',    type: 'array' },
     { key: 'notes',    label: 'Notes',    type: 'textarea' },
