@@ -2,7 +2,8 @@ import { after, NextResponse, type NextRequest } from 'next/server'
 import type Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import { answerCallback, downloadFile, editMessage, sendMessage, sendTyping } from '@/lib/telegram'
-import { runJarvis } from '@/lib/jarvis/agent'
+import { logUsage, runJarvis } from '@/lib/jarvis/agent'
+import { routeMessage } from '@/lib/jarvis/router'
 import { applyProposal, rejectProposal } from '@/lib/jarvis/tools'
 
 export const maxDuration = 300
@@ -91,7 +92,15 @@ async function handle(update: TgUpdate) {
   if (text) blocks.push({ type: 'text', text })
   if (!blocks.length) return
 
-  const { text: reply, proposals } = await runJarvis(chatId, blocks, logText)
+  // Jev decides how much model this needs; pure small talk never reaches Claude.
+  const decision = await routeMessage(text, Boolean(file))
+  if (decision.route === 'smalltalk') {
+    await logUsage({ chat_id: chatId, route: 'smalltalk', route_confidence: decision.confidence, topic: decision.topic, jev_tokens: decision.jevTokens })
+    await sendMessage(chatId, '👍')
+    return
+  }
+
+  const { text: reply, proposals } = await runJarvis(chatId, blocks, logText, decision)
   await sendMessage(chatId, reply)
   for (const p of proposals) {
     await sendMessage(chatId, `📝 ${p.summary}`, [[

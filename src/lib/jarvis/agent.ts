@@ -2,8 +2,30 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import { todayISO } from '@/lib/overview'
 import { TOOLS, runTool, type ProposedAction } from './tools'
+import type { RouteDecision } from './router'
 
-const MODEL = 'claude-opus-5-5'
+// Route → model. Simple turns run on Haiku (~40× cheaper); documents, multi-item and unclear turns on Opus.
+const MODELS = { simple: 'claude-haiku-5-5', complex: 'claude-opus-5-5' } as const
+// USD per million tokens: input, output, cache read, cache write (5-minute TTL = 1.25× input).
+const PRICES: Record<string, { in: number; out: number; read: number; write: number }> = {
+  'claude-haiku-5-5': { in: 0.1, out: 0.5, read: 0.01, write: 0.125 },
+  'claude-opus-5-5': { in: 4, out: 20, read: 0.2, write: 5 },
+}
+// Where each Jev topic usually lives; sent as a hint in the user turn.
+const TOPIC_HINT: Record<string, string> = {
+  payment: 'personal_payments (link subscription_id/debt_id when it matches)',
+  invoice: 'personal_payments with invoice_path',
+  subscription: 'personal_subscriptions (+ personal_payments for past charges)',
+  debt: 'personal_debts (+ personal_payments for installments)',
+  account: 'personal_accounts',
+  social_security: 'personal_affiliations',
+  identity: 'personal_emails, personal_phone_lines, personal_account_links',
+  company: 'personal_entities (+ personal_tasks domain "entity")',
+  tax: 'personal_tasks domain "tax" and personal_entities obligations',
+  job_application: 'job_applications',
+  task: 'personal_tasks',
+  question: 'read-only: query_records or get_overview',
+}
 const HISTORY_TURNS = 12
 const MAX_ITERATIONS = 8
 
@@ -11,7 +33,7 @@ const MAX_ITERATIONS = 8
 const SYSTEM = `You are Jarvis, William Martinez Bolaños's private assistant on Telegram. William lives in Cali, Colombia (America/Bogota), works independently (Ekinoxis Labs SAS BIC owner, legal rep of Echosystem Technologies, owns a US LLC) and is organising his personal admin: social security (EPS, pension, cesantías), bank/crypto accounts, subscriptions and their payment history, debts (ICETEX and others), phone lines, emails/identities, companies and tasks.
 
 How you work:
-- Your data lives in private tables you reach through tools. Look records up with query_records before answering or proposing updates, so you use real ids and values.
+- Your data lives in private tables you reach through tools. Look records up with query_records before answering or proposing updates, so you use real ids and values. Ask only for the columns you need.
 - To save anything, call propose_change (one call per row). William confirms each proposal with a button; nothing is written until he does. Never claim something is saved.
 - Payments: one personal_payments row per charge (paid_at, provider, amount, currency, optional subscription_id/debt_id, paid_with, invoice_path, source "telegram"). When William says a subscription was cancelled, propose updating that subscription's status to "cancelled" and cancelled_at.
 - When a message includes an uploaded file, its storage path is given; read the document, extract date, provider, amount and currency, and propose a payment with invoice_path set to that path. If something is unreadable or ambiguous, ask one short question instead of guessing.
@@ -28,9 +50,16 @@ function client() {
 export interface JarvisResult { text: string; proposals: ProposedAction[] }
 
 // One Telegram message in → reply text + any proposals awaiting confirmation.
-export async function runJarvis(chatId: number, userBlocks: Anthropic.Beta.BetaContentBlockParam[], userText: string): Promise<JarvisResult> {
+export async function runJarvis(
+  chatId: number,
+  userBlocks: Anthropic.Beta.BetaContentBlockParam[],
+  userText: string,
+  decision: RouteDecision,
+): Promise<JarvisResult> {
   const db = createAdminSupabaseClient()
-  const anthropic = client()
+  const route = decision.route === 'simple' ? 'simple' : 'complex'
+  const model = MODELS[route]
+  const usage = { iterations: 0, input: 0, output: 0, read: 0, write: 0 }
 
   const { data: past } = await db.from('personal_agent_messages')
     .select('role, content').eq('chat_id', chatId).order('id', { ascending: false }).limit(HISTORY_TURNS)
@@ -42,22 +71,34 @@ export async function runJarvis(chatId: number, userBlocks: Anthropic.Beta.BetaC
 
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     ...history,
-    { role: 'user', content: [{ type: 'text', text: `[today ${todayISO()}]` }, ...userBlocks] },
+    {
+      role: 'user',
+      content: [
+        { type: 'text', text: `[today ${todayISO()}${decision.topic && TOPIC_HINT[decision.topic] ? ` · topic: ${decision.topic} → ${TOPIC_HINT[decision.topic]}` : ''}]` },
+        ...userBlocks,
+      ],
+    },
   ]
   const proposals: ProposedAction[] = []
   let reply = ''
+  const anthropic = client()
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     const response = await anthropic.beta.messages.create({
-      model: MODEL,
+      model,
       max_tokens: 16000,
-      betas: ['server-side-fallback-2026-07-01'],
-      fallbacks: 'default',
+      // Server-side refusal fallback exists for Opus, not Haiku.
+      ...(model === MODELS.complex ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' as const } : {}),
       output_config: { effort: 'low' },
       system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
       tools: TOOLS,
       messages,
     })
+    usage.iterations++
+    usage.input += response.usage.input_tokens ?? 0
+    usage.output += response.usage.output_tokens ?? 0
+    usage.read += response.usage.cache_read_input_tokens ?? 0
+    usage.write += response.usage.cache_creation_input_tokens ?? 0
 
     if (response.stop_reason === 'refusal') {
       reply = 'I can’t help with that one.'
@@ -88,9 +129,23 @@ export async function runJarvis(chatId: number, userBlocks: Anthropic.Beta.BetaC
 
   if (!reply) reply = proposals.length ? 'Here’s what I’d save:' : 'Done.'
 
-  await db.from('personal_agent_messages').insert([
-    { chat_id: chatId, role: 'user', content: { text: userText } },
-    { chat_id: chatId, role: 'assistant', content: { text: reply } },
+  const p = PRICES[model]
+  const cost = (usage.input * p.in + usage.output * p.out + usage.read * p.read + usage.write * p.write) / 1e6
+  await Promise.all([
+    db.from('personal_agent_messages').insert([
+      { chat_id: chatId, role: 'user', content: { text: userText } },
+      { chat_id: chatId, role: 'assistant', content: { text: reply } },
+    ]),
+    logUsage({
+      chat_id: chatId, route: decision.route, route_confidence: decision.confidence, topic: decision.topic, model,
+      iterations: usage.iterations, input_tokens: usage.input, output_tokens: usage.output,
+      cache_read_tokens: usage.read, cache_write_tokens: usage.write, jev_tokens: decision.jevTokens, cost_usd: cost,
+    }),
   ])
   return { text: reply, proposals }
+}
+
+export async function logUsage(row: Record<string, unknown>) {
+  const { error } = await createAdminSupabaseClient().from('personal_ai_usage').insert(row)
+  if (error) console.error('[jarvis] usage log failed', error.message)
 }
