@@ -1,4 +1,4 @@
-import { debtTotals, fmt, monthlyFixed, paidThisYear, todayISO, upcoming, type Row } from '@/lib/overview'
+import { debtTotals, expiringDocs, fmt, monthlyFixed, paidThisYear, todayISO, upcoming, type Row } from '@/lib/overview'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const shortDate = (iso: string) => `${MONTHS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(8, 10)}`
@@ -21,13 +21,14 @@ function Totals({ totals, unknown, empty }: { totals: Record<string, number>; un
 }
 
 export default function Overview(props: {
-  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]; pendingBills: Row[]
+  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]; pendingBills: Row[]; documents: Row[]
 }) {
   const today = todayISO()
   const next = upcoming(props)
   const fixed = monthlyFixed(props.subscriptions, props.debts)
   const debt = debtTotals(props.debts)
   const ytd = paidThisYear(props.payments)
+  const docs = expiringDocs(props.documents)
   const open = props.tasks.filter((t) => t.status !== 'done')
   const high = open.filter((t) => t.priority === 'high')
 
@@ -62,6 +63,23 @@ export default function Overview(props: {
           <div className="font-mono text-xs text-on-surface-variant mt-1">payments, renewals, deadlines</div>
         </div>
       </div>
+
+      {docs.length > 0 && (
+        <section className="bg-surface-container-low p-5 md:p-6 shadow-[inset_0_0_0_1px_rgba(242,210,255,.35)]">
+          <h2 className="text-xl font-semibold text-primary mb-4">Expiring documents</h2>
+          <ul className="flex flex-col gap-0.5 font-mono text-sm">
+            {docs.map((d) => (
+              <li key={d.id} className="bg-surface-container px-3 py-3 flex gap-4 items-center">
+                <span className={`w-24 shrink-0 ${d.expired ? 'text-error' : 'text-tertiary-container'}`}>
+                  {d.expired ? `expired ${-d.daysLeft}d` : `${d.daysLeft} days`}
+                </span>
+                <span className="flex-1 min-w-0 truncate text-on-surface">{d.title}</span>
+                <span className="text-on-surface-variant shrink-0">{d.expires_at}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
         {/* Next 30 days */}

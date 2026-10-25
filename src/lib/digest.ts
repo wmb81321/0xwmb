@@ -1,5 +1,5 @@
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
-import { todayISO, upcoming, type UpcomingItem } from '@/lib/overview'
+import { expiringDocs, isExpiryMilestone, todayISO, upcoming, type UpcomingItem } from '@/lib/overview'
 
 // Daily Telegram digest, built from the data alone (no model call, no cost). Spanish, short lines.
 
@@ -21,7 +21,7 @@ export async function buildDigest(): Promise<string> {
   const today = todayISO()
   const yesterday = addDays(today, -1)
 
-  const [subs, debts, tasks, entities, phones, pending, paidYesterday, inbox] = await Promise.all([
+  const [subs, debts, tasks, entities, phones, pending, paidYesterday, inbox, documents] = await Promise.all([
     db.from('personal_subscriptions').select('*'),
     db.from('personal_debts').select('*'),
     db.from('personal_tasks').select('*'),
@@ -30,6 +30,7 @@ export async function buildDigest(): Promise<string> {
     db.from('personal_payments').select('provider, amount, currency, due_at, status').eq('status', 'pending'),
     db.from('personal_payments').select('provider, amount, currency').eq('status', 'paid').eq('paid_at', yesterday),
     db.from('personal_inbox').select('id', { count: 'exact', head: true }).eq('status', 'needs_you'),
+    db.from('personal_documents').select('id, title, area, expires_at, renew_lead_days, status'),
   ])
 
   const items = upcoming({
@@ -62,6 +63,12 @@ export async function buildDigest(): Promise<string> {
     high.slice(0, 5).forEach((t) => out.push(`• ${t.title}`))
   }
 
+  const docs = expiringDocs(documents.data ?? [], today).filter((d) => isExpiryMilestone(d.daysLeft))
+  if (docs.length) {
+    out.push('', '🪪 Documentos')
+    docs.forEach((d) => out.push(`• ${d.title} — ${d.expired ? `venció hace ${-d.daysLeft} días` : d.daysLeft === 0 ? 'vence hoy' : `vence en ${d.daysLeft} días (${short(d.expires_at)})`}`))
+  }
+
   const paid = paidYesterday.data ?? []
   if (paid.length) {
     out.push('', '💸 Pagado ayer')
@@ -70,7 +77,7 @@ export async function buildDigest(): Promise<string> {
 
   if (inbox.count) out.push('', `📨 ${inbox.count} correo(s) en el inbox te necesitan`)
 
-  if (!todayItems.length && !weekItems.length && !overdue.length && !high.length && !inbox.count) {
+  if (!todayItems.length && !weekItems.length && !overdue.length && !high.length && !inbox.count && !docs.length) {
     out.push('', '✨ Nada urgente esta semana.')
   }
   out.push('', 'Escríbeme si quieres registrar algo o revisar un tema.')

@@ -1,6 +1,7 @@
 import { cache } from 'react'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { AREAS, AREA_TABS, applyFilter, type AreaStatus } from '@/app/admin/areas'
+import { expiringDocs } from '@/lib/overview'
 
 // General editor labels → tables (only the ones areas use).
 const GENERAL: Record<string, string> = {
@@ -26,6 +27,8 @@ export const areaSummaries = cache(async (): Promise<AreaSummary[]> => {
   const supabase = await createServerSupabaseClient()
   const { data: tasks } = await supabase.from('personal_tasks').select('title, domain, priority, status, due_at').neq('status', 'done')
   const { data: affs } = await supabase.from('personal_affiliations').select('kind, status')
+  const { data: docs } = await supabase.from('personal_documents').select('id, title, area, expires_at, renew_lead_days, status')
+  const expiring = expiringDocs(docs ?? [])
 
   return Promise.all(AREAS.map(async (a) => {
     const mine = (tasks ?? []).filter((t) => a.domains.includes(t.domain))
@@ -42,7 +45,7 @@ export const areaSummaries = cache(async (): Promise<AreaSummary[]> => {
     const dated = mine.filter((t) => t.due_at).sort((x, y) => String(x.due_at).localeCompare(String(y.due_at)))
     return {
       slug: a.slug, name: a.name,
-      status: highTasks > 0 || unknownAff ? 'alert' : records > 0 ? 'ok' : 'empty',
+      status: highTasks > 0 || unknownAff || expiring.some((d) => d.area === a.slug) ? 'alert' : records > 0 ? 'ok' : 'empty',
       openTasks: mine.length, highTasks, records,
       nextDeadline: dated[0] ? { date: dated[0].due_at as string, title: dated[0].title as string } : null,
     }
