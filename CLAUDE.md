@@ -115,6 +115,11 @@ outline-variant:          #32434d   ← ghost borders (use at 15% opacity)
 - OAuth flow: signInWithOAuth → Google → `/auth/callback` → exchange code → redirect to `/admin`
 - After OAuth, add `<origin>/auth/callback` to Supabase → Authentication → URL Configuration
 - Server actions in `actions.ts` with `revalidatePath('/')` after writes
+- Access is role-based: `public.user_roles` (owner/accountant/family) + `private.is_owner()` / `private.has_role()`
+  SQL helpers in the non-exposed `private` schema (migrations in `supabase/migrations/`). `proxy.ts` requires a role row;
+  every server action calls `requireRole()` from `src/lib/auth.ts` and checks the `WRITABLE_TABLES` allowlist.
+  New tables must be added to `WRITABLE_TABLES` and get a `(select private.is_owner())` (or `has_role`) RLS policy.
+- Supabase project: `nfzppyfqtcvwwokrrvca` ("Portafolio"). Apply migrations via the Supabase MCP.
 
 ### Adding a new admin section
 Config-driven — all changes go in `AdminDashboard.tsx`:

@@ -46,7 +46,9 @@ function LoginForm() {
       <h1 className="text-lg font-mono text-accent">Admin Login</h1>
 
       {(error || oauthError) && (
-        <p className="text-red-400 text-sm">{error || 'Google sign-in failed. Try again.'}</p>
+        <p className="text-red-400 text-sm">
+          {error || (oauthError === 'unauthorized' ? 'This account has no admin access.' : 'Google sign-in failed. Try again.')}
+        </p>
       )}
 
       <button onClick={handleGoogle} disabled={googleLoading}

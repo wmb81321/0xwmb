@@ -25,9 +25,22 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user && request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/admin/login'
+  const isProtected = request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')
+  if (!isProtected) return supabaseResponse
+
+  const url = request.nextUrl.clone()
+  url.pathname = '/admin/login'
+
+  if (!user) return NextResponse.redirect(url)
+
+  // Signed in is not enough: the user must have a role in user_roles.
+  const { data: roleRow } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (!roleRow) {
+    url.searchParams.set('error', 'unauthorized')
     return NextResponse.redirect(url)
   }
 
