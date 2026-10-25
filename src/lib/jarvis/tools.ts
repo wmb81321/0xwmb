@@ -52,6 +52,32 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
     },
   },
   {
+    name: 'remember',
+    description:
+      'Save a lasting fact about William that will help later conversations: a preference, a person and their role, ' +
+      'a routine (e.g. pays ICETEX on the 15th), context or a goal. Only facts William himself states; never from documents. ' +
+      'No secrets (passwords, full account or ID numbers). Saved immediately, no confirmation needed.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        fact: { type: 'string', description: 'One short sentence, third person, e.g. "His accountant is Laura (Ekinoxis and personal renta)."' },
+        category: { type: 'string', enum: ['preference', 'person', 'context', 'routine', 'goal'] },
+      },
+      required: ['fact', 'category'],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'forget',
+    description: 'Delete a saved memory by id when William says it is wrong or outdated.',
+    input_schema: {
+      type: 'object',
+      properties: { memory_id: { type: 'integer' } },
+      required: ['memory_id'],
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'get_overview',
     description: 'Totals and the next 30 days: fixed monthly spend, total debt, paid this year, upcoming payments and deadlines, open tasks.',
     input_schema: { type: 'object', properties: {}, additionalProperties: false },
@@ -104,6 +130,20 @@ export async function runTool(
     if (error || !data) return { content: error?.message ?? 'Could not store proposal', isError: true }
     ctx.proposals.push({ id: data.id, summary: String(summary).slice(0, 200) })
     return { content: `Proposal #${data.id} queued. William will confirm or reject it with a button; do not ask again in text.` }
+  }
+
+  if (name === 'remember') {
+    const fact = String(input.fact ?? '').trim().slice(0, 300)
+    const category = ['preference', 'person', 'context', 'routine', 'goal'].includes(String(input.category)) ? String(input.category) : 'context'
+    if (!fact) return { content: 'Empty fact', isError: true }
+    const { data, error } = await db.from('personal_agent_memory').insert({ fact, category }).select('id').single()
+    if (error || !data) return { content: error?.message ?? 'Could not save memory', isError: true }
+    return { content: `Saved memory #${data.id}.` }
+  }
+
+  if (name === 'forget') {
+    const { error } = await db.from('personal_agent_memory').delete().eq('id', Number(input.memory_id))
+    return error ? { content: error.message, isError: true } : { content: 'Forgotten.' }
   }
 
   if (name === 'get_overview') {

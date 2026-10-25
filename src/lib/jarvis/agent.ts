@@ -26,11 +26,18 @@ const TOPIC_HINT: Record<string, string> = {
   task: 'personal_tasks',
   question: 'read-only: query_records or get_overview',
 }
-const HISTORY_TURNS = 12
+const HISTORY_TURNS = 20
+const MAX_MEMORIES = 80
 const MAX_ITERATIONS = 8
 
 // Frozen system prompt: keep it byte-stable so prompt caching hits (dates go in the user turn).
-const SYSTEM = `You are Jarvis, William Martinez Bolaños's private assistant on Telegram. William lives in Cali, Colombia (America/Bogota), works independently (Ekinoxis Labs SAS BIC owner, legal rep of Echosystem Technologies, owns a US LLC) and is organising his personal admin: social security (EPS, pension, cesantías), bank/crypto accounts, subscriptions and their payment history, debts (ICETEX and others), phone lines, emails/identities, companies and tasks.
+const SYSTEM = `You are Jarvis, William Martinez Bolaños's personal assistant on Telegram: warm, sharp and proactive, like a trusted chief of staff who knows his life. William lives in Cali, Colombia (America/Bogota), works independently (Ekinoxis Labs SAS BIC owner, legal rep of Echosystem Technologies, owns a US LLC) and is organising his personal admin: social security (EPS, pension, cesantías), bank/crypto accounts, subscriptions and their payment history, debts (ICETEX and others), phone lines, emails/identities, companies and tasks.
+
+How you talk:
+- Always answer like a person in a chat: natural, friendly, concise. Small talk gets a short human reply, never silence.
+- Use what you remember about him (given at the top of his message) and the recent conversation; refer back to it naturally.
+- After handling something, suggest the most useful next step in one line when there is one (a missing amount, a due date coming up, an open task).
+- When he tells you a lasting fact (a preference, a person and their role, a routine, a goal), save it with remember. Correct or remove outdated memories with forget.
 
 How you work:
 - Your data lives in private tables you reach through tools. Look records up with query_records before answering or proposing updates, so you use real ids and values. Ask only for the columns you need.
@@ -57,7 +64,8 @@ export async function runJarvis(
   decision: RouteDecision,
 ): Promise<JarvisResult> {
   const db = createAdminSupabaseClient()
-  const route = decision.route === 'simple' ? 'simple' : 'complex'
+  // Small talk is answered conversationally on the cheap model.
+  const route = decision.route === 'complex' ? 'complex' : 'simple'
   const model = MODELS[route]
   const usage = { iterations: 0, input: 0, output: 0, read: 0, write: 0 }
 
@@ -69,12 +77,18 @@ export async function runJarvis(
     .filter((m) => m.content)
   while (history.length && history[0].role !== 'user') history.shift()
 
+  const { data: memories } = await db.from('personal_agent_memory')
+    .select('id, fact, category').order('id', { ascending: false }).limit(MAX_MEMORIES)
+  const memoryText = (memories ?? []).length
+    ? `[what you remember about William: ${(memories ?? []).reverse().map((m) => `#${m.id} (${m.category}) ${m.fact}`).join(' | ')}]`
+    : '[nothing remembered about William yet]'
+
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     ...history,
     {
       role: 'user',
       content: [
-        { type: 'text', text: `[today ${todayISO()}${decision.topic && TOPIC_HINT[decision.topic] ? ` · topic: ${decision.topic} → ${TOPIC_HINT[decision.topic]}` : ''}]` },
+        { type: 'text', text: `[today ${todayISO()}${decision.topic && TOPIC_HINT[decision.topic] ? ` · topic: ${decision.topic} → ${TOPIC_HINT[decision.topic]}` : ''}]\n${memoryText}` },
         ...userBlocks,
       ],
     },
@@ -127,14 +141,16 @@ export async function runJarvis(
     messages.push({ role: 'user', content: results })
   }
 
-  if (!reply) reply = proposals.length ? 'Here’s what I’d save:' : 'Done.'
+  if (!reply) reply = proposals.length ? 'Here’s what I’d save:' : 'Listo.'
+  // Stored turn includes the proposals, so later turns know what was suggested.
+  const storedReply = proposals.length ? `${reply}\n(proposed: ${proposals.map((p) => `#${p.id} ${p.summary}`).join('; ')})` : reply
 
   const p = PRICES[model]
   const cost = (usage.input * p.in + usage.output * p.out + usage.read * p.read + usage.write * p.write) / 1e6
   await Promise.all([
     db.from('personal_agent_messages').insert([
       { chat_id: chatId, role: 'user', content: { text: userText } },
-      { chat_id: chatId, role: 'assistant', content: { text: reply } },
+      { chat_id: chatId, role: 'assistant', content: { text: storedReply } },
     ]),
     logUsage({
       chat_id: chatId, route: decision.route, route_confidence: decision.confidence, topic: decision.topic, model,
