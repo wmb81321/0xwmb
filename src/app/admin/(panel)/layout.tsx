@@ -15,6 +15,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
     .maybeSingle()
   if (!roleRow) redirect('/admin/login?error=unauthorized')
 
+  // Every panel page requires the second factor (TOTP) for this session.
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+  if (aal?.currentLevel !== 'aal2') redirect('/admin/login/mfa')
+
   return (
     <AdminShell email={user.email ?? ''} role={roleRow.role}>
       {children}
