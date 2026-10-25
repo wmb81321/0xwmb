@@ -2,7 +2,7 @@ import { after, NextResponse, type NextRequest } from 'next/server'
 import type Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import { answerCallback, downloadFile, editMessage, sendMessage, sendTyping } from '@/lib/telegram'
-import { logUsage, runJarvis } from '@/lib/jarvis/agent'
+import { runJarvis } from '@/lib/jarvis/agent'
 import { routeMessage } from '@/lib/jarvis/router'
 import { applyProposal, rejectProposal } from '@/lib/jarvis/tools'
 
@@ -52,6 +52,10 @@ async function handle(update: TgUpdate) {
     const result = action === 'ok' ? await applyProposal(id, chatId) : await rejectProposal(id, chatId)
     await answerCallback(cb.id, result.slice(0, 190))
     await editMessage(chatId, cb.message.message_id, result)
+    await createAdminSupabaseClient().from('personal_agent_messages').insert([
+      { chat_id: chatId, role: 'user', content: { text: `[tapped ${action === 'ok' ? 'Confirm' : 'Discard'} on proposal #${id}]` } },
+      { chat_id: chatId, role: 'assistant', content: { text: result } },
+    ])
     return
   }
 
@@ -92,14 +96,8 @@ async function handle(update: TgUpdate) {
   if (text) blocks.push({ type: 'text', text })
   if (!blocks.length) return
 
-  // Jev decides how much model this needs; pure small talk never reaches Claude.
+  // Jev decides how much model this needs (small talk and simple turns → Haiku, the rest → Opus).
   const decision = await routeMessage(text, Boolean(file))
-  if (decision.route === 'smalltalk') {
-    await logUsage({ chat_id: chatId, route: 'smalltalk', route_confidence: decision.confidence, topic: decision.topic, jev_tokens: decision.jevTokens })
-    await sendMessage(chatId, '👍')
-    return
-  }
-
   const { text: reply, proposals } = await runJarvis(chatId, blocks, logText, decision)
   await sendMessage(chatId, reply)
   for (const p of proposals) {

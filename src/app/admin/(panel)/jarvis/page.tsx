@@ -1,5 +1,6 @@
-import ComingSoon from '../ComingSoon'
+import AdminDashboard from '../../AdminDashboard'
+import { JARVIS_TABS } from '../../tabs'
 
-export default function Page() {
-  return <ComingSoon title="Jarvis" phase="PHASE 3" items={['Telegram bot — only your Telegram ID', 'Reads and proposes changes; every write needs your confirm', 'Daily 07:00 and Sunday digests']} />
+export default function JarvisPage() {
+  return <AdminDashboard tabs={JARVIS_TABS} title="Jarvis memory" />
 }

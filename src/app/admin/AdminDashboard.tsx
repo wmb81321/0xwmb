@@ -230,6 +230,10 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'notes',     label: 'Notes',                 type: 'textarea' },
     { key: 'order',     label: 'Order',                 type: 'number' },
   ],
+  personal_agent_memory: [
+    { key: 'fact',     label: 'What Jarvis remembers', type: 'textarea' },
+    { key: 'category', label: 'Category', type: 'select', options: ['preference', 'person', 'context', 'routine', 'goal'] },
+  ],
   personal_entities: [
     { key: 'name',                label: 'Name',             type: 'text' },
     { key: 'legal_form',          label: 'Legal form',       type: 'text' },
@@ -253,11 +257,11 @@ const TABLE_MAP: Record<string, string> = {
   Skills: 'skills', Languages: 'languages', Contact: 'contact', Jobs: 'job_applications',
   Tasks: 'personal_tasks', 'Social security': 'personal_affiliations', Accounts: 'personal_accounts',
   Subscriptions: 'personal_subscriptions', Payments: 'personal_payments', Debts: 'personal_debts', 'Phone lines': 'personal_phone_lines',
-  Emails: 'personal_emails', Identities: 'personal_account_links', Entities: 'personal_entities',
+  Emails: 'personal_emails', Identities: 'personal_account_links', Entities: 'personal_entities', Memory: 'personal_agent_memory',
 }
 
 const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs',
-  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Payments', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities'])
+  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Payments', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities', 'Memory'])
 
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
@@ -555,6 +559,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
   if (table === 'personal_account_links') return { title: item.service as string, sub: j(item.email, item.phone, item.status) }
+  if (table === 'personal_agent_memory')  return { title: item.fact as string, sub: j(item.category, item.source) }
   if (table === 'personal_entities')      return { title: item.name as string, sub: j(item.legal_form, item.country, item.my_role, item.next_obligation) }
   return { title: JSON.stringify(item), sub: '' }
 }
