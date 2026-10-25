@@ -11,6 +11,39 @@ export const JARVIS_TABLES = [
 type JarvisTable = (typeof JARVIS_TABLES)[number]
 const isTable = (t: unknown): t is JarvisTable => typeof t === 'string' && (JARVIS_TABLES as readonly string[]).includes(t)
 
+
+// Exact writable columns per table (and allowed values for constrained ones). Given to Claude in the
+// propose_change description and enforced before a proposal is queued, so a guessed column never reaches a Confirm button.
+const SCHEMA: Record<JarvisTable, Record<string, string>> = {
+  personal_tasks: { title: 'text', domain: 'personal|health|pension|money|debt|entity|tax|job|us|identity|other', priority: 'low|normal|high', status: 'open|snoozed|done', due_at: 'date', steps: 'text[]', notes: 'text', done_at: 'timestamp' },
+  personal_affiliations: { kind: 'eps|pension|cesantias|arl|caja|other', entity: 'text', regime: 'text', status: 'active|inactive|unknown', affiliate_last4: 'text', since: 'date', last_verified_at: 'date', next_action: 'text', url: 'text', notes: 'text' },
+  personal_accounts: { institution: 'text', country: 'CO|US|GLOBAL', kind: 'bank|exchange|fintech|card|wallet|broker|other', currency: 'text', last4: 'text', alias: 'text', status: 'active|pending|closed', login_email: 'text', vault_ref: 'text', url: 'text', notes: 'text' },
+  personal_subscriptions: { provider: 'text', category: 'telecom|internet|entertainment|software|utility|insurance|finance|other', amount: 'number', currency: 'text', cadence: 'weekly|monthly|quarterly|yearly', billing_day: 'int 1-31', next_renewal: 'date', started_at: 'date', cancelled_at: 'date', paid_with: 'text', status: 'active|trial|paused|cancelled', email_alias: 'text', cancel_url: 'text', notes: 'text' },
+  personal_payments: { paid_at: 'date', provider: 'text', subscription_id: 'int', debt_id: 'int', amount: 'number', currency: 'text', paid_with: 'text', invoice_path: 'text', source: 'manual|telegram|email|import', notes: 'text' },
+  personal_debts: { creditor: 'text', kind: 'student_loan|credit_card|personal|mortgage|other', currency: 'text', principal: 'number', balance: 'number', rate: 'text', min_payment: 'number', due_day: 'int 1-31', phase: 'text', status: 'active|paid|defaulted|negotiating', portal_url: 'text', notes: 'text' },
+  personal_phone_lines: { label: 'text', country: 'CO|US|OTHER', number_e164: 'text', carrier: 'text', plan_kind: 'prepaid|postpaid|esim|voip', billing_day: 'int 1-31', expires_at: 'date', used_for_2fa: 'text[]', status: 'active|suspended|cancelled', notes: 'text' },
+  personal_emails: { address: 'text', provider: 'text', role: 'vault|private|public|legacy|domain', mfa_method: 'text', recovery: 'text', notes: 'text' },
+  personal_account_links: { service: 'text', category: 'text', email: 'text', phone: 'text', vault_ref: 'text', status: 'ok|review|move_to_vault|close', notes: 'text' },
+  personal_entities: { name: 'text', legal_form: 'text', country: 'CO|US|OTHER', my_role: 'text', ownership_pct: 'number', tax_id_last4: 'text', status: 'active|dormant|dissolving|closed', next_obligation: 'text', next_obligation_due: 'date', url: 'text', notes: 'text' },
+  personal_inbox: { category: 'bill|receipt|alert|person|noise|unknown', status: 'needs_you|auto_logged|forwarded|archived', notes: 'text' },
+  job_applications: { company: 'text', position: 'text', website: 'text', application_url: 'text', description: 'text', status: 'saved|applied|interviewing|offered|rejected|withdrawn', applied_at: 'text', notes: 'text' },
+}
+const SCHEMA_TEXT = Object.entries(SCHEMA)
+  .map(([table, cols]) => `${table}: ${Object.entries(cols).map(([c, k]) => `${c} (${k})`).join(', ')}`).join('\n')
+
+// Returns an error message when a proposal uses an unknown column or a value outside an allowed set.
+function checkValues(table: JarvisTable, values: Record<string, unknown>): string | null {
+  const cols = SCHEMA[table]
+  const unknown = Object.keys(values).filter((k) => !(k in cols))
+  if (unknown.length) return `Unknown column(s) for ${table}: ${unknown.join(', ')}. Valid: ${Object.keys(cols).join(', ')}`
+  for (const [k, v] of Object.entries(values)) {
+    const kind = cols[k]
+    if (kind.includes('|') && v !== null && !kind.split('|').includes(String(v))) return `${k} must be one of ${kind.replaceAll('|', ', ')}`
+    if (kind === 'date' && v !== null && !/^\d{4}-\d{2}-\d{2}$/.test(String(v))) return `${k} must be a YYYY-MM-DD date`
+  }
+  return null
+}
+
 // Fields that must never be written from chat, even if proposed.
 const FORBIDDEN_KEYS = new Set(['id', 'created_at'])
 
@@ -37,7 +70,8 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
     description:
       'Propose inserting or updating ONE row. Nothing is saved until William taps Confirm in Telegram. ' +
       'Use update with record_id for existing rows (look them up first). Dates are YYYY-MM-DD, amounts are numbers. ' +
-      'Never include id or created_at in values. Call once per row; several calls in one turn are fine.',
+      'Never include id or created_at in values. Call once per row; several calls in one turn are fine.\n' +
+      'Use ONLY these columns (allowed values after |):\n' + SCHEMA_TEXT,
     input_schema: {
       type: 'object',
       properties: {
@@ -122,6 +156,8 @@ export async function runTool(
     if (!values || typeof values !== 'object' || Array.isArray(values)) return { content: 'values must be an object', isError: true }
     const clean = Object.fromEntries(Object.entries(values).filter(([k]) => !FORBIDDEN_KEYS.has(k) && /^[a-z_0-9]+$/.test(k)))
     if (!Object.keys(clean).length) return { content: 'No writable values', isError: true }
+    const invalid = checkValues(table, clean)
+    if (invalid) return { content: `${invalid}. Fix the values and call propose_change again.`, isError: true }
 
     const { data, error } = await db.from('personal_pending_actions').insert({
       chat_id: ctx.chatId, table_name: table, op, record_id: op === 'update' ? record_id : null,
