@@ -56,7 +56,9 @@ export default function MfaPage() {
       setBusy(false)
       return
     }
-    router.replace('/admin')
+    // First recovery login: go straight to registering a passkey, since normal login is passkey-only.
+    const { data: passkeys } = await supabase.auth.passkey.list()
+    router.replace(passkeys?.length ? '/admin' : '/admin/security')
     router.refresh()
   }
 
