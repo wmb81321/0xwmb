@@ -21,7 +21,7 @@ export async function buildDigest(): Promise<string> {
   const today = todayISO()
   const yesterday = addDays(today, -1)
 
-  const [subs, debts, tasks, entities, phones, pending, paidYesterday, inbox, documents] = await Promise.all([
+  const [subs, debts, tasks, entities, phones, pending, paidYesterday, inbox, documents, health] = await Promise.all([
     db.from('personal_subscriptions').select('*'),
     db.from('personal_debts').select('*'),
     db.from('personal_tasks').select('*'),
@@ -31,11 +31,12 @@ export async function buildDigest(): Promise<string> {
     db.from('personal_payments').select('provider, amount, currency').eq('status', 'paid').eq('paid_at', yesterday),
     db.from('personal_inbox').select('id', { count: 'exact', head: true }).eq('status', 'needs_you'),
     db.from('personal_documents').select('id, title, area, expires_at, renew_lead_days, status'),
+    db.from('personal_health').select('title, provider, scheduled_at, status').eq('status', 'scheduled'),
   ])
 
   const items = upcoming({
     subscriptions: subs.data ?? [], debts: debts.data ?? [], tasks: tasks.data ?? [],
-    entities: entities.data ?? [], phones: phones.data ?? [], pendingBills: pending.data ?? [],
+    entities: entities.data ?? [], phones: phones.data ?? [], pendingBills: pending.data ?? [], health: health.data ?? [],
   }, 7, today)
   const todayItems = items.filter((i) => i.date === today)
   const weekItems = items.filter((i) => i.date !== today)

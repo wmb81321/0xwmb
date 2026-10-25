@@ -6,7 +6,7 @@ export type Row = Record<string, unknown>
 export interface UpcomingItem {
   date: string // YYYY-MM-DD
   title: string
-  kind: 'subscription' | 'debt' | 'task' | 'entity' | 'phone'
+  kind: 'subscription' | 'debt' | 'task' | 'entity' | 'phone' | 'health'
   amount?: string
   flag?: string
 }
@@ -16,6 +16,14 @@ const MONTHLY: Record<string, number> = { weekly: 52 / 12, monthly: 1, quarterly
 
 export function todayISO(now = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
+}
+
+// Date and HH:MM of a timestamp in Bogotá.
+export function bogota(ts: string): { date: string; time: string } {
+  const d = new Date(ts)
+  const date = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d)
+  const time = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).format(d)
+  return { date, time }
 }
 
 function addDays(iso: string, days: number): string {
@@ -45,7 +53,7 @@ const money = (amount: unknown, currency: unknown) => {
 }
 
 export function upcoming(
-  data: { subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; pendingBills?: Row[] },
+  data: { subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; pendingBills?: Row[]; health?: Row[] },
   days = 30,
   from = todayISO(),
 ): UpcomingItem[] {
@@ -67,6 +75,11 @@ export function upcoming(
     const date = b.due_at as string | null
     // Unpaid bills surface by their last day to pay; overdue ones are pinned to today.
     if (date && date <= until) items.push({ date: date < from ? from : date, title: `${b.provider} bill due`, kind: 'debt', amount: money(b.amount, b.currency), flag: date < from ? 'OVERDUE' : 'UNPAID' })
+  }
+  for (const h of data.health ?? []) {
+    if (h.status !== 'scheduled' || !h.scheduled_at) continue
+    const local = bogota(h.scheduled_at as string)
+    if (inRange(local.date)) items.push({ date: local.date, title: `${h.title}${h.provider ? ` · ${h.provider}` : ''} ${local.time}`, kind: 'health' })
   }
   for (const t of data.tasks) {
     if (t.status === 'done' || !t.due_at) continue

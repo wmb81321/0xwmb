@@ -9,7 +9,7 @@ import { AREA_TABS, applyFilter } from './areas'
 
 // ─── Field config ────────────────────────────────────────────────────────────
 
-type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'date' | 'image' | 'doc' | 'array' | 'keyvalue' | 'select'
+type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'date' | 'datetime' | 'image' | 'doc' | 'array' | 'keyvalue' | 'select'
 interface FieldDef { key: string; label: string; type: FieldType; options?: string[] }
 
 const FIELDS: Record<string, FieldDef[]> = {
@@ -233,6 +233,18 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'status',    label: 'Status',                type: 'select', options: ['review', 'ok', 'move_to_vault', 'close'] },
     { key: 'notes',     label: 'Notes',                 type: 'textarea' },
     { key: 'order',     label: 'Order',                 type: 'number' },
+  ],
+  personal_health: [
+    { key: 'kind',         label: 'Type',               type: 'select', options: ['appointment', 'exam', 'medication', 'vaccine', 'procedure', 'other'] },
+    { key: 'title',        label: 'What',               type: 'text' },
+    { key: 'provider',     label: 'Doctor / IPS',       type: 'text' },
+    { key: 'location',     label: 'Where',              type: 'text' },
+    { key: 'scheduled_at', label: 'When (Bogotá time)', type: 'datetime' },
+    { key: 'dose',         label: 'Dose (medications)', type: 'text' },
+    { key: 'ends_on',      label: 'Until (medications)', type: 'date' },
+    { key: 'status',       label: 'Status',             type: 'select', options: ['scheduled', 'done', 'cancelled', 'ongoing'] },
+    { key: 'file_path',    label: 'Result / prescription (private)', type: 'doc' },
+    { key: 'notes',        label: 'Notes',              type: 'textarea' },
   ],
   personal_documents: [
     { key: 'title',           label: 'Document',          type: 'text' },
@@ -490,6 +502,17 @@ function RecordForm({ table, initial, onSave, onCancel }: {
         if (f.type === 'image') return (
           <ImageField key={f.key} label={f.label} value={(val as string) ?? ''} onChange={v => set(f.key, v)} />
         )
+        if (f.type === 'datetime') {
+          // Stored as timestamptz; edited as Bogotá wall-clock time (UTC−5, no DST).
+          const shown = val ? new Date(new Date(val as string).getTime() - 5 * 3600e3).toISOString().slice(0, 16) : ''
+          return (
+            <div key={f.key}>
+              <label className={labelCls}>{f.label}</label>
+              <input type="datetime-local" value={shown} className={inputCls}
+                onChange={e => set(f.key, e.target.value ? `${e.target.value}:00-05:00` : null)} />
+            </div>
+          )
+        }
         if (f.type === 'doc') return (
           <DocField key={f.key} label={f.label} value={(val as string) ?? ''} folder={table.replace('personal_', '')} onChange={v => set(f.key, v || null)} />
         )
@@ -582,6 +605,10 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
   if (table === 'personal_account_links') return { title: item.service as string, sub: j(item.email, item.phone, item.status) }
+  if (table === 'personal_health') {
+    const when = item.scheduled_at ? new Date(new Date(item.scheduled_at as string).getTime() - 5 * 3600e3).toISOString().slice(0, 16).replace('T', ' ') : null
+    return { title: item.title as string, sub: j(item.kind, when, item.provider, item.dose, item.status, item.file_path && '📎') }
+  }
   if (table === 'personal_documents') {
     const left = item.expires_at ? Math.round((Date.parse(`${item.expires_at}T12:00:00Z`) - Date.now()) / 864e5) : null
     return { title: `${item.title}${item.number_last4 ? ` ••${item.number_last4}` : ''}`, sub: j(item.kind, item.status, item.expires_at ? (left! < 0 ? `EXPIRED ${item.expires_at}` : `expires ${item.expires_at} (${left} days)`) : 'no expiry', item.file_path && '📎 scan') }
