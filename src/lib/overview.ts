@@ -137,3 +137,23 @@ export function paidThisYear(payments: Row[], from = todayISO()) {
   }
   return { totals, count }
 }
+
+export interface ExpiringDoc { id: number; title: string; area: string; expires_at: string; daysLeft: number; expired: boolean }
+
+const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b}T12:00:00Z`) - Date.parse(`${a}T12:00:00Z`)) / 864e5)
+
+// Documents inside their renewal window (renew_lead_days before expiry) or already expired; most urgent first.
+export function expiringDocs(docs: Row[], from = todayISO()): ExpiringDoc[] {
+  return docs
+    .filter((d) => d.status !== 'archived' && d.expires_at)
+    .map((d) => {
+      const daysLeft = daysBetween(from, d.expires_at as string)
+      return { id: d.id as number, title: d.title as string, area: d.area as string, expires_at: d.expires_at as string, daysLeft, expired: daysLeft < 0, lead: Number(d.renew_lead_days ?? 90) }
+    })
+    .filter((d) => d.daysLeft <= d.lead)
+    .sort((a, b) => a.daysLeft - b.daysLeft)
+    .map((d) => ({ id: d.id, title: d.title, area: d.area, expires_at: d.expires_at, daysLeft: d.daysLeft, expired: d.expired }))
+}
+
+// Digest reminders fire on milestones so the morning message doesn't repeat the same line every day.
+export const isExpiryMilestone = (daysLeft: number) => daysLeft < 0 || daysLeft <= 7 || [14, 30, 60, 90].includes(daysLeft)

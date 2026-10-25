@@ -6,7 +6,7 @@ import { debtTotals, monthlyFixed, paidThisYear, todayISO, upcoming } from '@/li
 export const JARVIS_TABLES = [
   'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_payments',
   'personal_debts', 'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities',
-  'personal_inbox', 'job_applications',
+  'personal_inbox', 'job_applications', 'personal_documents',
 ] as const
 type JarvisTable = (typeof JARVIS_TABLES)[number]
 const isTable = (t: unknown): t is JarvisTable => typeof t === 'string' && (JARVIS_TABLES as readonly string[]).includes(t)
@@ -26,6 +26,7 @@ const SCHEMA: Record<JarvisTable, Record<string, string>> = {
   personal_account_links: { service: 'text', category: 'text', email: 'text', phone: 'text', vault_ref: 'text', status: 'ok|review|move_to_vault|close', notes: 'text' },
   personal_entities: { name: 'text', legal_form: 'text', country: 'CO|US|OTHER', my_role: 'text', ownership_pct: 'number', tax_id_last4: 'text', status: 'active|dormant|dissolving|closed', next_obligation: 'text', next_obligation_due: 'date', url: 'text', notes: 'text' },
   personal_inbox: { category: 'bill|receipt|alert|person|noise|unknown', status: 'needs_you|auto_logged|forwarded|archived', notes: 'text' },
+  personal_documents: { title: 'text', kind: 'cedula|passport|visa|itin|rut|license|insurance|contract|certificate|tax_return|other', area: 'identity|health|career|finances|taxes|social|companies|home|digital|people|goals', issuer: 'text', country: 'CO|US|OTHER', number_last4: 'text', issued_at: 'date', expires_at: 'date', renew_lead_days: 'int', status: 'active|renewing|pending|archived', file_path: 'text', notes: 'text' },
   job_applications: { company: 'text', position: 'text', website: 'text', application_url: 'text', description: 'text', status: 'saved|applied|interviewing|offered|rejected|withdrawn', applied_at: 'text', notes: 'text' },
 }
 const SCHEMA_TEXT = Object.entries(SCHEMA)

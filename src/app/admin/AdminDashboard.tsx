@@ -234,6 +234,20 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'notes',     label: 'Notes',                 type: 'textarea' },
     { key: 'order',     label: 'Order',                 type: 'number' },
   ],
+  personal_documents: [
+    { key: 'title',           label: 'Document',          type: 'text' },
+    { key: 'kind',            label: 'Type',              type: 'select', options: ['cedula', 'passport', 'visa', 'itin', 'rut', 'license', 'insurance', 'contract', 'certificate', 'tax_return', 'other'] },
+    { key: 'area',            label: 'Area',              type: 'select', options: ['identity', 'health', 'career', 'finances', 'taxes', 'social', 'companies', 'home', 'digital', 'people', 'goals'] },
+    { key: 'issuer',          label: 'Issued by',         type: 'text' },
+    { key: 'country',         label: 'Country',           type: 'select', options: ['CO', 'US', 'OTHER'] },
+    { key: 'number_last4',    label: 'Number (last 4 only)', type: 'text' },
+    { key: 'issued_at',       label: 'Issued',            type: 'date' },
+    { key: 'expires_at',      label: 'Expires',           type: 'date' },
+    { key: 'renew_lead_days', label: 'Warn me this many days before', type: 'number' },
+    { key: 'status',          label: 'Status',            type: 'select', options: ['active', 'renewing', 'pending', 'archived'] },
+    { key: 'file_path',       label: 'Scan (PDF or image, private)', type: 'doc' },
+    { key: 'notes',           label: 'Notes',             type: 'textarea' },
+  ],
   personal_inbox: [
     { key: 'status',   label: 'Status',   type: 'select', options: ['needs_you', 'auto_logged', 'forwarded', 'archived'] },
     { key: 'category', label: 'Category', type: 'select', options: ['bill', 'receipt', 'alert', 'person', 'noise', 'unknown'] },
@@ -568,6 +582,10 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
   if (table === 'personal_account_links') return { title: item.service as string, sub: j(item.email, item.phone, item.status) }
+  if (table === 'personal_documents') {
+    const left = item.expires_at ? Math.round((Date.parse(`${item.expires_at}T12:00:00Z`) - Date.now()) / 864e5) : null
+    return { title: `${item.title}${item.number_last4 ? ` ••${item.number_last4}` : ''}`, sub: j(item.kind, item.status, item.expires_at ? (left! < 0 ? `EXPIRED ${item.expires_at}` : `expires ${item.expires_at} (${left} days)`) : 'no expiry', item.file_path && '📎 scan') }
+  }
   if (table === 'personal_inbox')         return { title: `${item.subject ?? '(no subject)'}`, sub: j(String(item.received_at ?? '').slice(0, 10), item.from_address, item.to_address, item.category, item.status, (item.structured as { summary?: string })?.summary) }
   if (table === 'personal_agent_memory')  return { title: item.fact as string, sub: j(item.category, item.source) }
   if (table === 'personal_entities')      return { title: item.name as string, sub: j(item.legal_form, item.country, item.my_role, item.next_obligation) }

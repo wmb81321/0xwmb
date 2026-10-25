@@ -10,7 +10,7 @@ const WRITABLE_TABLES = new Set([
   'profile', 'experiences', 'projects', 'education', 'certificates', 'volunteering',
   'achievements', 'skills', 'languages', 'contact', 'job_applications',
   'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_payments', 'personal_debts',
-  'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities', 'personal_agent_memory', 'personal_inbox',
+  'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities', 'personal_agent_memory', 'personal_inbox', 'personal_documents',
 ])
 const isPublicTable = (table: string) => !table.startsWith('personal_')
 
