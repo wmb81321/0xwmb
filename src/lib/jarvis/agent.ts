@@ -84,13 +84,21 @@ export async function runJarvis(
     ? `[what you remember about William: ${(memories ?? []).reverse().map((m) => `#${m.id} (${m.category}) ${m.fact}`).join(' | ')}]`
     : '[nothing remembered about William yet]'
 
+  // Cache breakpoint on the last block of this turn: each tool-loop step re-sends the turn (an invoice
+  // PDF is ~15k+ tokens), so later steps read it from cache instead of paying full input price again.
+  const turnBlocks = userBlocks.map((b, i) =>
+    i === userBlocks.length - 1 && (b.type === 'text' || b.type === 'document' || b.type === 'image')
+      ? { ...b, cache_control: { type: 'ephemeral' as const } }
+      : b,
+  )
+
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     ...history,
     {
       role: 'user',
       content: [
         { type: 'text', text: `[today ${todayISO()}${decision.topic && TOPIC_HINT[decision.topic] ? ` · topic: ${decision.topic} → ${TOPIC_HINT[decision.topic]}` : ''}]\n${memoryText}` },
-        ...userBlocks,
+        ...turnBlocks,
       ],
     },
   ]
