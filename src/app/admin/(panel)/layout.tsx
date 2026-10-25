@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { isStrongSession } from '@/lib/auth'
 import AdminShell from './AdminShell'
+import { areaSummaries } from '@/lib/areas-status'
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createServerSupabaseClient()
@@ -20,7 +21,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   if (!(await isStrongSession(supabase))) redirect('/admin/login/mfa')
 
   return (
-    <AdminShell email={user.email ?? ''} role={roleRow.role}>
+    <AdminShell email={user.email ?? ''} role={roleRow.role}
+      areas={(await areaSummaries()).map(({ slug, name, status }) => ({ slug, name, status }))}>
       {children}
     </AdminShell>
   )
