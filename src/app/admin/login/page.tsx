@@ -16,6 +16,7 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [sent, setSent] = useState(false)
 
   async function passkey() {
     setBusy(true)
@@ -32,6 +33,7 @@ function LoginForm() {
 
   async function emailLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (!password) return setError('Enter your password, or use the email link below.')
     setBusy(true)
     setError('')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -41,6 +43,20 @@ function LoginForm() {
       return
     }
     router.replace('/admin/login/mfa')
+  }
+
+  // Recovery without a password: emails a one-time sign-in link. Never creates new users.
+  async function emailLink() {
+    if (!email) return setError('Enter your email first.')
+    setBusy(true)
+    setError('')
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/auth/callback` },
+    })
+    setBusy(false)
+    if (error) return setError(error.message)
+    setSent(true)
   }
 
   const shownError =
@@ -69,11 +85,15 @@ function LoginForm() {
           <div className="font-mono text-xs text-tertiary-container tracking-[0.08em]">RECOVERY · EMAIL + 2FA CODE</div>
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required
             className="bg-transparent border-0 border-b border-outline focus:border-b-2 focus:border-primary focus:outline-none py-2 text-sm placeholder:text-outline" />
-          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
             className="bg-transparent border-0 border-b border-outline focus:border-b-2 focus:border-primary focus:outline-none py-2 text-sm placeholder:text-outline" />
           <button type="submit" disabled={busy}
             className="font-mono text-xs text-primary py-3 shadow-[inset_0_0_0_1px_rgba(226,248,255,.22)] hover:text-primary-container disabled:opacity-50">
             CONTINUE →
+          </button>
+          <button type="button" onClick={emailLink} disabled={busy || sent}
+            className="font-mono text-xs text-outline hover:text-primary disabled:opacity-60 text-left">
+            {sent ? '✓ LINK SENT — check your inbox (same browser)' : 'Forgot password? Email me a sign-in link →'}
           </button>
         </form>
       )}
