@@ -1,5 +1,7 @@
-import ComingSoon from '../ComingSoon'
+import AdminDashboard from '../../AdminDashboard'
+import { INBOX_TABS } from '../../tabs'
 
-export default function Page() {
-  return <ComingSoon title="Inbox" phase="PHASE 2" items={['Needs you — only items that require a decision', 'Bills auto-logged and archived from per-service @0xwomb.xyz addresses', 'hi@ forwarded to Gmail and logged', 'Promos auto-archived as noise, weekly unsubscribe suggestions']} />
+// Mail that arrived at @0xwomb.xyz. Bills become Telegram proposals; work mail (hi@) is answered in the Resend Inbox.
+export default function InboxPage() {
+  return <AdminDashboard tabs={INBOX_TABS} title="Inbox" />
 }

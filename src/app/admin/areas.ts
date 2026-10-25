@@ -16,6 +16,8 @@ export const AREA_TABS: Record<string, TabDef> = {
   'Pension & cesantías': { table: 'personal_affiliations', filter: { col: 'kind', op: 'neq', val: 'eps' }, defaults: { kind: 'pension' } },
   'Social security tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'pension' }, defaults: { domain: 'pension' } },
   'Company tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'entity' }, defaults: { domain: 'entity' } },
+  'Needs you': { table: 'personal_inbox', filter: { col: 'status', op: 'eq', val: 'needs_you' } },
+  'All mail': { table: 'personal_inbox' },
   'Digital tasks': { table: 'personal_tasks', filter: { col: 'domain', op: 'eq', val: 'identity' }, defaults: { domain: 'identity' } },
 }
 
