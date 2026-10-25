@@ -41,7 +41,7 @@ const num = (v: unknown) => (v === null || v === undefined || v === '' ? null : 
 const money = (amount: unknown, currency: unknown) => {
   const n = num(amount)
   if (n === null) return undefined
-  return `${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(n)} ${currency ?? ''}`.trim()
+  return `${new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 }).format(n)} ${currency ?? ''}`.trim()
 }
 
 export function upcoming(
@@ -120,7 +120,7 @@ export function debtTotals(debts: Row[]) {
   return { totals, unknown, count: debts.filter((d) => d.status !== 'paid').length }
 }
 
-export const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n)
+export const fmt = (n: number) => new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(n)
 
 // Sum of payments since Jan 1 (Bogota time) per currency.
 export function paidThisYear(payments: Row[], from = todayISO()) {
