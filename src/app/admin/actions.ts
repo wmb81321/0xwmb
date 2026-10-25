@@ -43,7 +43,7 @@ export async function upsertRecord(table: string, data: Record<string, unknown>)
   const { error } = await admin().from(table).upsert(data)
   if (error) throw new Error(error.message)
   revalidatePath('/')
-  revalidatePath('/admin')
+  revalidatePath('/admin/site')
 }
 
 export async function deleteRecord(table: string, id: number) {
@@ -52,5 +52,5 @@ export async function deleteRecord(table: string, id: number) {
   const { error } = await admin().from(table).delete().eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/')
-  revalidatePath('/admin')
+  revalidatePath('/admin/site')
 }

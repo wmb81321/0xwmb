@@ -1,6 +1,5 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { upsertRecord, deleteRecord, uploadLogo } from './actions'
 import { createClient } from '@/lib/supabase'
@@ -128,7 +127,7 @@ const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates'
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
-const inputCls = 'w-full bg-surface border border-border rounded px-3 py-2 text-sm text-text focus:outline-none focus:border-accent transition-colors placeholder:text-muted'
+const inputCls = 'w-full bg-transparent border-0 border-b border-outline px-0 py-2 text-sm text-on-surface focus:outline-none focus:border-b-2 focus:border-primary transition-colors placeholder:text-outline'
 const labelCls = 'block text-xs font-mono text-text-dim mb-1'
 
 function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
@@ -334,7 +333,7 @@ function RecordForm({ table, initial, onSave, onCancel }: {
       {error && <p className="text-red-400 text-xs">{error}</p>}
       <div className="flex gap-3 pt-1">
         <button onClick={save} disabled={saving}
-          className="bg-accent text-white text-xs px-5 py-2 rounded font-mono hover:bg-accent-dim disabled:opacity-50 transition-colors">
+          className="bg-cta text-on-primary font-semibold text-xs px-5 py-2.5 font-mono tracking-wide hover:brightness-110 disabled:opacity-50 transition">
           {saving ? 'Saving…' : 'Save'}
         </button>
         {onCancel && (
@@ -446,7 +445,6 @@ export default function AdminDashboard({ initialData }: { initialData: Partial<P
   const [tab, setTab] = useState('Profile')
   const [tabData, setTabData] = useState<unknown>(initialData.profile)
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const supabase = createClient()
 
   const fetchTab = useCallback(async (t: string) => {
@@ -470,30 +468,22 @@ export default function AdminDashboard({ initialData }: { initialData: Partial<P
   // Fetch initial tab data fresh on mount too
   useEffect(() => { fetchTab('Profile') }, [fetchTab])
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push('/admin/login')
-  }
 
   const table = TABLE_MAP[tab]
   const isList = LIST_TABS.has(tab)
 
   return (
-    <div className="min-h-screen bg-bg text-text">
-      <div className="max-w-3xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="font-mono text-accent text-lg tracking-wide">0xwomb / admin</h1>
-          <div className="flex gap-4">
-            <a href="/" className="text-xs text-text-dim hover:text-text transition-colors">← View site</a>
-            <button onClick={handleLogout} className="text-xs text-red-400 hover:text-red-300 transition-colors">Logout</button>
-          </div>
-        </div>
+    <div>
+      <div className="max-w-3xl">
+        <h1 className="flex items-center gap-4 text-4xl font-semibold tracking-tight text-primary mb-6">
+          <span className="data-pulse" />Site &amp; CV
+        </h1>
 
-        <div className="flex flex-wrap gap-2 mb-8 pb-4 border-b border-border">
+        <div className="flex flex-wrap gap-0.5 mb-8">
           {TABS.map((t) => (
             <button key={t} onClick={() => switchTab(t)}
-              className={`text-xs font-mono px-3 py-1.5 rounded transition-colors ${
-                tab === t ? 'bg-accent text-white' : 'text-text-dim border border-border hover:border-accent hover:text-accent'
+              className={`text-xs font-mono px-3 py-2 transition-colors ${
+                tab === t ? 'bg-surface-container-high text-primary shadow-[inset_0_-2px_0_#00D1FF]' : 'bg-surface-container-low text-on-surface-variant hover:text-primary'
               }`}>
               {t}
             </button>
