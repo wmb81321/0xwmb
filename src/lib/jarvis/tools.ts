@@ -19,7 +19,7 @@ const SCHEMA: Record<JarvisTable, Record<string, string>> = {
   personal_affiliations: { kind: 'eps|pension|cesantias|arl|caja|other', entity: 'text', regime: 'text', status: 'active|inactive|unknown', affiliate_last4: 'text', since: 'date', last_verified_at: 'date', next_action: 'text', url: 'text', notes: 'text' },
   personal_accounts: { institution: 'text', country: 'CO|US|GLOBAL', kind: 'bank|exchange|fintech|card|wallet|broker|other', currency: 'text', last4: 'text', alias: 'text', status: 'active|pending|closed', login_email: 'text', vault_ref: 'text', url: 'text', notes: 'text' },
   personal_subscriptions: { provider: 'text', category: 'telecom|internet|entertainment|software|utility|insurance|finance|other', amount: 'number', currency: 'text', cadence: 'weekly|monthly|quarterly|yearly', billing_day: 'int 1-31', next_renewal: 'date', started_at: 'date', cancelled_at: 'date', paid_with: 'text', status: 'active|trial|paused|cancelled', email_alias: 'text', cancel_url: 'text', notes: 'text' },
-  personal_payments: { paid_at: 'date', provider: 'text', subscription_id: 'int', debt_id: 'int', amount: 'number', currency: 'text', paid_with: 'text', invoice_path: 'text', source: 'manual|telegram|email|import', notes: 'text' },
+  personal_payments: { status: 'pending|paid', billed_at: 'date', due_at: 'date', paid_at: 'date', provider: 'text', subscription_id: 'int', debt_id: 'int', amount: 'number', currency: 'text', paid_with: 'text', invoice_path: 'text', source: 'manual|telegram|email|import', notes: 'text' },
   personal_debts: { creditor: 'text', kind: 'student_loan|credit_card|personal|mortgage|other', currency: 'text', principal: 'number', balance: 'number', rate: 'text', min_payment: 'number', due_day: 'int 1-31', phase: 'text', status: 'active|paid|defaulted|negotiating', portal_url: 'text', notes: 'text' },
   personal_phone_lines: { label: 'text', country: 'CO|US|OTHER', number_e164: 'text', carrier: 'text', plan_kind: 'prepaid|postpaid|esim|voip', billing_day: 'int 1-31', expires_at: 'date', used_for_2fa: 'text[]', status: 'active|suspended|cancelled', notes: 'text' },
   personal_emails: { address: 'text', provider: 'text', role: 'vault|private|public|legacy|domain', mfa_method: 'text', recovery: 'text', notes: 'text' },
@@ -184,17 +184,18 @@ export async function runTool(
 
   if (name === 'get_overview') {
     const year = todayISO().slice(0, 4)
-    const [subs, debts, tasks, entities, phones, payments] = await Promise.all([
+    const [subs, debts, tasks, entities, phones, payments, pending] = await Promise.all([
       db.from('personal_subscriptions').select('*'),
       db.from('personal_debts').select('*'),
       db.from('personal_tasks').select('*'),
       db.from('personal_entities').select('*'),
       db.from('personal_phone_lines').select('*'),
-      db.from('personal_payments').select('paid_at, amount, currency').gte('paid_at', `${year}-01-01`),
+      db.from('personal_payments').select('paid_at, amount, currency, status').eq('status', 'paid').gte('paid_at', `${year}-01-01`),
+      db.from('personal_payments').select('provider, amount, currency, due_at, status').eq('status', 'pending'),
     ])
     const data = {
       subscriptions: subs.data ?? [], debts: debts.data ?? [], tasks: tasks.data ?? [],
-      entities: entities.data ?? [], phones: phones.data ?? [],
+      entities: entities.data ?? [], phones: phones.data ?? [], pendingBills: pending.data ?? [],
     }
     return {
       content: JSON.stringify({

@@ -21,7 +21,7 @@ function Totals({ totals, unknown, empty }: { totals: Record<string, number>; un
 }
 
 export default function Overview(props: {
-  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]
+  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]; pendingBills: Row[]
 }) {
   const today = todayISO()
   const next = upcoming(props)

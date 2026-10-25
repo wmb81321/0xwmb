@@ -172,6 +172,9 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'order',        label: 'Order',           type: 'number' },
   ],
   personal_payments: [
+    { key: 'status',          label: 'Status',           type: 'select', options: ['paid', 'pending'] },
+    { key: 'billed_at',       label: 'Billing date',     type: 'date' },
+    { key: 'due_at',          label: 'Pay by',           type: 'date' },
     { key: 'paid_at',         label: 'Paid on',          type: 'date' },
     { key: 'provider',        label: 'Provider',         type: 'text' },
     { key: 'amount',          label: 'Amount',           type: 'number' },
@@ -554,7 +557,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_affiliations')  return { title: (item.entity as string) || `${item.kind} — unknown`, sub: j(item.kind, item.regime, item.status, item.next_action) }
   if (table === 'personal_accounts')      return { title: item.institution as string, sub: j(item.kind, item.country, item.currency, item.last4 && `••${item.last4}`, item.status) }
   if (table === 'personal_subscriptions') return { title: item.provider as string, sub: j(item.amount && `${item.amount} ${item.currency}`, item.cadence, item.billing_day && `day ${item.billing_day}`, item.status) }
-  if (table === 'personal_payments')      return { title: `${item.provider} · ${item.amount} ${item.currency}`, sub: j(item.paid_at, item.paid_with, item.source, item.invoice_path && '📎 invoice') }
+  if (table === 'personal_payments')      return { title: `${item.provider} · ${item.amount} ${item.currency}`, sub: j(item.status === 'pending' ? `PENDING · pay by ${item.due_at ?? '?'}` : `paid ${item.paid_at}`, item.billed_at && `billed ${item.billed_at}`, item.paid_with, item.invoice_path && '📎 invoice') }
   if (table === 'personal_debts')         return { title: item.creditor as string, sub: j(item.kind, item.balance && `balance ${item.balance} ${item.currency}`, item.min_payment && `${item.min_payment}/mo`, item.status) }
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
