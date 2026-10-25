@@ -1,4 +1,4 @@
-import { debtTotals, fmt, monthlyFixed, todayISO, upcoming, type Row } from '@/lib/overview'
+import { debtTotals, fmt, monthlyFixed, paidThisYear, todayISO, upcoming, type Row } from '@/lib/overview'
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const shortDate = (iso: string) => `${MONTHS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(8, 10)}`
@@ -21,12 +21,13 @@ function Totals({ totals, unknown, empty }: { totals: Record<string, number>; un
 }
 
 export default function Overview(props: {
-  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]
+  subscriptions: Row[]; debts: Row[]; tasks: Row[]; entities: Row[]; phones: Row[]; affiliations: Row[]; payments: Row[]
 }) {
   const today = todayISO()
   const next = upcoming(props)
   const fixed = monthlyFixed(props.subscriptions, props.debts)
   const debt = debtTotals(props.debts)
+  const ytd = paidThisYear(props.payments)
   const open = props.tasks.filter((t) => t.status !== 'done')
   const high = open.filter((t) => t.priority === 'high')
 
@@ -37,7 +38,11 @@ export default function Overview(props: {
       </h1>
 
       {/* KPI strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-0.5">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-0.5">
+        <div className="bg-surface-container-low p-5">
+          <div className="font-mono text-xs text-outline tracking-[0.08em]">PAID THIS YEAR</div>
+          <Totals totals={ytd.totals} unknown={0} empty="log payments (or send invoices to Jarvis)" />
+        </div>
         <div className="bg-surface-container-low p-5">
           <div className="font-mono text-xs text-outline tracking-[0.08em]">FIXED SPEND / MONTH</div>
           <Totals totals={fixed.totals} unknown={fixed.unknown} empty="add amounts to subscriptions" />

@@ -116,3 +116,19 @@ export function debtTotals(debts: Row[]) {
 }
 
 export const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n)
+
+// Sum of payments since Jan 1 (Bogota time) per currency.
+export function paidThisYear(payments: Row[], from = todayISO()) {
+  const start = `${from.slice(0, 4)}-01-01`
+  const totals: Record<string, number> = {}
+  let count = 0
+  for (const p of payments) {
+    if ((p.paid_at as string) < start) continue
+    const a = num(p.amount)
+    if (a === null) continue
+    const c = (p.currency as string) || '?'
+    totals[c] = (totals[c] ?? 0) + a
+    count++
+  }
+  return { totals, count }
+}

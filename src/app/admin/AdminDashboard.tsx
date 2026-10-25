@@ -1,14 +1,14 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { upsertRecord, deleteRecord, uploadLogo } from './actions'
+import { upsertRecord, deleteRecord, uploadLogo, uploadPrivateDoc, signedDocUrl } from './actions'
 import { createClient } from '@/lib/supabase'
 import type { PortfolioData } from '@/lib/types'
 import { SITE_TABS } from './tabs'
 
 // ─── Field config ────────────────────────────────────────────────────────────
 
-type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'date' | 'image' | 'array' | 'keyvalue' | 'select'
+type FieldType = 'text' | 'textarea' | 'url' | 'number' | 'date' | 'image' | 'doc' | 'array' | 'keyvalue' | 'select'
 interface FieldDef { key: string; label: string; type: FieldType; options?: string[] }
 
 const FIELDS: Record<string, FieldDef[]> = {
@@ -162,12 +162,26 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'cadence',      label: 'Cadence',         type: 'select', options: ['monthly', 'yearly', 'quarterly', 'weekly'] },
     { key: 'billing_day',  label: 'Billing day',     type: 'number' },
     { key: 'next_renewal', label: 'Next renewal',    type: 'date' },
+    { key: 'started_at',   label: 'Started',         type: 'date' },
+    { key: 'cancelled_at', label: 'Cancelled',       type: 'date' },
     { key: 'paid_with',    label: 'Paid with',       type: 'text' },
     { key: 'status',       label: 'Status',          type: 'select', options: ['active', 'trial', 'paused', 'cancelled'] },
     { key: 'email_alias',  label: 'Billing email',   type: 'text' },
     { key: 'cancel_url',   label: 'Cancel link',     type: 'url' },
     { key: 'notes',        label: 'Notes',           type: 'textarea' },
     { key: 'order',        label: 'Order',           type: 'number' },
+  ],
+  personal_payments: [
+    { key: 'paid_at',         label: 'Paid on',          type: 'date' },
+    { key: 'provider',        label: 'Provider',         type: 'text' },
+    { key: 'amount',          label: 'Amount',           type: 'number' },
+    { key: 'currency',        label: 'Currency',         type: 'select', options: ['COP', 'USD', 'EUR', 'USDC'] },
+    { key: 'subscription_id', label: 'Subscription ID (optional)', type: 'number' },
+    { key: 'debt_id',         label: 'Debt ID (optional)',         type: 'number' },
+    { key: 'paid_with',       label: 'Paid with',        type: 'text' },
+    { key: 'source',          label: 'Source',           type: 'select', options: ['manual', 'telegram', 'email', 'import'] },
+    { key: 'invoice_path',    label: 'Invoice (PDF or image, private)', type: 'doc' },
+    { key: 'notes',           label: 'Notes',            type: 'textarea' },
   ],
   personal_debts: [
     { key: 'creditor',    label: 'Creditor',        type: 'text' },
@@ -238,12 +252,12 @@ const TABLE_MAP: Record<string, string> = {
   Achievements: 'achievements',
   Skills: 'skills', Languages: 'languages', Contact: 'contact', Jobs: 'job_applications',
   Tasks: 'personal_tasks', 'Social security': 'personal_affiliations', Accounts: 'personal_accounts',
-  Subscriptions: 'personal_subscriptions', Debts: 'personal_debts', 'Phone lines': 'personal_phone_lines',
+  Subscriptions: 'personal_subscriptions', Payments: 'personal_payments', Debts: 'personal_debts', 'Phone lines': 'personal_phone_lines',
   Emails: 'personal_emails', Identities: 'personal_account_links', Entities: 'personal_entities',
 }
 
 const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs',
-  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities'])
+  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Payments', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities'])
 
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
@@ -287,6 +301,47 @@ function ImageField({ label, value, onChange }: { label: string; value: string; 
         </div>
       </div>
       {err && <p className="text-red-400 text-xs mt-1">{err}</p>}
+    </div>
+  )
+}
+
+// Private document upload (personal-docs bucket). Stores the object path; opens via a 5-minute signed link.
+function DocField({ label, value, folder, onChange }: { label: string; value: string; folder: string; onChange: (v: string) => void }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setBusy(true); setErr('')
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', folder)
+      onChange(await uploadPrivateDoc(fd))
+    } catch (e) { setErr(String(e)) }
+    setBusy(false)
+    e.target.value = ''
+  }
+
+  async function open() {
+    try { window.open(await signedDocUrl(value), '_blank', 'noopener') } catch (e) { setErr(String(e)) }
+  }
+
+  return (
+    <div>
+      <label className={labelCls}>{label}</label>
+      <div className="flex items-center gap-3 font-mono text-xs">
+        {value ? (
+          <button type="button" onClick={open} className="text-primary hover:text-primary-container truncate">📎 {value.split('/').pop()} ↗</button>
+        ) : <span className="text-outline">no file</span>}
+        <label className="cursor-pointer whitespace-nowrap text-primary-container px-3 py-2 shadow-[inset_0_0_0_1px_rgba(226,248,255,.22)] hover:text-primary">
+          {busy ? 'UPLOADING…' : value ? 'REPLACE' : '↑ UPLOAD'}
+          <input type="file" accept="application/pdf,image/*" className="hidden" onChange={handleFile} disabled={busy} />
+        </label>
+        {value && <button type="button" onClick={() => onChange('')} className="text-outline hover:text-error">REMOVE</button>}
+      </div>
+      {err && <p className="text-error text-xs mt-1">{err}</p>}
     </div>
   )
 }
@@ -408,6 +463,9 @@ function RecordForm({ table, initial, onSave, onCancel }: {
         if (f.type === 'image') return (
           <ImageField key={f.key} label={f.label} value={(val as string) ?? ''} onChange={v => set(f.key, v)} />
         )
+        if (f.type === 'doc') return (
+          <DocField key={f.key} label={f.label} value={(val as string) ?? ''} folder={table.replace('personal_', '')} onChange={v => set(f.key, v || null)} />
+        )
         if (f.type === 'array') return (
           <ArrayField key={f.key} label={f.label} value={(val as string[]) ?? []} onChange={v => set(f.key, v)} />
         )
@@ -492,6 +550,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_affiliations')  return { title: (item.entity as string) || `${item.kind} — unknown`, sub: j(item.kind, item.regime, item.status, item.next_action) }
   if (table === 'personal_accounts')      return { title: item.institution as string, sub: j(item.kind, item.country, item.currency, item.last4 && `••${item.last4}`, item.status) }
   if (table === 'personal_subscriptions') return { title: item.provider as string, sub: j(item.amount && `${item.amount} ${item.currency}`, item.cadence, item.billing_day && `day ${item.billing_day}`, item.status) }
+  if (table === 'personal_payments')      return { title: `${item.provider} · ${item.amount} ${item.currency}`, sub: j(item.paid_at, item.paid_with, item.source, item.invoice_path && '📎 invoice') }
   if (table === 'personal_debts')         return { title: item.creditor as string, sub: j(item.kind, item.balance && `balance ${item.balance} ${item.currency}`, item.min_payment && `${item.min_payment}/mo`, item.status) }
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
