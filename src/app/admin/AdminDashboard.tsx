@@ -234,6 +234,11 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'notes',     label: 'Notes',                 type: 'textarea' },
     { key: 'order',     label: 'Order',                 type: 'number' },
   ],
+  personal_inbox: [
+    { key: 'status',   label: 'Status',   type: 'select', options: ['needs_you', 'auto_logged', 'forwarded', 'archived'] },
+    { key: 'category', label: 'Category', type: 'select', options: ['bill', 'receipt', 'alert', 'person', 'noise', 'unknown'] },
+    { key: 'notes',    label: 'Notes',    type: 'textarea' },
+  ],
   personal_agent_memory: [
     { key: 'fact',     label: 'What Jarvis remembers', type: 'textarea' },
     { key: 'category', label: 'Category', type: 'select', options: ['preference', 'person', 'context', 'routine', 'goal'] },
@@ -563,6 +568,7 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   if (table === 'personal_phone_lines')   return { title: item.label as string, sub: j(item.number_e164, item.carrier, item.plan_kind, (item.used_for_2fa as string[])?.length ? `2FA: ${(item.used_for_2fa as string[]).join(', ')}` : '') }
   if (table === 'personal_emails')        return { title: item.address as string, sub: j(item.role, item.provider, item.mfa_method) }
   if (table === 'personal_account_links') return { title: item.service as string, sub: j(item.email, item.phone, item.status) }
+  if (table === 'personal_inbox')         return { title: `${item.subject ?? '(no subject)'}`, sub: j(String(item.received_at ?? '').slice(0, 10), item.from_address, item.to_address, item.category, item.status, (item.structured as { summary?: string })?.summary) }
   if (table === 'personal_agent_memory')  return { title: item.fact as string, sub: j(item.category, item.source) }
   if (table === 'personal_entities')      return { title: item.name as string, sub: j(item.legal_form, item.country, item.my_role, item.next_obligation) }
   return { title: JSON.stringify(item), sub: '' }
