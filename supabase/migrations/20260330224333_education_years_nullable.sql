@@ -1,0 +1,1 @@
+alter table education alter column years drop not null;

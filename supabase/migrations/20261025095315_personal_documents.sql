@@ -1,5 +1,3 @@
--- Documents with expiry dates (Phase 3): one row per ID, permit, policy or certificate; scan in personal-docs.
--- Only the last 4 digits of any number are stored.
 create table if not exists public.personal_documents (
   id serial primary key,
   area text not null default 'identity' check (area in ('identity', 'health', 'career', 'finances', 'taxes', 'social', 'companies', 'home', 'digital', 'people', 'goals')),

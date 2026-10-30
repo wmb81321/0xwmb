@@ -1,4 +1,3 @@
--- Health records (Phase 3): appointments, exams, medications, vaccines, procedures.
 create table if not exists public.personal_health (
   id serial primary key,
   kind text not null default 'appointment' check (kind in ('appointment', 'exam', 'medication', 'vaccine', 'procedure', 'other')),

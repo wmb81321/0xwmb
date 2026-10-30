@@ -1,0 +1,1 @@
+alter table education rename column abroad_program to description;
