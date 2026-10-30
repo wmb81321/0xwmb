@@ -1,6 +1,7 @@
 import type Anthropic from '@anthropic-ai/sdk'
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import { debtTotals, monthlyFixed, paidThisYear, todayISO, upcoming } from '@/lib/overview'
+import { inferPaymentCountry, normalizePaymentCountry } from '@/lib/payments/country'
 
 // Tables Jarvis may read and propose changes to. Agent/audit tables are never exposed.
 export const JARVIS_TABLES = [
@@ -19,7 +20,7 @@ const SCHEMA: Record<JarvisTable, Record<string, string>> = {
   personal_affiliations: { kind: 'eps|pension|cesantias|arl|caja|other', entity: 'text', regime: 'text', status: 'active|inactive|unknown', affiliate_last4: 'text', since: 'date', last_verified_at: 'date', next_action: 'text', url: 'text', notes: 'text' },
   personal_accounts: { institution: 'text', country: 'CO|US|GLOBAL', kind: 'bank|exchange|fintech|card|wallet|broker|other', currency: 'text', last4: 'text', alias: 'text', status: 'active|pending|closed', login_email: 'text', vault_ref: 'text', url: 'text', notes: 'text' },
   personal_subscriptions: { provider: 'text', category: 'telecom|internet|entertainment|software|utility|insurance|finance|other', amount: 'number', currency: 'text', cadence: 'weekly|monthly|quarterly|yearly', billing_day: 'int 1-31', next_renewal: 'date', started_at: 'date', cancelled_at: 'date', paid_with: 'text', status: 'active|trial|paused|cancelled', email_alias: 'text', cancel_url: 'text', notes: 'text' },
-  personal_payments: { status: 'pending|paid', billed_at: 'date', due_at: 'date', paid_at: 'date', provider: 'text', subscription_id: 'int', debt_id: 'int', amount: 'number', currency: 'text', paid_with: 'text', invoice_path: 'text', source: 'manual|telegram|email|import', notes: 'text' },
+  personal_payments: { status: 'pending|paid', billed_at: 'date', due_at: 'date', paid_at: 'date', provider: 'text', subscription_id: 'int', debt_id: 'int', amount: 'number', currency: 'text', paid_with: 'text', invoice_path: 'text', source: 'manual|telegram|email|import', country: 'CO|US|OTHER', notes: 'text' },
   personal_debts: { creditor: 'text', kind: 'student_loan|credit_card|personal|mortgage|other', currency: 'text', principal: 'number', balance: 'number', rate: 'text', min_payment: 'number', due_day: 'int 1-31', phase: 'text', status: 'active|paid|defaulted|negotiating', portal_url: 'text', notes: 'text' },
   personal_phone_lines: { label: 'text', country: 'CO|US|OTHER', number_e164: 'text', carrier: 'text', plan_kind: 'prepaid|postpaid|esim|voip', billing_day: 'int 1-31', expires_at: 'date', used_for_2fa: 'text[]', status: 'active|suspended|cancelled', notes: 'text' },
   personal_emails: { address: 'text', provider: 'text', role: 'vault|private|public|legacy|domain', mfa_method: 'text', recovery: 'text', notes: 'text' },
@@ -158,6 +159,15 @@ export async function runTool(
     if (!values || typeof values !== 'object' || Array.isArray(values)) return { content: 'values must be an object', isError: true }
     const clean = Object.fromEntries(Object.entries(values).filter(([k]) => !FORBIDDEN_KEYS.has(k) && /^[a-z_0-9]+$/.test(k)))
     if (!Object.keys(clean).length) return { content: 'No writable values', isError: true }
+    // Payments carry the issuer's tax jurisdiction: normalize what was proposed, infer it on insert when missing.
+    if (table === 'personal_payments') {
+      if ('country' in clean) clean.country = normalizePaymentCountry(clean.country)
+      if (op === 'insert' && !clean.country) {
+        clean.country = inferPaymentCountry({
+          provider: clean.provider as string, currency: clean.currency as string, text: clean.notes as string,
+        })
+      }
+    }
     const invalid = checkValues(table, clean)
     if (invalid) return { content: `${invalid}. Fix the values and call propose_change again.`, isError: true }
 
