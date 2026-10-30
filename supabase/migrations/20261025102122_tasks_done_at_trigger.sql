@@ -1,4 +1,3 @@
--- Stamp personal_tasks.done_at when a task becomes done (from the admin or a Jarvis proposal); clear it if reopened.
 create or replace function private.stamp_task_done_at()
 returns trigger
 language plpgsql set search_path = ''

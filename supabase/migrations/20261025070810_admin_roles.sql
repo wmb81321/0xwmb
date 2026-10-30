@@ -1,6 +1,3 @@
--- Admin roles: replace "any authenticated user can write" with role-based access.
--- Run in Supabase SQL editor, then bootstrap your owner row (see bottom).
-
 create table if not exists public.user_roles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   role text not null check (role in ('owner', 'accountant', 'family')),
@@ -8,7 +5,6 @@ create table if not exists public.user_roles (
 );
 alter table public.user_roles enable row level security;
 
--- Users can read their own role; nobody can write via the API (manage roles in SQL editor).
 drop policy if exists "Read own role" on public.user_roles;
 create policy "Read own role" on public.user_roles
   for select to authenticated using (user_id = (select auth.uid()));
@@ -31,7 +27,6 @@ as $$ select public.has_role(array['owner']); $$;
 revoke execute on function public.has_role(text[]) from anon;
 revoke execute on function public.is_owner() from anon;
 
--- Public portfolio tables: keep "Public read", restrict writes to owner.
 do $$
 declare t text;
 begin
@@ -47,7 +42,6 @@ begin
   end loop;
 end $$;
 
--- Private job tracker: owner only, no public read. (Table was missing from the live DB.)
 create table if not exists public.job_applications (
   id serial primary key,
   company text not null,
@@ -66,8 +60,3 @@ drop policy if exists "Admin only" on public.job_applications;
 drop policy if exists "Owner only" on public.job_applications;
 create policy "Owner only" on public.job_applications for all to authenticated
   using ((select public.is_owner())) with check ((select public.is_owner()));
-
--- ── Bootstrap (run once, NOT committed with real data) ──────────────────────
--- insert into public.user_roles (user_id, role)
--- select id, 'owner' from auth.users where email = '<your-login-email>'
--- on conflict (user_id) do update set role = excluded.role;

@@ -1,5 +1,3 @@
--- Invoices carry three dates: billing date, last day to pay, and the actual payment date.
--- A pending bill has a due date but no paid_at yet.
 alter table public.personal_payments
   add column if not exists billed_at date,
   add column if not exists due_at date,

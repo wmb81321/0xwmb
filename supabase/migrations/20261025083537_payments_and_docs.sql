@@ -1,6 +1,3 @@
--- Payment history (one row per charge, incl. subscriptions later cancelled), subscription lifecycle
--- dates, a private bucket for invoices/documents, and Jarvis (Telegram agent) state tables.
-
 alter table public.personal_subscriptions
   add column if not exists started_at date,
   add column if not exists cancelled_at date;
@@ -14,7 +11,7 @@ create table if not exists public.personal_payments (
   amount numeric(14, 2) not null,
   currency text not null default 'COP',
   paid_with text,
-  invoice_path text,           -- object path in the private personal-docs bucket
+  invoice_path text,
   source text not null default 'manual' check (source in ('manual', 'telegram', 'email', 'import')),
   notes text,
   "order" int not null default 0,
@@ -24,7 +21,6 @@ create index if not exists personal_payments_paid_at_idx on public.personal_paym
 create index if not exists personal_payments_subscription_idx on public.personal_payments (subscription_id);
 create index if not exists personal_payments_debt_idx on public.personal_payments (debt_id);
 
--- Jarvis: conversation memory and proposed writes awaiting a Telegram confirm tap.
 create table if not exists public.personal_agent_messages (
   id bigserial primary key,
   chat_id bigint not null,
@@ -49,7 +45,7 @@ create table if not exists public.personal_pending_actions (
 
 create table if not exists public.personal_audit_log (
   id bigserial primary key,
-  actor text not null,         -- 'admin' | 'jarvis'
+  actor text not null,
   action text not null,
   table_name text,
   record_id int,
@@ -70,7 +66,6 @@ begin
   end loop;
 end $$;
 
--- Private documents bucket (invoices, ITIN papers). Never public; read via signed URLs only.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('personal-docs', 'personal-docs', false, 20971520,
         array['application/pdf', 'image/png', 'image/jpeg', 'image/webp', 'image/heic'])

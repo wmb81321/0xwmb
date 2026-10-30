@@ -1,4 +1,3 @@
--- Per-message Jarvis cost log: route chosen by Jev, model used, Claude token usage, estimated USD.
 create table if not exists public.personal_ai_usage (
   id bigserial primary key,
   at timestamptz not null default now(),
@@ -20,9 +19,3 @@ revoke all on public.personal_ai_usage from anon;
 drop policy if exists "Owner only" on public.personal_ai_usage;
 create policy "Owner only" on public.personal_ai_usage for all to authenticated
   using ((select private.is_owner())) with check ((select private.is_owner()));
-
--- Jev topic per message, and task areas for taxes and job search.
-alter table public.personal_ai_usage add column if not exists topic text;
-alter table public.personal_tasks drop constraint if exists personal_tasks_domain_check;
-alter table public.personal_tasks add constraint personal_tasks_domain_check
-  check (domain in ('personal', 'health', 'pension', 'money', 'debt', 'entity', 'tax', 'job', 'us', 'identity', 'other'));

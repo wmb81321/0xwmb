@@ -1,8 +1,3 @@
--- Require a strong session at the database level: role checks only pass for
---   • passkey sign-ins (amr method 'passkey'; Supabase issues these as aal1), or
---   • aal2 sessions (password / email link / OAuth + TOTP — the break-glass recovery path).
--- Mirrors isStrongSession() in src/lib/auth.ts.
-
 create or replace function private.has_role(roles text[])
 returns boolean
 language sql stable security definer set search_path = ''

@@ -1,6 +1,3 @@
--- Move role helpers out of the API-exposed `public` schema so they have no /rest/v1/rpc endpoint.
--- Policies call private.is_owner(); authenticated keeps EXECUTE so RLS can evaluate it.
-
 create schema if not exists private;
 revoke all on schema private from public, anon;
 grant usage on schema private to authenticated;

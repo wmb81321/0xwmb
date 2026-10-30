@@ -15,12 +15,12 @@
       │   ├── components/    ← Navbar, sections, DownloadCV
       │   ├── lib/           ← types, supabase clients, pdf
       │   └── proxy.ts       ← admin route protection
-      └── supabase/          ← schema.sql + seed.sql
+      └── supabase/          ← migrations/ + seed.sql
 
   Your remaining manual steps before going live:
 
   1. Fill in portfolio/.env.local with your Supabase keys
-  2. Run portfolio/supabase/schema.sql in Supabase SQL Editor
+  2. Apply portfolio/supabase/migrations/ in order (e.g. `supabase db push`)
   3. Upload everything from portfolio/public/upload-assets/ flat to a portfolio-assets Supabase
   Storage bucket
   4. Replace <SUPABASE_URL> in seed.sql and run it

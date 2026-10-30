@@ -1,4 +1,3 @@
--- Jarvis long-term memory: facts William tells it (preferences, people, routines, context, goals).
 create table if not exists public.personal_agent_memory (
   id serial primary key,
   fact text not null,

@@ -25,7 +25,7 @@ Next.js app lives at the repo root.
 - `src/lib/supabase.ts` — browser client (anon key)
 - `src/lib/supabase-server.ts` — server + admin clients
 - `src/lib/pdf.tsx` — react-pdf CV document (two-column A4 layout)
-- `supabase/schema.sql` — DB schema with RLS
+- `supabase/migrations/` — DB schema with RLS, as timestamped migrations identical to the live migration history (start at `20260321123603_initial_schema.sql`)
 - `supabase/seed.sql` — initial content seed
 
 ## Supabase Tables

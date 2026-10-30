@@ -1,0 +1,1 @@
+alter table skills add column if not exists logos jsonb default '{}';
