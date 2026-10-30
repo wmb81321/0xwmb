@@ -1,3 +1,5 @@
+import type { PaymentCountry } from './payments/country'
+
 export interface Profile {
   id: number
   name: string
@@ -137,4 +139,27 @@ export interface PortfolioData {
   skills: Skill[]
   languages: Language[]
   contact: Contact
+}
+
+export type { PaymentCountry }
+
+// Row of personal_payments (owner-only). country = issuer tax jurisdiction, see src/lib/payments/country.ts.
+export interface PersonalPayment {
+  id: number
+  status: 'pending' | 'paid'
+  billed_at: string | null
+  due_at: string | null
+  paid_at: string | null
+  provider: string
+  subscription_id: number | null
+  debt_id: number | null
+  amount: number
+  currency: string
+  paid_with: string | null
+  invoice_path: string | null
+  source: 'manual' | 'telegram' | 'email' | 'import'
+  country: PaymentCountry | null
+  notes: string | null
+  order: number
+  created_at: string
 }

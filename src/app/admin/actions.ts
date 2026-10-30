@@ -2,6 +2,7 @@
 import { createAdminSupabaseClient } from '@/lib/supabase-server'
 import { requireRole } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { normalizePaymentCountry } from '@/lib/payments/country'
 
 const admin = () => createAdminSupabaseClient()
 
@@ -48,6 +49,8 @@ export async function uploadLogo(formData: FormData): Promise<string> {
 export async function upsertRecord(table: string, data: Record<string, unknown>) {
   await requireRole(['owner'])
   assertWritable(table)
+  // personal_payments.country is CO | US | OTHER or null (check constraint); normalize before it reaches the DB.
+  if (table === 'personal_payments' && 'country' in data) data = { ...data, country: normalizePaymentCountry(data.country) }
   const { error } = await admin().from(table).upsert(data)
   if (error) throw new Error(error.message)
   if (isPublicTable(table)) revalidatePath('/')
