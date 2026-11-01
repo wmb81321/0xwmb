@@ -43,7 +43,7 @@ export const AREAS: Area[] = [
   { slug: 'identity', name: 'Identity & Documents', blurb: 'Cédula, passport, visa, ITIN, RUT and their expiry dates.', tabs: ['ID documents', 'Document tasks'], domains: ['us'] },
   { slug: 'health', name: 'Health', blurb: 'EPS, appointments, medications, exams and insurance.', tabs: ['Appointments', 'Medications', 'EPS', 'Health documents', 'Health tasks'], domains: ['health'] },
   { slug: 'career', name: 'Education & Career', blurb: 'Degrees, certificates, job applications and the CV.', tabs: ['Jobs', 'Career tasks', 'Degrees', 'Certificates', 'Career documents'], domains: ['job'] },
-  { slug: 'finances', name: 'Finances', blurb: 'Accounts, payments, subscriptions and debts.', tabs: ['Payments', 'Subscriptions', 'Accounts', 'Debts', 'Money tasks', 'Finance documents'], domains: ['money', 'debt'] },
+  { slug: 'finances', name: 'Finances', blurb: 'Accounts, payments, subscriptions, debts and the 2025 ledger.', tabs: ['Payments', 'Subscriptions', 'Accounts', 'Debts', 'Statements', 'Bank movements', 'Exchange movements', 'Crypto orders', 'Money tasks', 'Finance documents'], domains: ['money', 'debt'] },
   { slug: 'taxes', name: 'Taxes', blurb: 'DIAN, RUT, declaración de renta, IRS and US filings.', tabs: ['Tax deadlines', 'Tax documents'], domains: ['tax'] },
   { slug: 'social', name: 'Social security', blurb: 'Pension, cesantías, ARL and PILA contributions.', tabs: ['Pension & cesantías', 'Social security tasks', 'Social security documents'], domains: ['pension'] },
   { slug: 'companies', name: 'Companies', blurb: 'Ekinoxis Labs, Echosystem Technologies and the US LLC.', tabs: ['Entities', 'Company tasks', 'Company documents'], domains: ['entity'] },

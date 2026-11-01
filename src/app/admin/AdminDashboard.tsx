@@ -285,6 +285,61 @@ const FIELDS: Record<string, FieldDef[]> = {
     { key: 'notes',               label: 'Notes',            type: 'textarea' },
     { key: 'order',               label: 'Order',            type: 'number' },
   ],
+  personal_statements: [
+    { key: 'institution',     label: 'Institution',      type: 'text' },
+    { key: 'kind',            label: 'Type',             type: 'select', options: ['bank', 'card', 'fintech', 'exchange', 'broker', 'other'] },
+    { key: 'account_last4',   label: 'Account (last 4 only)', type: 'text' },
+    { key: 'currency',        label: 'Currency',         type: 'select', options: ['COP', 'USD', 'USDC'] },
+    { key: 'country',         label: 'Country',          type: 'select', options: ['CO', 'US', 'OTHER'] },
+    { key: 'period_start',    label: 'Period start',     type: 'date' },
+    { key: 'period_end',      label: 'Period end',       type: 'date' },
+    { key: 'opening_balance', label: 'Opening balance',  type: 'number' },
+    { key: 'total_in',        label: 'Total in',         type: 'number' },
+    { key: 'total_out',       label: 'Total out',        type: 'number' },
+    { key: 'closing_balance', label: 'Closing balance',  type: 'number' },
+    { key: 'status',          label: 'Status',           type: 'select', options: ['imported', 'reconciled', 'partial', 'archived'] },
+    { key: 'drive_url',       label: 'Drive link',       type: 'url' },
+    { key: 'file_path',       label: 'Statement file (private)', type: 'doc' },
+    { key: 'notes',           label: 'Notes',            type: 'textarea' },
+  ],
+  personal_bank_movements: [
+    { key: 'date',          label: 'Date',          type: 'date' },
+    { key: 'account',       label: 'Account',       type: 'select', options: ['bancolombia', 'nequi', 'davivienda', 'nu', 'other'] },
+    { key: 'description',   label: 'Description',   type: 'text' },
+    { key: 'amount',        label: 'Amount (negative = out)', type: 'number' },
+    { key: 'counterparty',  label: 'Counterparty',  type: 'text' },
+    { key: 'category',      label: 'Category',      type: 'text' },
+    { key: 'own_transfer',  label: 'Own transfer',  type: 'select', options: ['false', 'true'] },
+    { key: 'notes',         label: 'Notes',         type: 'textarea' },
+  ],
+  personal_exchange_movements: [
+    { key: 'occurred_on',  label: 'Date',          type: 'date' },
+    { key: 'source',       label: 'Source',        type: 'select', options: ['binance', 'okx', 'dolarapp'] },
+    { key: 'operation',    label: 'Operation',     type: 'text' },
+    { key: 'asset',        label: 'Asset',         type: 'text' },
+    { key: 'amount',       label: 'Amount (signed, asset units)', type: 'number' },
+    { key: 'cop_amount',   label: 'COP value',     type: 'number' },
+    { key: 'txid',         label: 'Tx id',         type: 'text' },
+    { key: 'description',  label: 'Description',   type: 'textarea' },
+  ],
+  personal_crypto_orders: [
+    { key: 'order_date',        label: 'Order date',     type: 'date' },
+    { key: 'type',              label: 'Type',           type: 'select', options: ['VENTA', 'COMPRA'] },
+    { key: 'asset',             label: 'Asset',          type: 'text' },
+    { key: 'chain',             label: 'Chain',          type: 'text' },
+    { key: 'qty',               label: 'Quantity',       type: 'number' },
+    { key: 'price',             label: 'Price',          type: 'number' },
+    { key: 'cop_paid',          label: 'COP paid',       type: 'number' },
+    { key: 'gmf',               label: 'GMF (4x1000)',   type: 'number' },
+    { key: 'sale_date',         label: 'Sale date',      type: 'date' },
+    { key: 'sale_venue',        label: 'Sold on',        type: 'select', options: ['dolarapp', 'binance_p2p', 'okx', 'other'] },
+    { key: 'cop_received',      label: 'COP received',   type: 'number' },
+    { key: 'margin_cop',        label: 'Margin (COP)',   type: 'number' },
+    { key: 'counterparty_name', label: 'Counterparty',   type: 'text' },
+    { key: 'payment_method',    label: 'Payment method', type: 'text' },
+    { key: 'bank',              label: 'Bank',           type: 'text' },
+    { key: 'notes',             label: 'Notes',          type: 'textarea' },
+  ],
 }
 
 const TABLE_MAP: Record<string, string> = {
@@ -295,10 +350,20 @@ const TABLE_MAP: Record<string, string> = {
   Tasks: 'personal_tasks', 'Social security': 'personal_affiliations', Accounts: 'personal_accounts',
   Subscriptions: 'personal_subscriptions', Payments: 'personal_payments', Debts: 'personal_debts', 'Phone lines': 'personal_phone_lines',
   Emails: 'personal_emails', Identities: 'personal_account_links', Entities: 'personal_entities', Memory: 'personal_agent_memory',
+  Statements: 'personal_statements', 'Bank movements': 'personal_bank_movements',
+  'Exchange movements': 'personal_exchange_movements', 'Crypto orders': 'personal_crypto_orders',
 }
 
 const LIST_TABS = new Set(['Experience', 'Projects', 'Education', 'Certificates', 'Volunteering', 'Achievements', 'Skills', 'Languages', 'Jobs',
-  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Payments', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities', 'Memory'])
+  'Tasks', 'Social security', 'Accounts', 'Subscriptions', 'Payments', 'Debts', 'Phone lines', 'Emails', 'Identities', 'Entities', 'Memory',
+  'Statements', 'Bank movements', 'Exchange movements', 'Crypto orders'])
+
+// Ledger tables have no manual order and can hold thousands of rows: newest first, capped.
+const LEDGER_SORT: Record<string, string> = {
+  personal_statements: 'period_end', personal_bank_movements: 'date',
+  personal_exchange_movements: 'occurred_on', personal_crypto_orders: 'order_date',
+}
+const LEDGER_LIMIT = 300
 
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
@@ -617,6 +682,10 @@ function cardSummary(table: string, item: Record<string, unknown>) {
   }
   if (table === 'personal_inbox')         return { title: `${item.subject ?? '(no subject)'}`, sub: j(String(item.received_at ?? '').slice(0, 10), item.from_address, item.to_address, item.category, item.status, (item.structured as { summary?: string })?.summary) }
   if (table === 'personal_agent_memory')  return { title: item.fact as string, sub: j(item.category, item.source) }
+  if (table === 'personal_statements')     return { title: `${item.institution}${item.account_last4 ? ` ••${item.account_last4}` : ''} · ${item.period_start} to ${item.period_end}`, sub: j(item.kind, item.currency, item.closing_balance != null && `closing ${item.closing_balance}`, item.status, item.file_path && '📎') }
+  if (table === 'personal_bank_movements') return { title: `${item.date} · ${item.amount} ${item.currency}`, sub: j(item.account, item.description, item.counterparty, item.category, item.own_transfer && 'own transfer') }
+  if (table === 'personal_exchange_movements') return { title: `${item.occurred_on ?? String(item.ts ?? '').slice(0, 10)} · ${item.operation} ${item.amount} ${item.asset ?? ''}`, sub: j(item.source, item.cop_amount && `${item.cop_amount} COP`, item.description) }
+  if (table === 'personal_crypto_orders')  return { title: `${item.order_date} · ${item.type} ${item.qty} ${item.asset}`, sub: j(item.cop_paid && `paid ${item.cop_paid} COP`, item.sale_venue && `sold on ${item.sale_venue}`, item.margin_cop != null && `margin ${item.margin_cop} COP`, item.counterparty_name) }
   if (table === 'personal_entities')      return { title: item.name as string, sub: j(item.legal_form, item.country, item.my_role, item.next_obligation) }
   return { title: JSON.stringify(item), sub: '' }
 }
@@ -715,7 +784,10 @@ export default function AdminDashboard({ initialData = {}, tabs = SITE_TABS, tit
     const isList = def ? true : LIST_TABS.has(t)
     try {
       const q = applyFilter(supabase.from(table).select('*'), def?.filter)
-      const { data } = isList ? await q.order('order') : await q.single()
+      const sortCol = LEDGER_SORT[table]
+      const { data } = !isList ? await q.single()
+        : sortCol ? await q.order(sortCol, { ascending: false }).order('id', { ascending: false }).limit(LEDGER_LIMIT)
+        : await q.order('order')
       setTabData(data)
     } finally {
       setLoading(false)
