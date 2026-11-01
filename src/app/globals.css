@@ -52,8 +52,61 @@
 
   /* ── Fonts ── */
   --font-sans:     var(--font-space-grotesk), monospace;
-  --font-mono:     var(--font-space-grotesk), monospace;
+  --font-mono:     var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-headline: var(--font-space-grotesk), monospace;
+
+  /* ── Sovereign Terminal type scale (design/DESIGN.md §3, Figma 12-2) ── */
+  --text-display-lg:                 7rem;
+  --text-display-lg--line-height:    0.92;
+  --text-display-lg--letter-spacing: -0.045em;
+  --text-display-md:                 5.5rem;
+  --text-display-md--line-height:    0.95;
+  --text-display-md--letter-spacing: -0.04em;
+  --text-headline:                   3.5rem;
+  --text-headline--line-height:      1.25;
+  --text-headline--letter-spacing:   -0.03em;
+  --text-title-xl:                   2.5rem;
+  --text-title-xl--line-height:      1.2;
+  --text-title-xl--letter-spacing:   -0.03em;
+  --text-title-lg:                   2rem;
+  --text-title-lg--line-height:      1.25;
+  --text-title-lg--letter-spacing:   -0.02em;
+  --text-title-md:                   1.75rem;
+  --text-title-md--line-height:      1.3;
+  --text-title-md--letter-spacing:   -0.01em;
+  --text-lead:                       1.375rem;
+  --text-lead--line-height:          1.5;
+  --text-title-sm:                   1.0625rem;
+  --text-title-sm--line-height:      1.3;
+  --text-cta:                        0.9375rem;
+  --text-cta--line-height:           1.3;
+  --text-cta--letter-spacing:        0.04em;
+  --text-ui:                         0.9375rem;
+  --text-ui--line-height:            1.4;
+  --text-mono-sm:                    0.8125rem;
+  --text-mono-sm--line-height:       1.4;
+  --text-mono-xs:                    0.75rem;
+  --text-mono-xs--line-height:       1.4;
+  --text-mono-2xs:                   0.625rem;
+  --text-mono-2xs--line-height:      1.4;
+
+  /* ── Public site: "The Prospectus" (DESIGN.md) ── */
+  --color-paper:        #f7f7f5;
+  --color-ink:          #0d1117;
+  --color-ink-muted:    #4a5260;
+  --color-rule:         #c9ccd2;
+  --color-inst:         #123a8c;
+  --color-inst-strong:  #0c2a6b;
+  --color-navy:         #0b1730;
+  --color-navy-raised:  #13234a;
+  --color-navy-ink:     #eef2f8;
+  --color-navy-muted:   #a7b4c9;
+  --font-display: var(--font-source-serif), Georgia, serif;
+  --font-text:    var(--font-public-sans), system-ui, sans-serif;
+
+  /* ── Motion (design/DESIGN.md §5 Motion) ── */
+  --ease-out-strong:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 
   /* ── Text scale — bumped up one step for readability ── */
   --text-xs:   0.875rem;   /* 12px → 14px */
@@ -89,6 +142,156 @@
   }
   /* Exception: pills, avatars, and full-circle elements */
   .rounded-full { border-radius: 9999px !important; }
+
+  /* Browser surfaces carry the system too */
+  html {
+    scrollbar-color: var(--color-surface-container-highest) var(--color-background);
+  }
+  ::selection {
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary);
+  }
+  :focus-visible {
+    outline: 1px solid var(--color-primary-container);
+    outline-offset: 3px;
+  }
+}
+
+/* ── Optical logos: fade in once measured (only when JS can measure them) ── */
+.optical-logo {
+  transition: opacity 240ms ease;
+}
+@media (scripting: enabled) {
+  .optical-logo[data-state="pending"] { opacity: 0; }
+}
+
+/* ── Public site: The Prospectus ── */
+/* The page canvas follows the document (the admin keeps the dark Terminal canvas). */
+html:has(.prospectus), html:has(.prospectus) body { background-color: var(--color-paper); }
+.prospectus {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-text);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-feature-settings: "tnum" 0;
+}
+.prospectus ::selection {
+  background-color: var(--color-inst);
+  color: var(--color-paper);
+}
+.prospectus :focus-visible {
+  outline: 2px solid var(--color-inst);
+  outline-offset: 3px;
+}
+.prospectus .on-navy :focus-visible {
+  outline-color: var(--color-navy-ink);
+}
+.prospectus .figures { font-variant-numeric: tabular-nums lining-nums; }
+
+/* Hairline rules typeset in once, left to right, on load. */
+.rule-in {
+  transform-origin: left center;
+  transition: transform 900ms var(--ease-out-strong);
+}
+@starting-style {
+  .rule-in { transform: scaleX(0); }
+}
+
+/* Text links: underline that thickens on hover. */
+.doc-link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-thickness 160ms ease, color 160ms ease;
+}
+.doc-link:hover { text-decoration-thickness: 2px; }
+
+/* Logo wall: greyscale at rest so the one blue leads; colour returns on hover/focus. */
+.logo-quiet {
+  filter: grayscale(1) brightness(1.15);
+  opacity: 0.78;
+  transition: filter 240ms ease, opacity 240ms ease, transform 300ms var(--ease-out-strong);
+}
+.group:hover .logo-quiet, .group:focus-visible .logo-quiet {
+  filter: none;
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+/* ── Prospectus motion: the document settles in, nothing loops ── */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.prospectus) { scroll-behavior: smooth; }
+
+  /* Cover entrance: lines of the cover set in one after another. --i is the order. */
+  .enter {
+    transition: opacity 700ms var(--ease-out-strong), transform 700ms var(--ease-out-strong);
+    transition-delay: calc(var(--i, 0) * 70ms + 80ms);
+  }
+  @starting-style {
+    .enter { opacity: 0; transform: translateY(14px); }
+  }
+
+  /* Portrait: revealed from the bottom edge, like a plate being printed. */
+  .plate-in {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1100ms var(--ease-in-out-strong) 200ms;
+  }
+  .plate-in img {
+    transform: scale(1);
+    transition: transform 1400ms var(--ease-out-strong) 200ms;
+  }
+  @starting-style {
+    .plate-in { clip-path: inset(100% 0 0 0); }
+    .plate-in img { transform: scale(1.06); }
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Content settles in as it enters the viewport, then stays put. */
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+    /* Section rules draw across as the section arrives. */
+    .rule-scroll {
+      transform-origin: left center;
+      animation: rule-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+
+  @supports (animation-timeline: scroll()) {
+    /* Reading progress: a hairline under the header that tracks the page. */
+    .read-progress {
+      transform-origin: left center;
+      animation: rule-draw linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rule-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.read-progress { transform: scaleX(0); }
+@media (prefers-reduced-motion: reduce) { .read-progress { display: none; } }
+@supports not (animation-timeline: scroll()) { .read-progress { display: none; } }
+
+/* Primary action: press feedback. */
+.press { transition: background-color 160ms ease, transform 160ms var(--ease-out-strong); }
+.press:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .rule-in, .press { transition: none; }
+  .group:hover .logo-quiet, .group:focus-visible .logo-quiet { transform: none; }
+  .press:active { transform: none; }
+  .data-pulse { animation: none; }
 }
 
 @layer utilities {
@@ -103,6 +306,7 @@
     background-color: var(--color-primary-container);
     animation: data-pulse 2s ease-in-out infinite;
   }
+
 
   /* Ghost border — outline-variant at 15% opacity */
   .ghost-border {

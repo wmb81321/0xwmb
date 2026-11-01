@@ -43,64 +43,11 @@ Fields: `company`, `position`, `website` (company site), `application_url` (link
 Source files for job postings live in `jobs/` at the repo root (markdown files, one per job).
 To add a job: parse the markdown → admin panel `/admin` → Jobs tab → create entry with `status = 'saved'`.
 
-## Design System — "The Sovereign Terminal"
-Full spec: `design/DESIGN.md` | Reference HTML: `design/code.html` | Screenshot: `design/screen.png`
-
-**Creative North Star:** High-contrast precision. Custom-built OS kernel aesthetic. Brutalist terminal. NOT a web template.
-
-### Color Tokens (Tailwind custom colors from design/code.html)
-```
-background:               #10131c   ← page base
-surface:                  #10131c   ← same as background
-surface-dim:              #10131c
-surface-container-lowest: #0a0e16
-surface-container-low:    #181c24   ← cards, sections
-surface-container:        #1c2028   ← nav/sidebar
-surface-container-high:   #262a33   ← active cards, inputs
-surface-container-highest:#31353e   ← modals, floating
-surface-bright:           #353943
-surface-variant:          #31353e
-
-primary:                  #e2f8ff   ← light cyan (text on dark)
-primary-container:        #00D1FF   ← bright cyan (CTAs, glows)
-primary-fixed-dim:        #00D1FF
-on-primary:               #003642   ← dark text on cyan buttons
-on-primary-container:     #002a33
-
-secondary:                #d3fbff
-secondary-container:      #00eefc
-secondary-fixed-dim:      #00dbe9
-
-tertiary:                 #fff7fc
-tertiary-container:       #f2d2ff   ← system alerts / encrypted status
-
-on-surface:               #e0e2ee   ← primary text
-on-surface-variant:       #b2c8cc   ← secondary/metadata text
-on-background:            #e0e2ee
-
-outline:                  #7f909e   ← input borders
-outline-variant:          #32434d   ← ghost borders (use at 15% opacity)
-```
-
-### Typography
-- **Font:** Space Grotesk (all levels — headline, body, label)
-- Display: 3.5rem, letter-spacing -0.02em
-- Body: 1rem (text scale bumped up — `text-xs`=14px, `text-sm`=16px via `@theme` overrides in globals.css)
-- `primary` (#e2f8ff) for command/label text; `on-surface-variant` (#b2c8cc) for metadata
-
-### Layout Rules
-- **0px border-radius everywhere** (except `full: 9999px` for pills/avatars)
-- **No 1px borders** for section separation — use tonal surface shifts instead
-- **Ghost Border:** `outline-variant` at 15% opacity for inputs/data tables only
-- **Blackspace:** leave generous empty space — premium, not cramped
-- Heavy left-aligned typography with intentional asymmetric layout
-- Glassmorphism for floating HUD: `surface-container-low` at 70% opacity + `backdrop-filter: blur(12px)`
-
-### Signature Components
-- **Data Pulse:** 4×4px `primary` square pulsing (opacity 1.0→0.4) next to active headers
-- **Primary CTA:** Sharp 0px corners, gradient from `primary` to `primary-container` at 135°, "flicker" on hover
-- **Secondary CTA:** 0px corners, ghost border (`primary` at 20%), text in `primary`
-- **Input fields:** No background fill, only 1px bottom border (`outline`), active = 2px `primary`
+## Design Systems
+- **Public site (`/`): "The Prospectus".** Full spec: `DESIGN.md` (repo root) + `.impeccable/design.json`; product truth in `PRODUCT.md`; direction contract in `.impeccable/surfaces/src-app-page-tsx.md`.
+  Paper white, ink, one institutional blue (email action + links only), hairline rules, navy bands for the logo wall and the close. Source Serif 4 display, Public Sans text. Copy: executive, short, no dashes.
+  Logos render through `src/components/home/OpticalLogo.tsx` (optical sizing); background-removed logos live in Supabase Storage `portfolio-assets/v2/`.
+- **Admin (`/admin`, Life OS): "The Sovereign Terminal".** Spec: `design/DESIGN.md` (dark surfaces, cyan, Space Grotesk + JetBrains Mono, 0px radius). Its tokens share `src/app/globals.css` with the Prospectus tokens; do not mix the two on one surface.
 
 ## PDF Notes
 - Fonts: built-in PDF fonts (Helvetica/Helvetica-Bold) — no external font files needed

@@ -1,57 +1,35 @@
-'use client'
-import Link from 'next/link'
-import { useState } from 'react'
-import type { PortfolioData } from '@/lib/types'
-import DownloadCV from '@/components/DownloadCVNoSSR'
+import { CONTAINER } from '@/components/home/primitives'
 
-const links: { href: string; label: string }[] = []
+const LINKS = [
+  { href: '#track-record', label: 'Track record' },
+  { href: '#ventures', label: 'Ventures' },
+  { href: '#credentials', label: 'Credentials' },
+  { href: '#contact', label: 'Contact' },
+]
 
-export default function Navbar({ data }: { data: PortfolioData }) {
-  const [open, setOpen] = useState(false)
-
+/** Document header: issuer name left, sections and the one blue action right. */
+export default function Navbar({ name, email }: { name: string; email?: string | null }) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-outline-variant/20">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-
-        <Link href="/" className="text-primary-container font-semibold tracking-[0.2em] text-sm uppercase">
-          0xwomb
-        </Link>
-
-        <div className="hidden md:flex items-center gap-10">
-          {links.map((l) => (
-            <a key={l.href} href={l.href}
-              className="text-xs tracking-[0.15em] text-on-surface-variant hover:text-primary transition-colors uppercase">
-              {l.label}
+    <header className="sticky top-0 z-50 border-b border-rule bg-paper/92 backdrop-blur-sm">
+      <div className={`${CONTAINER} flex h-16 items-center justify-between gap-6`}>
+        <a href="#top" className="font-display text-base font-semibold whitespace-nowrap tracking-[-0.01em] sm:text-lg">{name}</a>
+        <nav aria-label="Sections" className="flex items-center gap-8">
+          <ul className="hidden items-center gap-7 text-ui text-ink-muted md:flex">
+            {LINKS.map((l) => (
+              <li key={l.href}>
+                <a href={l.href} className="inline-flex min-h-11 items-center hover:text-ink transition-colors">{l.label}</a>
+              </li>
+            ))}
+          </ul>
+          {email && (
+            <a href={`mailto:${email}`}
+              className="press inline-flex min-h-11 items-center bg-inst px-5 text-ui font-medium text-paper hover:bg-inst-strong">
+              Email
             </a>
-          ))}
-        </div>
-
-        <div className="hidden md:block">
-          <DownloadCV data={data} />
-        </div>
-
-        {/* Mobile hamburger */}
-        <button className="md:hidden text-on-surface-variant flex flex-col gap-1.5" onClick={() => setOpen(!open)} aria-label="Menu">
-          <span className="block w-5 h-px bg-current" />
-          <span className="block w-5 h-px bg-current" />
-          <span className="block w-5 h-px bg-current" />
-        </button>
+          )}
+        </nav>
       </div>
-
-      {open && (
-        <div className="md:hidden glass border-t border-outline-variant/20 px-6 py-5 flex flex-col gap-5">
-          {links.map((l) => (
-            <a key={l.href} href={l.href}
-              className="text-xs tracking-[0.15em] uppercase text-on-surface-variant"
-              onClick={() => setOpen(false)}>
-              {l.label}
-            </a>
-          ))}
-          <div onClick={() => setOpen(false)}>
-            <DownloadCV data={data} />
-          </div>
-        </div>
-      )}
-    </nav>
+      <span className="read-progress absolute inset-x-0 -bottom-px h-px bg-ink" aria-hidden />
+    </header>
   )
 }

@@ -1,48 +1,18 @@
 import type { Skill } from '@/lib/types'
-import SectionHeader from '@/components/SectionHeader'
-
-function SkillTag({ name, logoUrl }: { name: string; logoUrl?: string }) {
-  return (
-    <span className="flex items-center gap-1.5 text-xs text-on-surface-variant bg-surface-container px-2 py-1 border border-outline-variant/20 hover:border-primary-container/40 hover:text-primary transition-colors">
-      {logoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoUrl} alt={name} width={11} height={11} className="object-contain opacity-70" />
-      )}
-      {name}
-    </span>
-  )
-}
-
-function SkillGroup({ title, skills }: { title: string; skills: Skill[] }) {
-  return (
-    <div>
-      <SectionHeader label={title} />
-      <div className="flex flex-col gap-6">
-        {skills.map((sk) => (
-          <div key={sk.id}>
-            <p className="text-xs text-outline tracking-[0.15em] uppercase mb-2">{sk.category}</p>
-            <div className="flex flex-wrap gap-1.5">
-              {sk.items.map((item) => (
-                <SkillTag key={item} name={item} logoUrl={sk.logos?.[item]} />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+import { DocSection } from '@/components/home/primitives'
 
 export default function SkillsSection({ skills }: { skills: Skill[] }) {
-  const technical = skills.filter((s) => s.type === 'technical')
-  const soft = skills.filter((s) => s.type === 'soft')
-
+  if (skills.length === 0) return null
   return (
-    <>
-      <div className="grid md:grid-cols-2 gap-10">
-        {technical.length > 0 && <SkillGroup title="Technical_Grid" skills={technical} />}
-        {soft.length > 0 && <SkillGroup title="Core_Competencies" skills={soft} />}
-      </div>
-    </>
+    <DocSection id="capabilities" title="Capabilities">
+      <dl>
+        {skills.map((s, i) => (
+          <div key={s.id} className={`grid gap-2 py-4 md:grid-cols-9 md:gap-10 ${i > 0 ? 'border-t border-rule' : 'pt-0'}`}>
+            <dt className="text-ui font-semibold md:col-span-2">{s.category}</dt>
+            <dd className="text-ink-muted md:col-span-7">{s.items.join(' · ')}</dd>
+          </div>
+        ))}
+      </dl>
+    </DocSection>
   )
 }

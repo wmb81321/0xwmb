@@ -2,15 +2,13 @@ export const dynamic = 'force-dynamic'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { PortfolioData } from '@/lib/types'
 import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 import Hero from '@/components/sections/Hero'
+import Network from '@/components/sections/Network'
 import ExperienceSection from '@/components/sections/Experience'
 import ProjectsSection from '@/components/sections/Projects'
-import AchievementsSection from '@/components/sections/Achievements'
-import EducationSection from '@/components/sections/Education'
-import CertificatesSection from '@/components/sections/Certificates'
-import VolunteeringSection from '@/components/sections/Volunteering'
+import Credentials from '@/components/sections/Credentials'
 import SkillsSection from '@/components/sections/Skills'
+import ContactSection from '@/components/sections/Contact'
 
 async function getPortfolioData(): Promise<PortfolioData> {
   const supabase = await createServerSupabaseClient()
@@ -59,51 +57,25 @@ async function getPortfolioData(): Promise<PortfolioData> {
 
 export default async function Page() {
   const data = await getPortfolioData()
+  const now = new Date()
 
   return (
-    <>
-      <Navbar data={data} />
-
+    <div className="prospectus min-h-screen">
+      <Navbar name={data.profile.name} email={data.contact.email} />
       <main>
-        {/* ── Hero ─────────────────────────────────────────────────── */}
-        <Hero profile={data.profile} contact={data.contact} languages={data.languages} />
-
-        {/* ── Experience ───────────────────────────────────────────── */}
+        <Hero data={data} />
+        <Network />
         <ExperienceSection experiences={data.experiences} />
-
-        {/* ── Projects ─────────────────────────────────────────────── */}
         <ProjectsSection projects={data.projects} />
-
-        {/* ── Achievements ─────────────────────────────────────────── */}
-        <AchievementsSection achievements={data.achievements} />
-
-        {/* ── Education ────────────────────────────────────────────── */}
-        <section className="py-10 px-6 max-w-6xl mx-auto">
-          <EducationSection education={data.education} />
-        </section>
-
-        {/* ── Certification + Volunteering (side by side, below Education) ── */}
-        {(data.certificates.length > 0 || data.volunteering.length > 0) && (
-          <section className="py-10 px-6 max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-10">
-              {data.certificates.length > 0 && (
-                <CertificatesSection certificates={data.certificates} />
-              )}
-              {data.volunteering.length > 0 && (
-                <VolunteeringSection volunteering={data.volunteering} />
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* ── Skills ───────────────────────────────────────────────── */}
-        <section id="skills" className="section-anchor py-10 px-6 max-w-6xl mx-auto">
-          <SkillsSection skills={data.skills} />
-        </section>
-
+        <Credentials
+          education={data.education}
+          certificates={data.certificates}
+          volunteering={data.volunteering}
+          achievements={data.achievements}
+        />
+        <SkillsSection skills={data.skills} />
+        <ContactSection data={data} year={now.getFullYear()} />
       </main>
-
-      <Footer contact={data.contact} profile={data.profile} />
-    </>
+    </div>
   )
 }

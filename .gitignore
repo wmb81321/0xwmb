@@ -56,3 +56,9 @@ next-env.d.ts
 # private personal documents (never commit: public repo)
 /docs/itin/
 /WILLIAM_MARTINEZ_BOLANOS_*.pdf
+
+# Impeccable local artifacts
+.impeccable/review/
+.impeccable/decision/
+.playwright-mcp/
+.impeccable/questions/
