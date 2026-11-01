@@ -1,99 +1,79 @@
 import Image from 'next/image'
-import type { Profile, Contact, Language } from '@/lib/types'
+import type { PortfolioData } from '@/lib/types'
+import DownloadCV from '@/components/DownloadCVNoSSR'
+import KeyFigures, { type Figure } from '@/components/home/KeyFigures'
+import { CONTAINER } from '@/components/home/primitives'
 
-const SOCIALS = [
-  { key: 'linkedin',  label: 'LI', icon: '/socials/linkdn.png' },
-  { key: 'github',    label: 'GH', icon: '/socials/github.png' },
-  { key: 'twitter',   label: 'X',  icon: '/socials/x.png' },
-  { key: 'farcaster', label: 'FC', icon: '/socials/farcaster.png' },
-  { key: 'telegram',  label: 'TG', icon: '/socials/telegram.png' },
-]
+const LANG_CODES: Record<string, string> = {
+  spanish: 'ES', english: 'EN', french: 'FR', portuguese: 'PT', german: 'DE', italian: 'IT',
+}
+const langCode = (name: string) => LANG_CODES[name.trim().toLowerCase()] ?? name.slice(0, 2).toUpperCase()
+const firstYear = (s?: string | null) => s?.match(/\d{4}/)?.[0]
 
-interface HeroProps {
-  profile: Profile
-  contact: Contact
-  languages: Language[]
+function keyFigures({ projects, experiences, volunteering, languages }: PortfolioData): Figure[] {
+  const since = experiences.map((e) => firstYear(e.years)).filter(Boolean).sort()[0]
+  const figures: Figure[] = [
+    {
+      label: 'Ventures founded',
+      value: String(projects.length),
+      note: `${projects.map((p) => p.name).join(', ')}.`,
+    },
+    {
+      label: since ? `Roles held since ${since}` : 'Roles held',
+      value: String(experiences.length),
+      note: `${experiences.map((e) => e.company).join(', ')}.`,
+    },
+  ]
+  if (volunteering.length > 0) {
+    figures.push({
+      label: 'Ethereum Foundation events',
+      value: String(volunteering.length),
+      note: `${volunteering.map((v) => v.reason.replace(/\s+/g, ' ').replace(/^Volunteer\s+(Lead\s+)?/i, '').trim()).join(', ')}.`,
+    })
+  }
+  if (languages.length > 0) {
+    figures.push({
+      label: 'Working languages',
+      value: languages.map((l) => langCode(l.name)).join(' · '),
+      note: `${languages.map((l) => `${l.name} ${l.level.split(/\s/)[0]}`).join(', ')}.`,
+    })
+  }
+  return figures
 }
 
-export default function Hero({ profile, contact, languages }: HeroProps) {
-  const socials = SOCIALS
-    .map((s) => ({ ...s, href: contact[s.key as keyof Contact] as string }))
-    .filter((s) => s.href)
+export default function Hero({ data }: { data: PortfolioData }) {
+  const { profile, contact } = data
 
   return (
-    <section className="pt-14 min-h-[90vh] flex flex-col md:flex-row">
-
-      {/* ── Left panel: photo ───────────────────────────────────────── */}
-      <div className="relative w-full md:w-[38%] bg-surface-container-low flex flex-col min-h-[50vw] md:min-h-0">
-        {profile.photo_url && (
-          <>
-            <Image
-              src={profile.photo_url}
-              alt={profile.name}
-              fill
-              className="object-cover grayscale opacity-50"
-              priority
-            />
-            {/* Cyan atmosphere */}
-            <div className="absolute inset-0 bg-primary-container/5" />
-            {/* Bottom fade into panel bg */}
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-surface-container-low to-transparent" />
-          </>
-        )}
-
-        {/* Language badges — pinned bottom */}
-        <div className="relative mt-auto px-6 py-5 flex flex-wrap gap-x-5 gap-y-1 z-10">
-          {languages.map((l) => (
-            <span key={l.id} className="text-xs text-on-surface-variant tracking-wide">
-              {l.flag}&nbsp;{l.name}
-              <span className="text-outline ml-1">/ {l.level}</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Right panel: content ─────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-16 py-16 bg-surface-container-lowest">
-
-
-
-        {/* Summary — shown above the name, terminal "output" style */}
-        <p className="text-on-surface-variant text-sm leading-relaxed max-w-lg mb-10">
-          {profile.summary}
-        </p>
-
-        {/* Name */}
-        <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-on-surface leading-none tracking-tight uppercase mb-3">
+    <section id="top" className={`${CONTAINER} grid gap-12 pt-10 pb-16 lg:grid-cols-12 lg:gap-10 lg:pt-12 lg:pb-14`}>
+      <div className="flex flex-col lg:col-span-8">
+        <h1 className="font-display font-normal text-[clamp(3rem,5.6vw,5rem)] leading-[1.02] tracking-[-0.025em]">
           {profile.name}
         </h1>
-
-        {/* Title */}
-        <p className="text-primary-container text-xs tracking-[0.2em] uppercase font-medium mb-2">
-          {profile.title}
-        </p>
-
-        {/* Industries */}
-        {profile.industries && (
-          <p className="text-outline text-xs tracking-[0.1em] mb-8">{profile.industries}</p>
-        )}
-
-        {/* Social links */}
-        <div className="flex flex-wrap gap-2">
-          {socials.map((s) => (
-            <a key={s.key} href={s.href}
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center w-8 h-8 border border-outline-variant/40 hover:border-primary-container transition-colors">
-              <Image src={s.icon} alt={s.label} width={14} height={14} className="opacity-60 hover:opacity-100 transition-opacity" />
-            </a>
-          ))}
+        <p className="mt-5 text-title-sm font-medium text-ink lg:text-xl">{profile.title}</p>
+        <p className="mt-5 max-w-152 text-lg leading-relaxed text-ink-muted lg:text-lead">{profile.summary}</p>
+        <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
           {contact.email && (
             <a href={`mailto:${contact.email}`}
-              className="flex items-center px-3 py-1.5 border border-outline-variant/40 text-on-surface-variant text-xs hover:border-primary-container hover:text-primary-container transition-colors">
-              {contact.email}
+              className="press inline-flex min-h-13 items-center bg-inst px-7 text-ui font-medium text-paper hover:bg-inst-strong">
+              Email {contact.email}
             </a>
           )}
+          <DownloadCV data={data} className="text-ui text-inst hover:text-inst-strong" />
         </div>
       </div>
+
+      <aside className="lg:col-span-4" aria-label="At a glance">
+        {profile.photo_url && (
+          <div className="relative aspect-square w-full overflow-hidden bg-rule">
+            <Image src={profile.photo_url} alt={profile.name} fill priority
+              sizes="(min-width: 1024px) 380px, 100vw" className="object-cover object-[50%_72%]" />
+          </div>
+        )}
+        <div className="mt-6">
+          <KeyFigures figures={keyFigures(data)} />
+        </div>
+      </aside>
     </section>
   )
 }

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T00:00:00Z",
+  "title": "Design System: The Prospectus",
+  "extensions": {
+    "colorMeta": {
+      "inst": { "role": "primary", "displayName": "Institutional Blue", "canonical": "#123a8c" },
+      "inst-strong": { "role": "primary", "displayName": "Institutional Blue, pressed", "canonical": "#0c2a6b" },
+      "navy": { "role": "secondary", "displayName": "Deep Navy", "canonical": "#0b1730" },
+      "navy-raised": { "role": "secondary", "displayName": "Raised Navy", "canonical": "#13234a" },
+      "navy-ink": { "role": "secondary", "displayName": "Navy Ink", "canonical": "#eef2f8" },
+      "navy-muted": { "role": "secondary", "displayName": "Navy Muted", "canonical": "#a7b4c9" },
+      "paper": { "role": "neutral", "displayName": "Cool Paper", "canonical": "#f7f7f5" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0d1117" },
+      "ink-muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "#4a5260" },
+      "rule": { "role": "neutral", "displayName": "Hairline", "canonical": "#c9ccd2" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero name and closing line only." },
+      "headline": { "displayName": "Headline", "purpose": "Margin section titles; closing email." },
+      "title": { "displayName": "Title", "purpose": "Role and venture names." },
+      "lead": { "displayName": "Lead", "purpose": "Hero summary and closing line." },
+      "body": { "displayName": "Body", "purpose": "Bullets, briefs, skill lists." },
+      "label": { "displayName": "Label", "purpose": "Nav, buttons, dates, column labels." },
+      "small": { "displayName": "Small", "purpose": "Source notes, domains, metadata, footer (CSS token --text-mono-xs, Public Sans)." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-out-strong", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Rule typeset (900ms scaleX from left, once via @starting-style), button press, logo hover scale." },
+      { "name": "feedback", "value": "160ms ease", "purpose": "Colour, underline thickness and press transitions." },
+      { "name": "press", "value": "scale(0.98)", "purpose": "Primary button :active. Removed under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Email Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one filled action: email. Hero 52px, header 44px.",
+      "html": "<a class=\"ds-btn\" href=\"#\">Email hi@0xwomb.xyz</a>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; min-height:52px; padding:0 28px; background:#123a8c; color:#f7f7f5; font:500 0.9375rem/1.4 'Public Sans', system-ui, sans-serif; text-decoration:none; border-radius:0; transition:background-color 160ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-btn:hover { background:#0c2a6b; } .ds-btn:active { transform:scale(0.98); }"
+    },
+    {
+      "name": "Document Link",
+      "kind": "custom",
+      "refersTo": "doc-link",
+      "description": "Underlined blue link; underline thickens on hover.",
+      "html": "<a class=\"ds-doc\" href=\"#\">Download CV (PDF)</a>",
+      "css": ".ds-doc { color:#123a8c; font:0.9375rem/1.4 'Public Sans', system-ui, sans-serif; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em; transition:text-decoration-thickness 160ms ease, color 160ms ease; } .ds-doc:hover { color:#0c2a6b; text-decoration-thickness:2px; }"
+    },
+    {
+      "name": "Key Figures",
+      "kind": "custom",
+      "description": "Signature: hairline table of figures, each with a footnote marker tied to a source note.",
+      "html": "<div class=\"ds-fig\"><table><tr><th>Ventures founded</th><td>3<sup>1</sup></td></tr><tr><th>Working languages</th><td>ES · EN · FR<sup>2</sup></td></tr></table><ol><li>1. ETH Cali, Ekinoxis, Convexo.</li><li>2. Spanish Native, English C1, French B2.</li></ol></div>",
+      "css": ".ds-fig { font:0.9375rem/1.4 'Public Sans', system-ui, sans-serif; color:#0d1117; background:#f7f7f5; font-variant-numeric:tabular-nums lining-nums; } .ds-fig table { width:100%; border-collapse:collapse; } .ds-fig th, .ds-fig td { border-top:1px solid #c9ccd2; padding:12px 0; } .ds-fig th { text-align:left; font-weight:400; color:#4a5260; } .ds-fig td { text-align:right; font-weight:600; } .ds-fig sup { color:#4a5260; font-size:0.7em; margin-left:4px; } .ds-fig tr:hover { background:rgba(13,17,23,0.03); } .ds-fig tr:hover sup { color:#123a8c; } .ds-fig ol { list-style:none; margin:12px 0 0; padding:12px 0 0; border-top:1px solid #c9ccd2; font-size:0.75rem; color:#4a5260; }"
+    },
+    {
+      "name": "Margin Section Heading",
+      "kind": "custom",
+      "description": "DocSection: full width ink rule, serif title in the left 3 of 12 columns.",
+      "html": "<section class=\"ds-sec\"><div class=\"r\"></div><div class=\"g\"><h2>Track record</h2><p>Content sits in the remaining nine columns.</p></div></section>",
+      "css": ".ds-sec { background:#f7f7f5; color:#0d1117; padding:64px 0; } .ds-sec .r { height:1px; background:#0d1117; } .ds-sec .g { display:grid; grid-template-columns:3fr 9fr; gap:40px; padding-top:32px; } .ds-sec h2 { margin:0; font:600 2rem/1.25 'Source Serif 4', Georgia, serif; letter-spacing:-0.01em; } .ds-sec p { margin:0; font:1rem/1.6 'Public Sans', system-ui, sans-serif; color:#4a5260; }"
+    },
+    {
+      "name": "Logo Tile",
+      "kind": "custom",
+      "refersTo": "logo-tile",
+      "description": "Navy band tile, optically sized logo plus domain; 1px raised navy gaps.",
+      "html": "<a class=\"ds-tile\" href=\"#\"><span class=\"l\">LOGO</span><span class=\"d\">ethcali.org</span></a>",
+      "css": ".ds-tile { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:144px; width:200px; background:#0b1730; text-decoration:none; transition:background-color 200ms; } .ds-tile:hover { background:#13234a; } .ds-tile .l { color:#eef2f8; font:600 1.25rem 'Public Sans', sans-serif; } .ds-tile .d { color:#a7b4c9; font:0.75rem/1.4 'Public Sans', sans-serif; } .ds-tile:hover .d { color:#eef2f8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Prospectus",
+    "overview": "The candidate presented like an institutional offering memorandum: summary of terms, tabular proof, sourced claims. Cool paper, near black ink, hairline rules as the only structure, one institutional blue for actions and links, navy reserved for full bleed bands.",
+    "keyCharacteristics": ["Cool paper ground, near black ink, one blue, two navy bands", "Source Serif 4 display over Public Sans text, tabular figures in data", "Hairline rules are the only structure", "Square corners, no shadows", "Rules typeset in once on load; nothing else enters"],
+    "rules": [
+      { "name": "The One Blue Rule", "body": "Institutional Blue marks only actions and links, the hero title line and the active footnote.", "section": "colors" },
+      { "name": "The Navy Reserve Rule", "body": "Navy appears only as full bleed bands.", "section": "colors" },
+      { "name": "The Tabular Facts Rule", "body": "Numbers and dates sit in tabular lining figures.", "section": "typography" },
+      { "name": "The Middot Rule", "body": "Inline data joins with a spaced middot; ranges use 'to'; no dashes in copy.", "section": "typography" },
+      { "name": "The Paper Rule", "body": "Surfaces never lift; hover changes colour or underline, not elevation.", "section": "elevation" },
+      { "name": "The Sourced Figure Rule", "body": "No number on the cover without a footnote naming its source.", "section": "components" }
+    ],
+    "dos": ["Do open each content section with the DocSection margin heading", "Do keep blue for actions and links", "Do footnote every figure", "Do route every logo through optical sizing", "Do keep targets 44px and focus visible"],
+    "donts": ["Don't use cards, shadows, glow, gradients or rounded corners", "Don't use a monospace face or tracked uppercase labels", "Don't place eyebrow labels above headings", "Don't add a second accent or navy panels on paper", "Don't animate beyond the rules typesetting in", "Don't use dashes as punctuation in copy"]
+  }
+}

@@ -1,3 +1,5 @@
+> **Scope note (2026-10-31):** this document now governs the private admin (Life OS, `/admin`) only. The public site (`/`) uses "The Prospectus" system, documented in `/DESIGN.md` at the repo root.
+
 # Design System Strategy: The Sovereign Terminal
 
 ## 1. Overview & Creative North Star
@@ -22,10 +24,31 @@ The palette is rooted in `surface` (#0d0e0f), a true-black variant that provides
 ---
 
 ## 3. Typography: Monospace Authority
-We utilize **Space Grotesk** for all levels to maintain a rigid, machine-readable identity that remains legible at high editorial scales.
+Two families (source: Figma file `5zU4vrevqf1OjCPKNoKh5o`, frame 12-2 "Public homepage — logos", Oct 2026):
 
-*   **Display & Headline:** These should be treated as "data headers." Use `display-lg` (3.5rem) with tighter letter-spacing (-0.02em) to create a sense of massive, looming data.
-*   **Body & Labels:** Use `body-md` (0.875rem) for all standard text. The monospace nature of the font ensures that columns of data align perfectly, reinforcing the "cypher" aesthetic.
+*   **Space Grotesk** (`font-sans` / `font-headline`) — display, headings, body copy, CTAs.
+*   **JetBrains Mono** (`font-mono`) — every "machine" string: nav, status bar, section meta (`01 // LOG.EXPERIENCE`), dates, chips, domains (`giveth.io ↗`), labels.
+
+**Type scale** (Tailwind tokens in `src/app/globals.css` `@theme`):
+
+| Token | Size | Tracking | Use |
+|---|---|---|---|
+| `text-display-lg` | 7rem (112px) | -0.045em, lh 0.92 | Hero name |
+| `text-display-md` | 5.5rem (88px) | -0.04em, lh 0.95 | Contact headline |
+| `text-headline` | 3.5rem (56px) | -0.03em | Section titles |
+| `text-title-xl` | 2.5rem (40px) | -0.03em | Contact email |
+| `text-title-lg` | 2rem (32px) | -0.02em | Project names |
+| `text-title-md` | 1.75rem (28px) | -0.01em | Experience roles |
+| `text-lead` | 1.375rem (22px) | — lh 1.5 | Hero summary |
+| `text-title-sm` | 1.0625rem (17px) | — | Credential / contact card titles |
+| `text-cta` | 0.9375rem (15px) | 0.04em | Buttons |
+| `text-mono-sm` | 0.8125rem (13px) | — | Nav, dates, chips |
+| `text-mono-xs` | 0.75rem (12px) | — | Meta, labels, domains |
+| `text-mono-2xs` | 0.625rem (10px) | — | Logo-wall domains |
+
+*   **Display & Headline:** Treated as "data headers": heavy, tight tracking, left-aligned. The last word of a display line can switch to `primary-container` (cyan) for emphasis (`Bolaños`, `sovereign.`).
+*   **Body & Labels:** Body copy in Space Grotesk 16px (`on-surface-variant`); all metadata in JetBrains Mono so columns of data align, reinforcing the "cypher" aesthetic.
+*   **Section header pattern:** 6px glowing `primary-container` square + `text-headline` title on the left; `text-mono-xs` meta (`02 // PROC.FOUNDED — 3 RUNNING`) on the right.
 *   **Typographic Hierarchy:** Leverage `primary` (#69daff) for "Command" text (labels and CTAs) and `on-surface-variant` (#ababac) for "Log" text (secondary metadata). This distinction allows the user to scan for actionable data instantly.
 
 ---
@@ -57,6 +80,19 @@ Traditional drop shadows are too "organic" for this system. We use light and tra
 
 ### Signature Component: The "Data Pulse"
 *   A small 4x4px square of `primary` that sits next to active headers, pulsing slowly (opacity 1.0 to 0.4) to indicate a live connection or "sovereign" status.
+
+### Logos (`src/components/home/OpticalLogo.tsx`)
+*   **Optical sizing, never raw `object-contain`.** Logos are trimmed of transparent padding and sized by visual *area* inside their box, with a mild density correction (solid plates slightly smaller, line marks slightly larger). Wide wordmarks and tall marks then read at the same weight.
+*   Logos sit directly on the surface. Use background-removed artwork (Supabase Storage `portfolio-assets/v2/`); never a white or black plate unless the plate is part of the brand (Giveth, ESP).
+*   Box sizes: logo wall 140×80, experience 120, projects 220, credentials 72.
+
+### Signature Interaction: "Scan Target"
+*   Linked logo tiles show four 14px `primary-container` corner brackets on hover/focus. They close in from `scale(1.06)` (260ms `ease-out-strong`), the surface steps up one tone (`surface-container`), the artwork scales to 1.04 and the domain label turns cyan. Hover effects are gated to `(hover: hover) and (pointer: fine)`; keyboard focus shows the same brackets.
+
+### Motion
+*   Tokens: `--ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1)` for entries and feedback, `--ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1)` for on-screen movement. UI motion stays under 300ms.
+*   **One authored moment per page:** the network wall "boots" tile by tile as it scrolls in (CSS scroll-driven `clip-path` reveal, no JS). Nothing else enters with an animation.
+*   `prefers-reduced-motion`: keep opacity and color, drop all movement.
 
 ---
 
