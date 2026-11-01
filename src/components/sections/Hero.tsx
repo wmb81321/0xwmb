@@ -14,10 +14,12 @@ export default function Hero({ data }: { data: PortfolioData }) {
   return (
     <section id="top" className={`${CONTAINER} grid gap-8 pt-8 pb-6 lg:grid-cols-12 lg:gap-10 lg:pt-12 lg:pb-10`}>
       <div className="flex flex-col lg:col-span-8">
-        <h1 style={order(0)} className="enter font-display font-normal text-[clamp(2.5rem,5.6vw,5rem)] leading-[1.02] tracking-[-0.025em]">
+        <h1 style={order(0)} className="enter font-display font-normal whitespace-nowrap text-[calc((100vw-2.5rem)/12.8)] sm:text-[min(4.5rem,calc((100vw-5rem)/12.2))] lg:text-[calc((min(100vw,80rem)-10rem)/18.5)] leading-[1.02] tracking-[-0.025em]">
           {profile.name}
         </h1>
-        <p style={order(1)} className="enter mt-4 text-title-sm font-medium text-ink lg:text-xl">{profile.title}</p>
+        <p style={order(1)} className="enter mt-4 flex flex-col text-title-sm font-medium text-ink lg:text-xl">
+          {profile.title.split(/\s*·\s*/).map((line) => <span key={line}>{line}</span>)}
+        </p>
         <p style={order(2)} className="enter mt-4 max-w-152 text-lg leading-relaxed text-ink-muted lg:text-lead">{profile.summary}</p>
         <div style={order(3)} className="enter mt-6 flex flex-wrap items-center gap-x-8 gap-y-3">
           {contact.email && (

@@ -37,10 +37,10 @@ export function ToolsSection({ skills }: { skills: Skill[] }) {
         {tools.map((s, i) => (
           <div key={s.id} className={`grid gap-3 py-5 md:grid-cols-9 md:gap-10 ${i > 0 ? 'border-t border-rule' : 'pt-0'}`}>
             <h3 className="text-ui font-semibold md:col-span-2 md:pt-3">{s.category}</h3>
-            <ul className="grid grid-cols-4 border-t border-l border-rule sm:grid-cols-5 md:col-span-7 lg:grid-cols-6">
+            <ul className="grid grid-cols-4 gap-y-1 sm:grid-cols-5 md:col-span-7 lg:grid-cols-6">
               {s.items.map((item, j) => (
                 <li key={item} style={order(j)}
-                  className="tile-in group flex h-21 flex-col items-center justify-center gap-2 border-r border-b border-rule px-1 sm:h-24">
+                  className="tile-in group flex h-21 flex-col items-center justify-center gap-2 px-1 sm:h-22">
                   <Logo src={s.logos?.[item]} alt="" box="size-8 sm:size-9" fill={0.82} surface="light" className="tile-mark mix-blend-multiply" />
                   <span className="max-w-full text-center text-mono-2xs leading-tight text-ink-muted transition-colors group-hover:text-ink sm:text-mono-xs">{item}</span>
                 </li>

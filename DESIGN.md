@@ -93,7 +93,7 @@ components:
   tool-tile:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink-muted}"
-    height: "96px"
+    height: "88px"
   closing-band:
     backgroundColor: "{colors.navy}"
     textColor: "{colors.navy-ink}"
@@ -170,7 +170,7 @@ The hero title line is Label scale on mobile (1.0625rem) and 1.5rem on desktop, 
 
 One container for everything: max width 1280px (max-w-7xl), side gutters 20px on phones, 40px from 640px, 80px from 1024px. On desktop the container is a 12 column grid with a 40px gap.
 
-- **Hero:** 8 columns of text (name, title line, summary, actions) and a 4 column aside (square portrait above the profile links). Stacks to one column below 1024px.
+- **Hero:** 8 columns of text (name on one line, sized to the column width at every breakpoint; the title split at its middot onto two lines; summary; actions) and a 4 column aside (square portrait above the profile links). Stacks to one column below 1024px.
 - **DocSection (the margin heading pattern):** a full width 1px ink rule, then 20px down (24px desktop) a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 32px vertically, 48px on desktop: the page is compact. Every section below the fold except the closing band uses it: Experience, Projects founded, Credentials, Expertise, Tools.
 - **Inside a DocSection:** record rows use a 9 column subgrid (2 for the date or category, 7 for content) separated by hairlines with 24px row padding; projects and credentials use 3 equal columns, each topped by a hairline.
 - **Bands:** navy sections bleed full width; content still sits in the container.
@@ -186,7 +186,7 @@ Flat. There are no shadows anywhere in the public site. Depth is expressed by tw
 
 ## Shapes
 
-Square everything (0px radius, enforced globally). Rules are 1px. The portrait is a square crop (4:3 on phones); tool tiles are a grid of 84px (96px from 640px) tall cells separated by 1px rules. No pills or circles are used on the public site.
+Square everything (0px radius, enforced globally). Rules are 1px. The portrait is a square crop (4:3 on phones); tool tiles are a borderless grid of 84px (88px from 640px) tall cells. No pills or circles are used on the public site.
 
 ## Components
 
@@ -215,7 +215,7 @@ Every organisation appears where it is mentioned: the logo is printed on the pap
 Experience rows: period left (Label, Muted Ink, tabular); then the organisation mark beside the role (Title) and company (document link, domain in Small); bullets below in Body Muted Ink, full width on phones and aligned to the role on desktop. Credentials columns read newest first.
 
 ### Expertise and Tools
-Skills are split in two sections. **Expertise** lists what William does (practice areas without logos) as ruled text rows: category left (Label 600), items joined by middots. **Tools** lists what he works with as a grid: category left, tiles right in 4, 5 or 6 columns divided by 1px rule borders (empty cells stay paper). Each tile shows the tool's own mark in full colour (32px box, 36px from 640px, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. A skill row is a Tools row when any of its items has a logo.
+Skills are split in two sections. **Expertise** lists what William does (practice areas without logos) as ruled text rows: category left (Label 600), items joined by middots. **Tools** lists what he works with as a grid: category left, tiles right in 4, 5 or 6 columns with no borders: only the mark and its name. Each tile shows the tool's own mark in full colour (32px box, 36px from 640px, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. A skill row is a Tools row when any of its items has a logo.
 
 ### Closing band
 Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the email address as a large serif document link with Download CV opposite. Socials follow as 44px tall document links in Navy Muted. The foot sits under another hairline in Small: copyright left, place and updated date right.

@@ -14,7 +14,7 @@ export default function Navbar({ name, email }: { name: string; email?: string |
       <div className={`${CONTAINER} flex h-16 items-center justify-between gap-6`}>
         <a href="#top" className="font-display text-base font-semibold whitespace-nowrap tracking-[-0.01em] sm:text-lg">{name}</a>
         <nav aria-label="Sections" className="flex items-center gap-8">
-          <ul className="hidden items-center gap-7 text-ui text-ink-muted md:flex">
+          <ul className="hidden items-center gap-7 text-ui text-ink-muted lg:flex">
             {LINKS.map((l) => (
               <li key={l.href}>
                 <a href={l.href} className="inline-flex min-h-11 items-center hover:text-ink transition-colors">{l.label}</a>
