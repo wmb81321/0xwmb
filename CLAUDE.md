@@ -45,7 +45,7 @@ To add a job: parse the markdown → admin panel `/admin` → Jobs tab → creat
 
 ## Design Systems
 - **Public site (`/`): "The Prospectus".** Full spec: `DESIGN.md` (repo root) + `.impeccable/design.json`; product truth in `PRODUCT.md`; direction contract in `.impeccable/surfaces/src-app-page-tsx.md`.
-  Paper white, ink, one institutional blue (email action + links only), hairline rules, a navy closing band, and navy seals carrying each organisation's logo where it is mentioned. Source Serif 4 display, Public Sans text. Copy: executive, short, no dashes.
+  Paper white, ink, one institutional blue (email action + links only), hairline rules, a navy closing band; each organisation's logo is printed beside the entry that mentions it. Source Serif 4 display, Public Sans text. Copy: executive, short, no dashes.
   Logos render through `src/components/home/OpticalLogo.tsx` (optical sizing); background-removed logos live in Supabase Storage `portfolio-assets/v2/`.
   Capabilities show tool marks from `public/brand/tools/` (official brand artwork), mapped per item in `skills.logos`.
 - **Admin (`/admin`, Life OS): "The Sovereign Terminal".** Spec: `design/DESIGN.md` (dark surfaces, cyan, Space Grotesk + JetBrains Mono, 0px radius). Its tokens share `src/app/globals.css` with the Prospectus tokens; do not mix the two on one surface.

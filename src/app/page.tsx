@@ -6,7 +6,7 @@ import Hero from '@/components/sections/Hero'
 import ExperienceSection from '@/components/sections/Experience'
 import ProjectsSection from '@/components/sections/Projects'
 import Credentials from '@/components/sections/Credentials'
-import SkillsSection from '@/components/sections/Skills'
+import { ExpertiseSection, ToolsSection } from '@/components/sections/Skills'
 import ContactSection from '@/components/sections/Contact'
 
 async function getPortfolioData(): Promise<PortfolioData> {
@@ -71,7 +71,8 @@ export default async function Page() {
           volunteering={data.volunteering}
           achievements={data.achievements}
         />
-        <SkillsSection skills={data.skills} />
+        <ExpertiseSection skills={data.skills} />
+        <ToolsSection skills={data.skills} />
         <ContactSection data={data} year={now.getFullYear()} />
       </main>
     </div>

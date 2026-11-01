@@ -1,7 +1,7 @@
 import { CONTAINER } from '@/components/home/primitives'
 
 const LINKS = [
-  { href: '#track-record', label: 'Track record' },
+  { href: '#experience', label: 'Experience' },
   { href: '#projects', label: 'Projects' },
   { href: '#credentials', label: 'Credentials' },
   { href: '#contact', label: 'Contact' },

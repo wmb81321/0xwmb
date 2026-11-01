@@ -207,10 +207,10 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
 }
 .doc-link:hover { text-decoration-thickness: 2px; }
 
-/* Logo wall: greyscale at rest so the one blue leads; colour returns on hover/focus. */
+/* Organisation marks: greyscale at rest so the one blue leads; colour returns on hover/focus. */
 .logo-quiet {
-  filter: grayscale(1) brightness(1.15);
-  opacity: 0.78;
+  filter: grayscale(1);
+  opacity: 0.72;
   transition: filter 240ms ease, opacity 240ms ease, transform 300ms var(--ease-out-strong);
 }
 .group:hover .logo-quiet, .group:focus-visible .logo-quiet {

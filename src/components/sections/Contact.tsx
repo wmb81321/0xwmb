@@ -9,7 +9,7 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
 
   return (
     <section id="contact" className="section-anchor on-navy bg-navy text-navy-ink">
-      <div className={`${CONTAINER} pt-24 pb-10 lg:pt-32`}>
+      <div className={`${CONTAINER} pt-14 pb-8 lg:pt-20`}>
         <h2 className="reveal font-display font-normal text-[clamp(2.75rem,5.6vw,var(--text-display-md))] leading-none tracking-[-0.025em]">
           Let’s talk.
         </h2>
@@ -17,7 +17,7 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
           Open to senior product roles and consulting.
         </p>
 
-        <div className="reveal mt-12 flex flex-col gap-6 border-t border-navy-raised pt-10 lg:flex-row lg:items-end lg:justify-between">
+        <div className="reveal mt-8 flex flex-col gap-6 border-t border-navy-raised pt-8 lg:flex-row lg:items-end lg:justify-between">
           {contact.email && (
             <a href={`mailto:${contact.email}`}
               className="doc-link font-display text-title-lg font-semibold break-all text-navy-ink sm:text-title-xl">
@@ -27,7 +27,7 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
           <DownloadCV data={data} className="text-ui text-navy-ink" />
         </div>
 
-        <ul className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-ui text-navy-muted">
+        <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-ui text-navy-muted">
           {socialsOf(contact).map((s) => (
             <li key={s.key}>
               <ExtLink href={s.url} className="doc-link inline-flex min-h-11 items-center hover:text-navy-ink">
@@ -37,7 +37,7 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
           ))}
         </ul>
 
-        <footer className="mt-20 flex flex-col gap-2 border-t border-navy-raised pt-6 text-mono-xs text-navy-muted sm:flex-row sm:justify-between">
+        <footer className="mt-12 flex flex-col gap-2 border-t border-navy-raised pt-6 text-mono-xs text-navy-muted sm:flex-row sm:justify-between">
           <p>© {year} {profile.name}</p>
           <p>Cali, Colombia</p>
         </footer>
