@@ -131,6 +131,8 @@ outline-variant:          #32434d   ← ghost borders (use at 15% opacity)
   - `router.ts`: Jev route + topic.
   - `agent.ts`: Haiku/Opus split, memory, usage log.
   - `tools.ts`: the exact column SCHEMA; proposals are validated, then confirmed by a tap.
+- 2025 ledger (Finances area, Jarvis read + annotate only): `personal_statements`, `personal_bank_movements`, `personal_exchange_movements`,
+  `personal_crypto_orders`, `personal_flow_links` (migration `20261030120000`). Rows come from statement loaders; Jarvis sums them with `finance_totals`.
 - Private tables are `public.personal_*` with owner-only RLS and no anon grants. They reuse the config-driven editor:
   add FIELDS + TABLE_MAP + LIST_TABS + cardSummary in `AdminDashboard.tsx`, the tab in `src/app/admin/tabs.ts`,
   and the table in `WRITABLE_TABLES` (`actions.ts`). Never store secrets: last-4 + password-manager links only.

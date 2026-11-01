@@ -8,9 +8,18 @@ export const JARVIS_TABLES = [
   'personal_tasks', 'personal_affiliations', 'personal_accounts', 'personal_subscriptions', 'personal_payments',
   'personal_debts', 'personal_phone_lines', 'personal_emails', 'personal_account_links', 'personal_entities',
   'personal_inbox', 'job_applications', 'personal_documents', 'personal_health',
+  'personal_statements', 'personal_bank_movements', 'personal_exchange_movements', 'personal_crypto_orders', 'personal_flow_links',
 ] as const
 type JarvisTable = (typeof JARVIS_TABLES)[number]
 const isTable = (t: unknown): t is JarvisTable => typeof t === 'string' && (JARVIS_TABLES as readonly string[]).includes(t)
+
+// 2025 ledger: rows come from the statement loaders. Jarvis reads them and may only annotate existing rows.
+const LEDGER_DATE: Partial<Record<JarvisTable, string>> = {
+  personal_statements: 'period_end', personal_bank_movements: 'date',
+  personal_exchange_movements: 'occurred_on', personal_crypto_orders: 'order_date',
+}
+const UPDATE_ONLY = new Set<JarvisTable>(['personal_bank_movements', 'personal_exchange_movements', 'personal_crypto_orders', 'personal_flow_links'])
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 
 
 // Exact writable columns per table (and allowed values for constrained ones). Given to Claude in the
@@ -29,6 +38,11 @@ const SCHEMA: Record<JarvisTable, Record<string, string>> = {
   personal_inbox: { category: 'bill|receipt|alert|person|noise|unknown', status: 'needs_you|auto_logged|forwarded|archived', notes: 'text' },
   personal_documents: { title: 'text', kind: 'cedula|passport|visa|itin|rut|license|insurance|contract|certificate|tax_return|other', area: 'identity|health|career|finances|taxes|social|companies|home|digital|people|goals', issuer: 'text', country: 'CO|US|OTHER', number_last4: 'text', issued_at: 'date', expires_at: 'date', renew_lead_days: 'int', status: 'active|renewing|pending|archived', file_path: 'text', notes: 'text' },
   personal_health: { kind: 'appointment|exam|medication|vaccine|procedure|other', title: 'text', provider: 'text', location: 'text', scheduled_at: 'timestamp (ISO with -05:00 offset, Bogotá)', ends_on: 'date', dose: 'text', status: 'scheduled|done|cancelled|ongoing', file_path: 'text', notes: 'text' },
+  personal_statements: { institution: 'text', kind: 'bank|card|fintech|exchange|broker|other', account_last4: 'text', currency: 'text', country: 'CO|US|OTHER', period_start: 'date', period_end: 'date', opening_balance: 'number', total_in: 'number', total_out: 'number', closing_balance: 'number', status: 'imported|reconciled|partial|archived', file_path: 'text', notes: 'text' },
+  personal_bank_movements: { counterparty: 'text', category: 'text', own_transfer: 'boolean', notes: 'text' },
+  personal_exchange_movements: { description: 'text' },
+  personal_crypto_orders: { sale_date: 'date', sale_venue: 'dolarapp|binance_p2p|okx|other', cop_received: 'number', margin_cop: 'number', notes: 'text' },
+  personal_flow_links: { notes: 'text' },
   job_applications: { company: 'text', position: 'text', website: 'text', application_url: 'text', description: 'text', status: 'saved|applied|interviewing|offered|rejected|withdrawn', applied_at: 'text', notes: 'text' },
 }
 const SCHEMA_TEXT = Object.entries(SCHEMA)
@@ -43,6 +57,7 @@ function checkValues(table: JarvisTable, values: Record<string, unknown>): strin
     const kind = cols[k]
     if (kind.includes('|') && v !== null && !kind.split('|').includes(String(v))) return `${k} must be one of ${kind.replaceAll('|', ', ')}`
     if (kind === 'date' && v !== null && !/^\d{4}-\d{2}-\d{2}$/.test(String(v))) return `${k} must be a YYYY-MM-DD date`
+    if (kind === 'boolean' && v !== null && typeof v !== 'boolean') return `${k} must be true or false`
   }
   return null
 }
@@ -63,6 +78,8 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
         columns: { type: 'array', items: { type: 'string' }, description: 'Only these columns (recommended, saves tokens). Omit for all.' },
         filters: { type: 'object', description: 'Exact-match column filters, e.g. {"status":"active"}', additionalProperties: true },
         limit: { type: 'integer', minimum: 1, maximum: 200, description: 'Default 25' },
+        since: { type: 'string', description: 'Ledger tables only: from this date (YYYY-MM-DD, inclusive). Ledger rows come newest first.' },
+        until: { type: 'string', description: 'Ledger tables only: up to this date (YYYY-MM-DD, inclusive).' },
       },
       required: ['table'],
       additionalProperties: false,
@@ -115,6 +132,20 @@ export const TOOLS: Anthropic.Beta.BetaTool[] = [
     },
   },
   {
+    name: 'finance_totals',
+    description: 'Totals from the imported ledger for a date range (default: the current year): bank inflow/outflow per account ' +
+      '(own transfers excluded), exchange movements per source and operation, crypto orders (count, COP paid, COP received, margin). ' +
+      'Use for questions like "how much came in through DolarApp in 2025" instead of paging rows.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        since: { type: 'string', description: 'YYYY-MM-DD, inclusive' },
+        until: { type: 'string', description: 'YYYY-MM-DD, inclusive' },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'get_overview',
     description: 'Totals and the next 30 days: fixed monthly spend, total debt, paid this year, upcoming payments and deadlines, open tasks.',
     input_schema: { type: 'object', properties: {}, additionalProperties: false },
@@ -140,6 +171,12 @@ export async function runTool(
       if (!/^[a-z_]+$/.test(k)) return { content: `Bad filter column: ${k}`, isError: true }
       q = v === null ? q.is(k, null) : q.eq(k, v as string)
     }
+    const dateCol = LEDGER_DATE[input.table]
+    if (dateCol) {
+      if (ISO_DATE.test(String(input.since ?? ''))) q = q.gte(dateCol, String(input.since))
+      if (ISO_DATE.test(String(input.until ?? ''))) q = q.lte(dateCol, String(input.until))
+      q = q.order(dateCol, { ascending: false })
+    }
     const { data, error } = await q
     if (error) return { content: error.message, isError: true }
     // Drop null/empty fields and timestamps to keep tool results small.
@@ -155,6 +192,7 @@ export async function runTool(
     }
     if (!isTable(table)) return { content: 'Unknown table', isError: true }
     if (op !== 'insert' && op !== 'update') return { content: 'op must be insert or update', isError: true }
+    if (op === 'insert' && UPDATE_ONLY.has(table)) return { content: `${table} rows come from statement imports; only update existing rows.`, isError: true }
     if (op === 'update' && !Number.isInteger(record_id)) return { content: 'record_id is required for update', isError: true }
     if (!values || typeof values !== 'object' || Array.isArray(values)) return { content: 'values must be an object', isError: true }
     const clean = Object.fromEntries(Object.entries(values).filter(([k]) => !FORBIDDEN_KEYS.has(k) && /^[a-z_0-9]+$/.test(k)))
@@ -222,7 +260,55 @@ export async function runTool(
     }
   }
 
+  if (name === 'finance_totals') {
+    const year = todayISO().slice(0, 4)
+    const since = ISO_DATE.test(String(input.since ?? '')) ? String(input.since) : `${year}-01-01`
+    const until = ISO_DATE.test(String(input.until ?? '')) ? String(input.until) : `${year}-12-31`
+    const [bank, exchange, orders] = await Promise.all([
+      fetchAll(db, 'personal_bank_movements', 'account, amount, own_transfer', 'date', since, until),
+      fetchAll(db, 'personal_exchange_movements', 'source, operation, asset, amount, cop_amount', 'occurred_on', since, until),
+      fetchAll(db, 'personal_crypto_orders', 'type, cop_paid, cop_received, margin_cop', 'order_date', since, until),
+    ])
+    const add = (o: Record<string, number>, k: string, v: unknown) => { o[k] = round((o[k] ?? 0) + (Number(v) || 0)) }
+    const banks: Record<string, { inflow: Record<string, number>; outflow: Record<string, number> }> = {}
+    let ownTransfers = 0
+    for (const r of bank) {
+      if (r.own_transfer) { ownTransfers++; continue }
+      const b = (banks[String(r.account)] ??= { inflow: {}, outflow: {} })
+      add(Number(r.amount) < 0 ? b.outflow : b.inflow, 'COP', Math.abs(Number(r.amount)))
+    }
+    const exch: Record<string, Record<string, number>> = {}
+    for (const r of exchange) add((exch[`${r.source} ${r.operation}`] ??= {}), String(r.asset ?? '?'), r.amount)
+    const ord: Record<string, Record<string, number>> = {}
+    for (const r of orders) {
+      const o = (ord[String(r.type)] ??= {})
+      add(o, 'count', 1); add(o, 'cop_paid', r.cop_paid); add(o, 'cop_received', r.cop_received); add(o, 'margin_cop', r.margin_cop)
+    }
+    return {
+      content: JSON.stringify({
+        since, until, bank_rows: bank.length, own_transfers_excluded: ownTransfers, bank: banks,
+        exchange_rows: exchange.length, exchange: exch, crypto_orders: ord,
+      }),
+    }
+  }
+
   return { content: `Unknown tool ${name}`, isError: true }
+}
+
+const round = (n: number) => Math.round(n * 100) / 100
+
+// Pages through a ledger table for a date range (PostgREST caps each response at 1000 rows).
+async function fetchAll(
+  db: ReturnType<typeof createAdminSupabaseClient>, table: string, cols: string, dateCol: string, since: string, until: string,
+): Promise<Record<string, unknown>[]> {
+  const rows: Record<string, unknown>[] = []
+  for (let from = 0; from < 50_000; from += 1000) {
+    const { data, error } = await db.from(table).select(cols).gte(dateCol, since).lte(dateCol, until).order('id').range(from, from + 999)
+    if (error || !data?.length) break
+    rows.push(...(data as unknown as Record<string, unknown>[]))
+    if (data.length < 1000) break
+  }
+  return rows
 }
 
 // Applies a confirmed proposal with the service role and records it in the audit log.
