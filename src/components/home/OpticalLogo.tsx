@@ -29,7 +29,7 @@ const SAMPLE = 96
 const ALPHA_MIN = 24
 const INK_MIN = 48
 
-function measure(img: HTMLImageElement, fill: number, ratio: number): Fit | null {
+function measure(img: HTMLImageElement, fill: number, ratio: number, surface: Surface): Fit | null {
   const W = img.naturalWidth
   const H = img.naturalHeight
   if (!W || !H) return null
@@ -55,9 +55,11 @@ function measure(img: HTMLImageElement, fill: number, ratio: number): Fit | null
   for (let y = 0; y < ch; y++) {
     for (let x = 0; x < cw; x++) {
       const i = (y * cw + x) * 4
-      // Count only pixels visible on the dark surfaces: near-black artwork
-      // (e.g. faint captions baked into a PNG) is invisible there.
-      const visible = data[i + 3] > ALPHA_MIN && Math.max(data[i], data[i + 1], data[i + 2]) > INK_MIN
+      // Count only pixels visible on the surface: near-black artwork is invisible
+      // on navy, near-white artwork is invisible on paper.
+      const visible = data[i + 3] > ALPHA_MIN && (surface === 'dark'
+        ? Math.max(data[i], data[i + 1], data[i + 2]) > INK_MIN
+        : Math.min(data[i], data[i + 1], data[i + 2]) < 255 - INK_MIN / 4)
       if (visible) {
         ink++
         if (x < minX) minX = x
@@ -94,9 +96,11 @@ function measure(img: HTMLImageElement, fill: number, ratio: number): Fit | null
   }
 }
 
+type Surface = 'dark' | 'light'
+
 const pct = (n: number) => `${(n * 100).toFixed(3)}%`
 
-export default function OpticalLogo({ src, alt, box, fill = 0.62, ratio = 1, className = '' }: {
+export default function OpticalLogo({ src, alt, box, fill = 0.62, ratio = 1, surface = 'dark', className = '' }: {
   src?: string | null
   alt: string
   /** Tailwind size classes for the square box, e.g. "size-20 sm:size-30" */
@@ -105,6 +109,8 @@ export default function OpticalLogo({ src, alt, box, fill = 0.62, ratio = 1, cla
   fill?: number
   /** Box width ÷ height when the box is not square. */
   ratio?: number
+  /** What the logo sits on: decides which pixels count as visible artwork. */
+  surface?: Surface
   className?: string
 }) {
   const ref = useRef<HTMLImageElement>(null)
@@ -114,9 +120,9 @@ export default function OpticalLogo({ src, alt, box, fill = 0.62, ratio = 1, cla
   const onLoad = useCallback(() => {
     const img = ref.current
     if (!img) return
-    setFit(measure(img, fill, ratio))
+    setFit(measure(img, fill, ratio, surface))
     setReady(true)
-  }, [fill, ratio])
+  }, [fill, ratio, surface])
 
   // Cached images can finish before hydration attaches onLoad.
   useEffect(() => {

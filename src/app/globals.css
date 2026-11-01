@@ -219,6 +219,13 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
   transform: scale(1.04);
 }
 
+/* Tool marks: full colour (they identify the tool); they rise slightly on hover. */
+.tile-mark { transition: transform 300ms var(--ease-out-strong); }
+.group:hover .tile-mark { transform: translateY(-3px) scale(1.06); }
+
+/* Organisation seals react to keyboard focus inside their entry, too. */
+.group:focus-within .logo-quiet { filter: none; opacity: 1; }
+
 /* ── Prospectus motion: the document settles in, nothing loops ── */
 @media (prefers-reduced-motion: no-preference) {
   html:has(.prospectus) { scroll-behavior: smooth; }
@@ -253,6 +260,12 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
       animation-timeline: view();
       animation-range: entry 0% entry 45%;
     }
+    /* Tool grid: tiles of a row land one after another as the row scrolls in. */
+    .tile-in {
+      animation: tile-in linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 4%) entry calc(var(--i, 0) * 4% + 55%);
+    }
     /* Section rules draw across as the section arrives. */
     .rule-scroll {
       transform-origin: left center;
@@ -275,6 +288,10 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: none; }
 }
+@keyframes tile-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
 @keyframes rule-draw {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
@@ -290,6 +307,7 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
 @media (prefers-reduced-motion: reduce) {
   .rule-in, .press { transition: none; }
   .group:hover .logo-quiet, .group:focus-visible .logo-quiet { transform: none; }
+  .group:hover .tile-mark { transform: none; }
   .press:active { transform: none; }
   .data-pulse { animation: none; }
 }

@@ -4,6 +4,20 @@ import OpticalLogo from './OpticalLogo'
 /** Every logo on the page goes through optical sizing (see OpticalLogo). */
 export const Logo = OpticalLogo
 
+/**
+ * Organisation seal: the logo on a small navy plate beside the entry that names
+ * it. Greyscale at rest; colour returns when the entry (a `.group`) is hovered or
+ * focused. Decorative, because the name is always printed next to it.
+ */
+export function OrgPlate({ src, size = 'size-14' }: { src?: string | null; size?: string }) {
+  if (!src) return null
+  return (
+    <div className={`grid shrink-0 place-items-center bg-navy ${size}`} aria-hidden>
+      <Logo src={src} alt="" box="size-full" fill={0.6} className="logo-quiet" />
+    </div>
+  )
+}
+
 /** Page measure: 1280 max, 80px gutters on desktop, 20px on phones. */
 export const CONTAINER = 'mx-auto w-full max-w-7xl px-5 sm:px-10 lg:px-20'
 

@@ -1,12 +1,13 @@
 import type { Achievement, Certificate, Education, Volunteering } from '@/lib/types'
 import { domainOf, yearSpan } from '@/lib/portfolio-format'
-import { DocLink, DocSection } from '@/components/home/primitives'
+import { DocLink, DocSection, OrgPlate } from '@/components/home/primitives'
 
 interface Entry {
   key: string
   title: string
   meta: string
   url?: string | null
+  logo?: string | null
 }
 
 const EF_URL = 'https://ethereum.foundation'
@@ -18,10 +19,13 @@ function Column({ label, entries }: { label: string; entries: Entry[] }) {
       <h3 className="mt-4 text-ui font-semibold">{label}</h3>
       <ul className="mt-5 flex flex-col gap-5">
         {entries.map((e) => (
-          <li key={e.key}>
-            <p className="font-medium leading-snug">{e.title}</p>
-            <p className="figures mt-1 text-mono-xs leading-relaxed text-ink-muted">{e.meta}</p>
-            {e.url && <DocLink href={e.url} className="mt-1 inline-block text-mono-xs">{domainOf(e.url)}</DocLink>}
+          <li key={e.key} className="group flex gap-4">
+            <OrgPlate src={e.logo} size="size-11" />
+            <div className="min-w-0">
+              <p className="font-medium leading-snug">{e.title}</p>
+              <p className="figures mt-1 text-mono-xs leading-relaxed text-ink-muted">{e.meta}</p>
+              {e.url && <DocLink href={e.url} className="mt-1 inline-block text-mono-xs">{domainOf(e.url)}</DocLink>}
+            </div>
           </li>
         ))}
       </ul>
@@ -47,6 +51,7 @@ export default function Credentials({ education, certificates, volunteering, ach
     title: e.field_of_study ? `${e.degree}, ${e.field_of_study}` : e.degree,
     meta: [e.institution, e.description, yearSpan(e.years, e.start_date, e.end_date)].filter(Boolean).join(' · '),
     url: e.website,
+    logo: e.logo_url,
   }))
 
   const certs: Entry[] = certificates.map((c) => ({
@@ -54,6 +59,7 @@ export default function Credentials({ education, certificates, volunteering, ach
     title: c.name,
     meta: [c.issuer, c.year].filter(Boolean).join(' · '),
     url: c.website,
+    logo: c.logo_url,
   }))
 
   const awards: Entry[] = [
@@ -62,12 +68,14 @@ export default function Credentials({ education, certificates, volunteering, ach
       title: a.title,
       meta: [a.description, a.year].filter(Boolean).join(' · '),
       url: a.link,
+      logo: a.logo_url,
     })),
     ...[...volunteering].sort((a, b) => b.year.localeCompare(a.year)).map((v) => ({
       key: `vol-${v.id}`,
       title: volunteerTitle(v.reason),
       meta: [v.issuer.trim(), v.year].filter(Boolean).join(' · '),
       url: /ethereum foundation/i.test(v.issuer) ? EF_URL : undefined,
+      logo: v.logo_url,
     })),
   ]
 
