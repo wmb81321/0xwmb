@@ -221,9 +221,14 @@ Track record rows: period left (Label, Muted Ink, tabular), role as Title, compa
 Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the email address as a large serif document link with Download CV opposite. Socials follow as 44px tall document links in Navy Muted. The foot sits under another hairline in Small: copyright left, place and updated date right.
 
 ### Motion
-- **Rules typeset in once:** every hairline marked as a section rule or figure rule scales in from the left over 900ms (cubic-bezier(0.23, 1, 0.32, 1)) on first render. Nothing else enters the page.
-- **Feedback only:** colour transitions (160 to 200ms), underline thickening, button press, logo scale on hover.
-- **Reduced motion:** rule animation and press transitions are removed; buttons do not scale.
+The document settles in once; nothing loops. All motion is CSS and is removed under reduced motion.
+- **Cover entrance:** name, title, summary, actions and key figures fade up 14px in order (`.enter` with `--i`, 70ms stagger, 700ms, cubic-bezier(0.23, 1, 0.32, 1)).
+- **Portrait plate:** the photo is revealed from the bottom edge with a slight settle from 1.06 scale (`.plate-in`, 1100ms).
+- **Rules typeset in:** hairlines scale in from the left (`.rule-in` on load; `.rule-scroll` draws section rules as the section arrives).
+- **Scroll settle:** rows, columns and logo tiles fade up 24px as they enter the viewport and then stay put (`.reveal`, scroll-driven, `entry 0%` to `entry 45%`). Browsers without scroll timelines show content static.
+- **Reading progress:** a 1px ink hairline under the header tracks the page (`.read-progress`).
+- **Anchors:** in-page navigation scrolls smoothly.
+- **Feedback:** colour transitions (160 to 200ms), underline thickening, button press 0.98, logo colour and 1.04 scale on hover.
 
 ## Do's and Don'ts
 
@@ -240,5 +245,5 @@ Navy band with generous top space (96px, 128px desktop): "Let’s talk." in disp
 - **Don't** use a monospace face or uppercase tracked labels; small text stays in Public Sans.
 - **Don't** put a short label or category above a heading as an eyebrow; metadata goes beside or below what it describes.
 - **Don't** introduce a second accent colour or use navy as a panel on paper.
-- **Don't** animate anything on scroll or on load beyond the rules typesetting in.
+- **Don't** add motion outside the Motion list: no parallax, no looping, no motion that blocks reading.
 - **Don't** use hyphens or em dashes as punctuation in copy.

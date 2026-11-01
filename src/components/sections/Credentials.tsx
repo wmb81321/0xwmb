@@ -13,7 +13,7 @@ const EF_URL = 'https://ethereum.foundation'
 
 function Column({ label, entries }: { label: string; entries: Entry[] }) {
   return (
-    <div>
+    <div className="reveal">
       <div className="h-px bg-rule" aria-hidden />
       <h3 className="mt-4 text-ui font-semibold">{label}</h3>
       <ul className="mt-5 flex flex-col gap-5">

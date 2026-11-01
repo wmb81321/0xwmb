@@ -38,8 +38,8 @@ export function DocLink({ href, children, className = '' }: { href?: string | nu
 export function DocSection({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
     <section id={id} className={`section-anchor ${CONTAINER} py-16 lg:py-20`}>
-      <div className="rule-in h-px bg-ink" aria-hidden />
-      <div className="grid gap-8 pt-8 lg:grid-cols-12 lg:gap-10">
+      <div className="rule-in rule-scroll h-px bg-ink" aria-hidden />
+      <div className="reveal grid gap-8 pt-8 lg:grid-cols-12 lg:gap-10">
         <h2 className="font-display text-title-lg font-semibold tracking-[-0.01em] lg:col-span-3">{title}</h2>
         <div className="lg:col-span-9">{children}</div>
       </div>

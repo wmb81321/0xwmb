@@ -10,14 +10,14 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
   return (
     <section id="contact" className="section-anchor on-navy bg-navy text-navy-ink">
       <div className={`${CONTAINER} pt-24 pb-10 lg:pt-32`}>
-        <h2 className="font-display font-normal text-[clamp(2.75rem,5.6vw,var(--text-display-md))] leading-none tracking-[-0.025em]">
+        <h2 className="reveal font-display font-normal text-[clamp(2.75rem,5.6vw,var(--text-display-md))] leading-none tracking-[-0.025em]">
           Let’s talk.
         </h2>
         <p className="mt-6 max-w-xl text-lg text-navy-muted lg:text-lead">
           Open to senior product roles and consulting.
         </p>
 
-        <div className="mt-12 flex flex-col gap-6 border-t border-navy-raised pt-10 lg:flex-row lg:items-end lg:justify-between">
+        <div className="reveal mt-12 flex flex-col gap-6 border-t border-navy-raised pt-10 lg:flex-row lg:items-end lg:justify-between">
           {contact.email && (
             <a href={`mailto:${contact.email}`}
               className="doc-link font-display text-title-lg font-semibold break-all text-navy-ink sm:text-title-xl">

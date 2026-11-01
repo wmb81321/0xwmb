@@ -16,7 +16,7 @@ export default function ExperienceSection({ experiences }: { experiences: Experi
     <DocSection id="track-record" title="Track record">
       <ol>
         {experiences.map((exp, i) => (
-          <li key={exp.id} className={`grid gap-3 py-8 md:grid-cols-9 md:gap-10 ${i > 0 ? 'border-t border-rule' : 'pt-0'}`}>
+          <li key={exp.id} className={`reveal grid gap-3 py-8 md:grid-cols-9 md:gap-10 ${i > 0 ? 'border-t border-rule' : 'pt-0'}`}>
             <p className="figures text-ui text-ink-muted md:col-span-2 md:whitespace-nowrap md:pt-1.5">{period(exp.years)}</p>
             <div className="md:col-span-7">
               <h3 className="font-display text-title-md font-semibold">{exp.role}</h3>

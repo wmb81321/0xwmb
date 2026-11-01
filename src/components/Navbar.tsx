@@ -29,6 +29,7 @@ export default function Navbar({ name, email }: { name: string; email?: string |
           )}
         </nav>
       </div>
+      <span className="read-progress absolute inset-x-0 -bottom-px h-px bg-ink" aria-hidden />
     </header>
   )
 }

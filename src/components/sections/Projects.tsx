@@ -13,7 +13,7 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
     <DocSection id="ventures" title="Ventures founded">
       <ul className="grid gap-10 md:grid-cols-3 md:gap-8">
         {sorted.map((p) => (
-          <li key={p.id} className="flex flex-col">
+          <li key={p.id} className="reveal flex flex-col">
             <div className="h-px bg-rule" aria-hidden />
             <h3 className="mt-4 font-display text-title-md font-semibold">{p.name}</h3>
             <p className="figures mt-1 text-mono-xs text-ink-muted">
