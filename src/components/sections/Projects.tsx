@@ -1,6 +1,6 @@
 import type { Project } from '@/lib/types'
 import { domainOf } from '@/lib/portfolio-format'
-import { DocLink, DocSection, OrgPlate } from '@/components/home/primitives'
+import { DocLink, DocSection, OrgMark } from '@/components/home/primitives'
 
 const isRunning = (p: Project) => !p.end_date || /present/i.test(p.end_date)
 const startYear = (p: Project) => p.start_date?.match(/\d{4}/)?.[0] ?? p.years?.match(/\d{4}/)?.[0] ?? ''
@@ -11,17 +11,19 @@ export default function ProjectsSection({ projects }: { projects: Project[] }) {
 
   return (
     <DocSection id="projects" title="Projects founded">
-      <ul className="grid gap-10 md:grid-cols-3 md:gap-8">
+      <ul className="grid gap-8 md:grid-cols-3">
         {sorted.map((p) => (
           <li key={p.id} className="group reveal flex flex-col">
             <div className="h-px bg-rule" aria-hidden />
-            <div className="mt-5"><OrgPlate src={p.logo_url} size="size-16" /></div>
-            <h3 className="mt-4 font-display text-title-md font-semibold">{p.name}</h3>
+            <div className="mt-4 flex items-center gap-4">
+              <OrgMark src={p.logo_url} size="size-12" />
+              <h3 className="font-display text-title-sm font-semibold">{p.name}</h3>
+            </div>
             <p className="figures mt-1 text-mono-xs text-ink-muted">
               {[p.role, startYear(p) && `Since ${startYear(p)}`, isRunning(p) ? 'Active' : 'Closed'].filter(Boolean).join(' · ')}
             </p>
-            <p className="mt-3 text-ink-muted">{p.brief}</p>
-            {p.website && <DocLink href={p.website} className="mt-4 text-ui">{domainOf(p.website)}</DocLink>}
+            <p className="mt-2 text-ink-muted">{p.brief}</p>
+            {p.website && <DocLink href={p.website} className="mt-3 text-ui">{domainOf(p.website)}</DocLink>}
           </li>
         ))}
       </ul>

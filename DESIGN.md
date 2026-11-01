@@ -88,13 +88,12 @@ components:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     height: "64px"
-  org-seal:
-    backgroundColor: "{colors.navy}"
-    size: "56px"
+  org-mark:
+    size: "48px"
   tool-tile:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink-muted}"
-    height: "104px"
+    height: "88px"
   closing-band:
     backgroundColor: "{colors.navy}"
     textColor: "{colors.navy-ink}"
@@ -108,12 +107,12 @@ Scope: the public site (`/`). The private admin (Life OS, `/admin`) still runs o
 
 **Creative North Star: "The Prospectus"**
 
-The candidate is presented like an institutional offering memorandum or annual report: a summary of terms up top, tabular proof below, and every claim traceable to a source. The page reads as a printed document on cool paper. Ink is near black, structure comes only from hairline rules, and colour is rationed: one institutional blue for the email action and links, and deep navy for the closing contact band and the small seals that carry organisation logos.
+The candidate is presented like an institutional offering memorandum or annual report: a summary of terms up top, tabular proof below, and every claim traceable to a source. The page reads as a printed document on cool paper. Ink is near black, structure comes only from hairline rules, and colour is rationed: one institutional blue for the email action and links, and deep navy for the closing contact band.
 
 Density is calm and documentary. Sections open with a full width ink rule and put their heading in the left margin, the way a filing sets its section titles. Nothing floats, glows or lifts. The world explicitly rejects the dark neon terminal portfolio and the cream editorial serif page.
 
 **Key Characteristics:**
-- Cool paper ground, near black ink, one blue, one navy band, navy seals for organisation logos.
+- Cool paper ground, near black ink, one blue, one navy band.
 - Serif display for names and section heads; Public Sans for everything else, tabular figures in data.
 - Hairline rules are the only structure. No cards, no shadows, no glow, no mono typeface.
 - Square corners throughout.
@@ -128,7 +127,7 @@ A near monochrome document palette with a single institutional accent and a navy
 - **Institutional Blue, pressed** (inst-strong): hover state for the blue button and blue links. 12.6:1 on paper.
 
 ### Secondary
-- **Deep Navy** (navy): ground of the closing contact band and of organisation seals. Never used for text on paper.
+- **Deep Navy** (navy): ground of the closing contact band. Never used for text or small fills on paper.
 - **Raised Navy** (navy-raised): hairlines inside the closing band. 1.16:1 against navy, so it reads as tone, never as a border that carries meaning.
 - **Navy Ink** (navy-ink): primary text and links on navy. 15.9:1.
 - **Navy Muted** (navy-muted): secondary text on navy (lead line, socials, footer). 8.5:1 on navy, 7.3:1 on raised navy.
@@ -142,7 +141,7 @@ A near monochrome document palette with a single institutional accent and a navy
 ### Named Rules
 **The One Blue Rule.** Institutional Blue marks only what can be acted on (email, links) plus the hero title line and a hovered profile handle. It never fills a surface larger than a button.
 
-**The Navy Reserve Rule.** Navy appears only as the full bleed closing band and as organisation seals: squares of 44 to 64px that hold one logo beside the entry naming that organisation. Many logos are drawn white for dark grounds, so the seal is what keeps them legible. No navy cards or panels that hold text on paper.
+**The Navy Reserve Rule.** Navy appears only as the full bleed closing band. No navy cards, panels or logo plates on paper.
 
 ## Typography
 
@@ -171,9 +170,9 @@ The hero title line is Label scale on mobile (1.0625rem) and 1.5rem on desktop, 
 
 One container for everything: max width 1280px (max-w-7xl), side gutters 20px on phones, 40px from 640px, 80px from 1024px. On desktop the container is a 12 column grid with a 40px gap.
 
-- **Hero:** 8 columns of text (name, title line, summary, actions) and a 4 column aside (square portrait above the profile links). Stacks to one column below 1024px.
-- **DocSection (the margin heading pattern):** a full width 1px ink rule, then 32px down a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 64px vertically, 80px on desktop. Every section below the fold except the bands uses it: Track record, Projects founded, Credentials, Capabilities.
-- **Inside a DocSection:** record rows use a 9 column subgrid (2 for the date or category, 7 for content) separated by hairlines with 32px row padding; projects and credentials use 3 equal columns, each topped by a hairline.
+- **Hero:** 8 columns of text (name on one line, sized to the column width at every breakpoint; the title split at its middot onto two lines; summary; actions) and a 4 column aside (square portrait above the profile links). Stacks to one column below 1024px.
+- **DocSection (the margin heading pattern):** a full width 1px ink rule, then 20px down (24px desktop) a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 32px vertically, 48px on desktop: the page is compact. Every section below the fold except the closing band uses it: Experience, Projects founded, Credentials, Expertise, Tools.
+- **Inside a DocSection:** record rows use a 9 column subgrid (2 for the date or category, 7 for content) separated by hairlines with 24px row padding; projects and credentials use 3 equal columns, each topped by a hairline.
 - **Bands:** navy sections bleed full width; content still sits in the container.
 - Anchored sections offset 64px for the sticky header.
 
@@ -187,7 +186,7 @@ Flat. There are no shadows anywhere in the public site. Depth is expressed by tw
 
 ## Shapes
 
-Square everything (0px radius, enforced globally). Rules are 1px. The portrait is a square crop; tool tiles are a grid of 104px tall cells separated by 1px gaps; organisation seals are squares. No pills or circles are used on the public site.
+Square everything (0px radius, enforced globally). Rules are 1px. The portrait is a square crop (4:3 on phones); tool tiles are a borderless grid of 84px (88px from 640px) tall cells. No pills or circles are used on the public site.
 
 ## Components
 
@@ -207,16 +206,16 @@ Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (16
 ### Profile links
 Under the portrait: one row per profile (LinkedIn, GitHub, X, Telegram, Farcaster), 48px tall, each topped by a hairline with one closing the list. The icon (24px, greyscale at rest, multiplied onto paper) sits left with the network name in 500; the handle sits right in Small Muted Ink. Hover tints the row (ink at 3%), restores the icon's colour and turns the handle blue.
 
-### Organisation seals
-Every organisation appears where it is mentioned: the logo sits on a navy square beside the entry (56px in Track record, 64px in Projects founded, 44px in Credentials). The seal is decorative (empty alt) because the name is printed next to it. Logos are greyscale at rest and regain colour, with a 1.04 scale, when their entry is hovered or holds focus. There is no separate logo wall.
+### Organisation marks
+Every organisation appears where it is mentioned: the logo is printed on the paper beside the entry (40px on phones and 48px on desktop in Experience, 48px in Projects founded, 40px in Credentials), multiplied onto the paper so white backgrounds drop out. Logos drawn white or pale for dark grounds get an ink version in Storage (`v2/*-ink.png`). The mark is decorative (empty alt) because the name is printed next to it. Logos are greyscale at rest and regain colour, with a 1.04 scale, when their entry is hovered or holds focus. There is no separate logo wall.
 
 **Optical logo sizing.** Every logo renders through optical sizing: on load the image is sampled on a small canvas, transparent padding is trimmed, and the visible artwork is sized by area (not longest side) with a mild density correction (solid plates shrink, line marks grow, clamped between 0.86 and 1.1). Logos stay invisible until measured (240ms fade) when scripting is on.
 
 ### Record rows
-Track record rows: period left (Label, Muted Ink, tabular), then the organisation seal, role as Title, company as a document link with its domain in Small, bullets in Body Muted Ink.
+Experience rows: period left (Label, Muted Ink, tabular); then the organisation mark beside the role (Title) and company (document link, domain in Small); bullets below in Body Muted Ink, full width on phones and aligned to the role on desktop. Credentials columns read newest first.
 
-### Tool grid
-Capabilities that are tools render as a grid: category left (Label 600), tiles right in 3, 4 or 6 columns divided by 1px rule borders (empty cells stay paper). Each tile shows the tool's own mark in full colour (40px box, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. Practice areas without logos follow as text rows, joined by middots, under an ink rule.
+### Expertise and Tools
+Skills are split in two sections. **Expertise** lists what William does (practice areas without logos) as ruled text rows: category left (Label 600), items joined by middots. **Tools** lists what he works with as a grid: category left, tiles right in 4, 5 or 6 columns with no borders: only the mark and its name. Each tile shows the tool's own mark in full colour (32px box, 36px from 640px, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. A skill row is a Tools row when any of its items has a logo.
 
 ### Closing band
 Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the email address as a large serif document link with Download CV opposite. Socials follow as 44px tall document links in Navy Muted. The foot sits under another hairline in Small: copyright left, place and updated date right.
@@ -230,7 +229,7 @@ The document settles in once; nothing loops. All motion is CSS and is removed un
 - **Tool cascade:** tool tiles rise 18px from 0.96 scale one after another as their row scrolls in (`.tile-in`, scroll-driven, each tile's range offset 4% by its position `--i`).
 - **Reading progress:** a 1px ink hairline under the header tracks the page (`.read-progress`).
 - **Anchors:** in-page navigation scrolls smoothly.
-- **Feedback:** colour transitions (160 to 200ms), underline thickening, button press 0.98, seal logos regain colour with a 1.04 scale, tool marks lift 3px with a 1.06 scale.
+- **Feedback:** colour transitions (160 to 200ms), underline thickening, button press 0.98, organisation marks regain colour with a 1.04 scale, tool marks lift 3px with a 1.06 scale.
 
 ## Do's and Don'ts
 
@@ -238,7 +237,7 @@ The document settles in once; nothing loops. All motion is CSS and is removed un
 - **Do** open every content section with the DocSection pattern: ink rule, margin heading in 3 columns, content in 9.
 - **Do** keep Institutional Blue for actions and links; a surface may hold one blue filled button.
 - **Do** source every figure, and set numbers and dates in tabular figures.
-- **Do** show an organisation's logo where the organisation is mentioned, on its navy seal; never in a separate wall.
+- **Do** show an organisation's logo where the organisation is mentioned, printed on the paper; never in a separate wall or on a navy plate.
 - **Do** route every logo through optical sizing.
 - **Do** write copy that is executive and short; join data with middots and write ranges with "to".
 - **Do** keep targets at least 44px tall and focus outlines visible (blue on paper, navy ink on navy).

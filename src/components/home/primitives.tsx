@@ -5,15 +5,15 @@ import OpticalLogo from './OpticalLogo'
 export const Logo = OpticalLogo
 
 /**
- * Organisation seal: the logo on a small navy plate beside the entry that names
+ * Organisation mark: the logo printed on the paper beside the entry that names
  * it. Greyscale at rest; colour returns when the entry (a `.group`) is hovered or
  * focused. Decorative, because the name is always printed next to it.
  */
-export function OrgPlate({ src, size = 'size-14' }: { src?: string | null; size?: string }) {
+export function OrgMark({ src, size = 'size-12' }: { src?: string | null; size?: string }) {
   if (!src) return null
   return (
-    <div className={`grid shrink-0 place-items-center bg-navy ${size}`} aria-hidden>
-      <Logo src={src} alt="" box="size-full" fill={0.6} className="logo-quiet" />
+    <div className={`shrink-0 ${size}`} aria-hidden>
+      <Logo src={src} alt="" box="size-full" fill={0.84} surface="light" className="logo-quiet mix-blend-multiply" />
     </div>
   )
 }
@@ -51,9 +51,9 @@ export function DocLink({ href, children, className = '' }: { href?: string | nu
  */
 export function DocSection({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} className={`section-anchor ${CONTAINER} py-16 lg:py-20`}>
+    <section id={id} className={`section-anchor ${CONTAINER} py-8 lg:py-12`}>
       <div className="rule-in rule-scroll h-px bg-ink" aria-hidden />
-      <div className="reveal grid gap-8 pt-8 lg:grid-cols-12 lg:gap-10">
+      <div className="reveal grid gap-5 pt-5 lg:grid-cols-12 lg:gap-10 lg:pt-6">
         <h2 className="font-display text-title-lg font-semibold tracking-[-0.01em] lg:col-span-3">{title}</h2>
         <div className="lg:col-span-9">{children}</div>
       </div>
