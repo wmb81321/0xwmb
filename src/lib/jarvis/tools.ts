@@ -312,6 +312,22 @@ async function fetchAll(
 }
 
 // Applies a confirmed proposal with the service role and records it in the audit log.
+/**
+ * An inbox email stays "needs you" only while one of its proposals is unresolved.
+ * Called after a proposal is applied or discarded, so the admin inbox shrinks as William confirms.
+ */
+async function settleInbox(db: ReturnType<typeof createAdminSupabaseClient>, proposalId: number) {
+  const { data: rows } = await db.from('personal_inbox').select('id, structured')
+    .eq('status', 'needs_you').contains('structured', { proposals: [proposalId] })
+  for (const row of rows ?? []) {
+    const ids = ((row.structured as { proposals?: number[] } | null)?.proposals ?? []).filter((n) => n !== proposalId)
+    const { count } = ids.length
+      ? await db.from('personal_pending_actions').select('id', { count: 'exact', head: true }).in('id', ids).eq('status', 'pending')
+      : { count: 0 }
+    if (!count) await db.from('personal_inbox').update({ status: 'auto_logged' }).eq('id', row.id).eq('status', 'needs_you')
+  }
+}
+
 export async function applyProposal(id: number, chatId: number): Promise<string> {
   const db = createAdminSupabaseClient()
   const { data: p } = await db.from('personal_pending_actions').select('*').eq('id', id).eq('chat_id', chatId).maybeSingle()
@@ -329,6 +345,7 @@ export async function applyProposal(id: number, chatId: number): Promise<string>
     actor: 'jarvis', action: p.op, table_name: p.table_name, record_id: res.data?.id ?? p.record_id,
     detail: { proposal_id: id, payload: p.payload },
   })
+  await settleInbox(db, id)
   return `✅ Saved: ${p.summary}`
 }
 
@@ -337,5 +354,6 @@ export async function rejectProposal(id: number, chatId: number): Promise<string
   const { data } = await db.from('personal_pending_actions')
     .update({ status: 'rejected', resolved_at: new Date().toISOString() })
     .eq('id', id).eq('chat_id', chatId).eq('status', 'pending').select('summary').maybeSingle()
+  if (data) await settleInbox(db, id)
   return data ? `✖ Discarded: ${data.summary}` : 'Nothing to discard.'
 }
