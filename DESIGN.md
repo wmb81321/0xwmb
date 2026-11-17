@@ -180,16 +180,15 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 ## Components
 
 ### No header
-The page has no header or sticky bar. The cover prints the name and the profile row (with Email), and the buttons (Email, Download CV) close the page, so a bar would only repeat them.
+The page has no header or sticky bar. The cover prints the name and the profile row (with Email), and Download CV closes the page, so a bar would only repeat them.
 
 ### Buttons
 - **Shape:** square (0px).
-- **Buttons live only in the closing band.** The cover has no buttons (its only contact point is the blue Email tile in the profile row); the page ends on its two actions.
-- **Primary (Email):** paper fill, navy text, Label weight 500, 52px tall with 28px side padding, reading "Email" plus the address. Hover fills Navy Ink.
-- **Secondary (Download CV):** transparent, 1px Navy Muted border, Navy Ink text, same size; hover raises to navy-raised with a Navy Ink border.
+- **One button, in the closing band.** Email lives once, as the blue tile in the cover's profile row; the page closes on Download CV.
+- **Primary (Download CV):** paper fill, navy text, Label weight 500, 52px tall with 28px side padding, full width on phones. Hover fills Navy Ink.
 - **Hover / Press:** fill shifts to inst-strong; on press scales to 0.98 over 160ms with the strong ease out.
 - **Focus:** 2px Institutional Blue outline, 3px offset (navy ink on bands).
-- There is exactly one filled button and one outlined button, both on the navy band. Everything else is a document link.
+- There is exactly one button on the page. Everything else is a document link or a profile tile.
 
 ### Document links
 Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (160ms). Blue on paper (inst, hovering to inst-strong); Navy Ink on bands.
@@ -212,7 +211,7 @@ Projects founded and Experience share one row (`RecordRow`) so they read symmetr
 Skills are split in two sections. **Expertise** lists what William does (practice areas without logos) as ruled rows: category left (Label 600), items right as hairline chips (1px rule border, square, 12px by 6px padding, Label in Ink, 8px gaps, wrapping). Chips are not interactive, so they have no hover. Items are sentence case, keeping acronyms (DAO, OTC, RWA, DeFi). Never join items with middots. **Tools** lists what he works with as a grid: category left, tiles right in 4, 5 or 6 columns with no borders: only the mark and its name. Each tile shows the tool's own mark in full colour (32px box, 36px from 640px, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. A skill row is a Tools row when any of its items has a logo.
 
 ### Closing band
-Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the two action buttons side by side (stacked full width on phones): Email with the address, then Download CV. Profile links are not repeated here; they live once, under the portrait. The foot sits under another hairline in Small: copyright left, place and updated date right.
+Navy band with generous top space (96px, 128px desktop): "The full record." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the Download CV button. Profile links are not repeated here; they live once, under the portrait. The foot sits under another hairline in Small: copyright left, place and updated date right.
 
 ### Motion
 The document settles in once; nothing loops. All motion is CSS and is removed under reduced motion.
