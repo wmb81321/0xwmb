@@ -62,3 +62,6 @@ next-env.d.ts
 .impeccable/decision/
 .playwright-mcp/
 .impeccable/questions/
+
+# Supabase CLI cache
+supabase/.temp/

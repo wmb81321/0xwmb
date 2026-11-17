@@ -40,8 +40,8 @@ Fields: `company`, `position`, `website` (company site), `application_url` (link
 `description` (full job posting text), `status` (saved/applied/interviewing/offered/rejected/withdrawn),
 `applied_at` (date string), `notes` (personal notes), `order`, `created_at`.
 
-Source files for job postings live in `jobs/` at the repo root (markdown files, one per job).
-To add a job: parse the markdown → admin panel `/admin` → Jobs tab → create entry with `status = 'saved'`.
+Job postings and tailored CVs live in `applications/<company-role>/` (gitignored, private): `posting.md` plus `CV.md`. Index: `applications/README.md`.
+To add a job: parse `posting.md` → admin panel `/admin` → Jobs tab → create entry with `status = 'saved'`.
 
 ## Design Systems
 - **Public site (`/`): "The Prospectus".** Full spec: `DESIGN.md` (repo root) + `.impeccable/design.json`; product truth in `PRODUCT.md`; direction contract in `.impeccable/surfaces/src-app-page-tsx.md`.

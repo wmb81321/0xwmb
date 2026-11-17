@@ -1,57 +1,37 @@
-# William Martinez - Professional CV
+# 0xwmb
 
-A professional CV/Resume template with a finance + institutional + Ethereum crypto aesthetic.
+Portfolio and CV of William Martinez Bolaños, technical product manager in crypto and AI.
 
-## Features
+Live content comes from Supabase and is edited in a private admin; the CV downloads as an ATS-friendly PDF generated in the browser.
 
-- **Modern Design**: Clean, professional layout with a crypto-inspired aesthetic
-- **Responsive**: Fully responsive design that works on all devices
-- **Interactive Elements**: Collapsible sections, hover effects, and smooth animations
-- **Cipher/Crypto Style**: Subtle crypto-themed design elements throughout
-- **No Frameworks**: Built with vanilla HTML, CSS, and JavaScript
+## Stack
 
-## Technologies Used
+Next.js 16 (App Router, Turbopack) · Supabase (Postgres, Auth, Storage) · Tailwind CSS 4 · react-pdf · Vercel
 
-- HTML5
-- CSS3 (with CSS Variables)
-- Vanilla JavaScript
-- SVG Icons
-- Custom Animations
+## Run it
 
-## Sections
+```bash
+npm install
+# .env.local needs NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+npm run dev                  # http://localhost:3000
+```
 
-- Professional Summary
-- Languages
-- Work Experience
-- Projects
-- Academic Background
-- Certificates & Achievements
-- Skills
+Pushes to `main` deploy to Vercel.
 
-## Color Palette
+## Where things are
 
-- Background: #050810 (deep night)
-- Card/section: #0A1020
-- Headings/ink: #E6ECFF
-- Muted text: #8FA3C7
-- Ethereum accent: #627EEA
-- Cipher accent: #00F6FF
-- Success: #19C37D
-
-## Typography
-
-- Inter (for text)
-- IBM Plex Mono (for code/tech sections)
+| Path | What |
+| --- | --- |
+| `src/app/page.tsx` | The public page |
+| `src/lib/pdf.tsx` | The CV PDF |
+| `src/app/admin/` | Private admin |
+| `supabase/migrations/` | Database schema and RLS |
+| `brand/` | WM personal brand mark |
+| `DESIGN.md` · `PRODUCT.md` | Design system and product brief for the public site |
+| `design/DESIGN.md` | Design system for the admin |
+| `CLAUDE.md` | Working notes for AI agents |
+| `docs/` | Ideas and history |
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Author
-
-William Martinez Bolaños - Product Manager with Crypto and AI expertise
-
-- GitHub: [wmb81321](https://github.com/wmb81321)
-- LinkedIn: [williammartinez8](https://linkedin.com/in/williammartinez8)
-- X/Twitter: [@0xwmb](https://twitter.com/0xwmb)
-- Farcaster: [williammartinez](https://warpcast.com/williammartinez)
+MIT, see `LICENSE`. Content (text, photos, logos) is not covered by the license.
