@@ -160,7 +160,7 @@ The hero title line is Label scale on mobile (1.0625rem) and 1.5rem on desktop, 
 One container for everything: max width 1280px (max-w-7xl), side gutters 20px on phones, 40px from 640px, 80px from 1024px. On desktop the container is a 12 column grid with a 40px gap.
 
 - **Hero:** 8 columns of text (name on one line, sized to the column width at every breakpoint; the title split at its middot onto two lines; summary; actions) and a 4 column aside (square portrait above the profile links). Stacks to one column below 1024px.
-- **DocSection (the margin heading pattern):** a full width 1px ink rule, then 20px down (24px desktop) a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 32px vertically, 48px on desktop: the page is compact. Every section below the fold except the closing band uses it: Experience, Projects founded, Credentials, Expertise, Tools.
+- **DocSection (the margin heading pattern):** a full width 1px ink rule, then 20px down (24px desktop) a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 32px vertically, 48px on desktop: the page is compact. Every section below the fold except the closing band uses it, in this order: Projects founded (current ventures lead), Experience, Credentials, Expertise, Tools.
 - **Inside a DocSection:** record rows use a 9 column subgrid (2 for the date or category, 7 for content) separated by hairlines with 24px row padding; projects and credentials use 3 equal columns, each topped by a hairline.
 - **Bands:** navy sections bleed full width; content still sits in the container.
 - There is no header: the cover opens the page. Anchored sections offset 24px.

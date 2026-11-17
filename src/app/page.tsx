@@ -61,8 +61,8 @@ export default async function Page() {
     <div className="prospectus min-h-screen">
       <main>
         <Hero data={data} />
-        <ExperienceSection experiences={data.experiences} />
         <ProjectsSection projects={data.projects} />
+        <ExperienceSection experiences={data.experiences} />
         <Credentials
           education={data.education}
           certificates={data.certificates}
