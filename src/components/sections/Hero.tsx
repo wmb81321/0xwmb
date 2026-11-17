@@ -68,7 +68,7 @@ export default function Hero({ data }: { data: PortfolioData }) {
               <ExtLink href={s.url} label={`${s.label}: ${s.handle}`}
                 className="group flex size-12 items-center justify-center">
                 <Image src={s.icon} alt="" width={28} height={28} title={`${s.label} ${s.handle}`}
-                  className="logo-quiet size-7 mix-blend-multiply" />
+                  className="logo-quiet illuminate size-7 mix-blend-multiply" />
               </ExtLink>
             </li>
           ))}

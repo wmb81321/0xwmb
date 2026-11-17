@@ -179,6 +179,11 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 
 ## Components
 
+### Brand mark (WM)
+William's monogram is a WM ligature in a high-contrast serif: the W's last stroke is the M's first. Two forms, both in Storage `portfolio-assets/v2/brand/`:
+- **Ligature** (`wm-ligature.svg`, paper on transparent): the favicon, app icon and Apple touch icon (`src/app/favicon.ico`, `icon.png`, `apple-icon.png`), set paper on a navy square and fitted to 90% of the tile at 16 to 48px, 74% above.
+- **Seal** (`wm-seal.svg` paper on navy; `wm-seal-ink.svg` / `.png` navy on transparent): the ligature inside a hairline square frame. Used where it is shown large, such as the CV header (52pt, top right). Never below 32px: the frame does not survive.
+
 ### No header
 The page has no header or sticky bar. The cover prints the name and the profile row (with Email), and Download CV closes the page, so a bar would only repeat them.
 
@@ -197,10 +202,10 @@ Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (16
 A ruled three column table closing the cover text: hairline above and below, hairline dividers between columns, each cell the language (Label 600, Ink) over its level (Small, Muted Ink, "Native (C2)"). On phones it sits between the summary and the portrait; on desktop it is pinned to the bottom of the text column so its lower rule aligns with the lower rule of the profile row beside the portrait.
 
 ### Profile links
-One hairline-ruled row under the portrait, six equal cells, logos only (no names or handles on screen): Email first, then LinkedIn, GitHub, X, Telegram, Farcaster. Each cell is a 48px target holding a 28px square tile; the accessible name carries the network and handle ("LinkedIn: williammartinez8"), with the handle as a native tooltip. The Email tile is drawn in Institutional Blue (`public/socials/email.svg`) and stays in colour, because it is the action; the profile tiles are greyscale at rest and regain colour, with a 1.04 scale, on hover or focus.
+One hairline-ruled row under the portrait, six equal cells, logos only (no names or handles on screen): Email first, then LinkedIn, GitHub, X, Telegram, Farcaster. Each cell is a 48px target holding a 28px square tile; the accessible name carries the network and handle ("LinkedIn: williammartinez8"), with the handle as a native tooltip. The Email tile is drawn in Institutional Blue (`public/socials/email.svg`) and stays in colour, because it is the action; the profile tiles illuminate exactly like organisation marks (grey ink warming to their real colours as they scroll into view; colour and a 1.04 scale on hover or focus).
 
 ### Organisation marks
-Every organisation appears where it is mentioned: the logo is printed on the paper beside the entry (40px on phones and 48px on desktop in Projects founded and Experience, 40px in Credentials), multiplied onto the paper so white backgrounds drop out. Logos drawn white or pale for dark grounds get an ink version in Storage (`v2/*-ink.png`). The mark is decorative (empty alt) because the name is printed next to it. **Illumination:** marks rest in grey ink and warm into their real colours as they rise into the reading zone (scroll-linked, from 40% entered to mid viewport, then they stay lit); hovering or focusing the entry also restores colour, with a 1.04 scale. Only `filter` is animated, because `opacity` belongs to the optical-logo load fade. Profile icons in the cover do not illuminate. There is no separate logo wall.
+Every organisation appears where it is mentioned: the logo is printed on the paper beside the entry (40px on phones and 48px on desktop in Projects founded and Experience, 40px in Credentials), multiplied onto the paper so white backgrounds drop out. Logos drawn white or pale for dark grounds get an ink version in Storage (`v2/*-ink.png`). The mark is decorative (empty alt) because the name is printed next to it. **Illumination:** marks rest in grey ink and warm into their real colours as they rise into the reading zone (scroll-linked, from 40% entered to mid viewport, then they stay lit); hovering or focusing the entry also restores colour, with a 1.04 scale. Only `filter` is animated, because `opacity` belongs to the optical-logo load fade. There is no separate logo wall.
 
 **Optical logo sizing.** Every logo renders through optical sizing: on load the image is sampled on a small canvas, transparent padding is trimmed, and the visible artwork is sized by area (not longest side) with a mild density correction (solid plates shrink, line marks grow, clamped between 0.86 and 1.1). Logos stay invisible until measured (240ms fade) when scripting is on.
 

@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, Link, StyleSheet, Font } from '@react-pdf/renderer'
+import { Document, Page, Text, View, Link, Image, StyleSheet, Font } from '@react-pdf/renderer'
 import type { PortfolioData, Skill } from './types'
 
 /*
@@ -18,8 +18,14 @@ const C = {
   accent: '#123a8c',  // inst
 }
 
+/** WM seal, the personal brand mark (navy ink, transparent), from Storage `v2/brand/`. */
+const SEAL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/portfolio-assets/v2/brand/wm-seal-ink.png`
+
 const pdf = StyleSheet.create({
   page:        { fontFamily: 'Helvetica', fontSize: 9.5, lineHeight: 1.4, color: C.ink, paddingTop: '15mm', paddingBottom: '15mm', paddingHorizontal: '17mm' },
+  header:      { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  headerText:  { flex: 1, paddingRight: 16 },
+  seal:        { width: 52, height: 52 },
   name:        { fontFamily: 'Helvetica-Bold', fontSize: 22, letterSpacing: -0.3, lineHeight: 1.1 },
   headline:    { fontSize: 11, color: C.accent, marginTop: 4 },
   contact:     { fontSize: 8.5, color: C.muted, marginTop: 6 },
@@ -137,17 +143,23 @@ export function CVDocument({ data }: { data: PortfolioData }) {
       keywords="Technical Product Manager, Product Manager, Crypto, Blockchain, Fintech, AI, DeFi, Tokenization, Ethereum">
       <Page size="A4" style={pdf.page}>
 
-        {/* Header */}
-        <Text style={pdf.name}>{profile.name}</Text>
-        <Text style={pdf.headline}>{profile.title.replace(/\s*·\s*/g, ' | ')}</Text>
-        <Text style={pdf.contact}>
-          {contactItems.map((c, i) => (
-            <Text key={c.label}>
-              {i > 0 && <Text style={pdf.sep}>{'\u00a0\u00a0|\u00a0\u00a0'}</Text>}
-              {c.href ? <Link src={c.href} style={pdf.link}>{c.label}</Link> : c.label}
+        {/* Header: name, headline and contact left; the WM seal right. */}
+        <View style={pdf.header}>
+          <View style={pdf.headerText}>
+            <Text style={pdf.name}>{profile.name}</Text>
+            <Text style={pdf.headline}>{profile.title.replace(/\s*·\s*/g, ' | ')}</Text>
+            <Text style={pdf.contact}>
+              {contactItems.map((c, i) => (
+                <Text key={c.label}>
+                  {i > 0 && <Text style={pdf.sep}>{'\u00a0\u00a0|\u00a0\u00a0'}</Text>}
+                  {c.href ? <Link src={c.href} style={pdf.link}>{c.label}</Link> : c.label}
+                </Text>
+              ))}
             </Text>
-          ))}
-        </Text>
+          </View>
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt; the mark is decorative */}
+          <Image src={SEAL} style={pdf.seal} />
+        </View>
 
         <Section title="Summary">
           <Text hyphenationCallback={noSplit} style={pdf.summary}>{profile.summary}</Text>
