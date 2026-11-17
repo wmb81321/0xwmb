@@ -25,7 +25,7 @@ export default function Hero({ data }: { data: PortfolioData }) {
         <p style={order(1)} className="enter mt-4 flex flex-col text-title-sm font-medium text-ink lg:text-xl">
           {profile.title.split(/\s*·\s*/).map((line) => <span key={line}>{line}</span>)}
         </p>
-        <p style={order(2)} className="enter mt-4 max-w-152 text-lg leading-relaxed text-ink-muted lg:text-lead">{profile.summary}</p>
+        <p style={order(2)} className="enter mt-4 max-w-152 text-lg leading-relaxed text-ink-muted text-pretty sm:text-justify sm:[text-justify:inter-word] lg:text-lead">{profile.summary}</p>
 
         {languages.length > 0 && (
           <dl style={order(3)} aria-label="Languages"

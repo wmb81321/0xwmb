@@ -198,6 +198,9 @@ The page has no header or sticky bar. The cover prints the name and the profile 
 ### Document links
 Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (160ms). Blue on paper (inst, hovering to inst-strong); Navy Ink on bands.
 
+### Cover summary
+Justified from 640px up (inter word, with pretty wrapping) so its right edge forms one column with the Languages table beneath it (both 608px max). Left aligned on phones: a 360px line is too short to justify without rivers. Never balance and justify together, and never force-justify the last line: both open holes between words.
+
 ### Languages
 A ruled three column table closing the cover text: hairline above and below, hairline dividers between columns, each cell the language (Label 600, Ink) over its level (Small, Muted Ink, "Native (C2)"). On phones it sits between the summary and the portrait; on desktop it is pinned to the bottom of the text column so its lower rule aligns with the lower rule of the profile row beside the portrait.
 
