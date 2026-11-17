@@ -1,32 +1,29 @@
 import type { Project } from '@/lib/types'
-import { domainOf } from '@/lib/portfolio-format'
-import { DocLink, DocSection, OrgMark } from '@/components/home/primitives'
+import { DocSection, RecordRow } from '@/components/home/primitives'
 
-const isRunning = (p: Project) => !p.end_date || /present/i.test(p.end_date)
-const startYear = (p: Project) => p.start_date?.match(/\d{4}/)?.[0] ?? p.years?.match(/\d{4}/)?.[0] ?? ''
+const year = (d?: string | null) => d?.match(/\d{4}/)?.[0] ?? ''
 
+/** Same period format as Experience: "2025 to Present". */
+function period(p: Project): string {
+  const start = year(p.start_date) || year(p.years)
+  const end = !p.end_date || /present/i.test(p.end_date) ? 'Present' : year(p.end_date)
+  return [start, end].filter(Boolean).join(' to ')
+}
+
+/** Ventures, current first in admin order, set exactly like Experience rows. */
 export default function ProjectsSection({ projects }: { projects: Project[] }) {
   if (projects.length === 0) return null
-  const sorted = [...projects].sort((a, b) => startYear(a).localeCompare(startYear(b)) || a.order - b.order)
-
+  const sorted = [...projects].sort((a, b) => a.order - b.order)
   return (
     <DocSection id="projects" title="Projects founded">
-      <ul className="grid gap-8 md:grid-cols-3">
-        {sorted.map((p) => (
-          <li key={p.id} className="group reveal flex flex-col">
-            <div className="h-px bg-rule" aria-hidden />
-            <div className="mt-4 flex items-center gap-4">
-              <OrgMark src={p.logo_url} size="size-12" />
-              <h3 className="font-display text-title-sm font-semibold">{p.name}</h3>
-            </div>
-            <p className="figures mt-1 text-mono-xs text-ink-muted">
-              {[p.role, startYear(p) && `Since ${startYear(p)}`, isRunning(p) ? 'Active' : 'Closed'].filter(Boolean).join(' · ')}
-            </p>
-            <p className="mt-2 text-ink-muted">{p.brief}</p>
-            {p.website && <DocLink href={p.website} className="mt-3 text-ui">{domainOf(p.website)}</DocLink>}
-          </li>
+      <ol>
+        {sorted.map((p, i) => (
+          <RecordRow key={p.id} first={i === 0} period={period(p)} logo={p.logo_url}
+            role={p.role} org={p.name} href={p.website}>
+            {p.brief && <p>{p.brief}</p>}
+          </RecordRow>
         ))}
-      </ul>
+      </ol>
     </DocSection>
   )
 }

@@ -8,7 +8,8 @@ import type { PortfolioData, Skill } from './types'
  * Colours mirror the Prospectus tokens in DESIGN.md (react-pdf cannot read CSS vars).
  */
 // Never split words: hyphenated fragments read as sloppy and confuse ATS keyword matching.
-Font.registerHyphenationCallback((word) => [word])
+const noSplit = (word: string) => [word]
+Font.registerHyphenationCallback(noSplit)
 
 const C = {
   ink: '#0d1117',     // ink
@@ -23,6 +24,7 @@ const pdf = StyleSheet.create({
   headline:    { fontSize: 11, color: C.accent, marginTop: 4 },
   contact:     { fontSize: 8.5, color: C.muted, marginTop: 6 },
   link:        { color: C.muted, textDecoration: 'none' },
+  orgLink:     { color: C.accent, textDecoration: 'none' },
   sep:         { color: C.rule },
   section:     { marginTop: 13 },
   heading:     { fontFamily: 'Helvetica-Bold', fontSize: 9.5, textTransform: 'uppercase', color: C.accent,
@@ -71,13 +73,18 @@ function Bullet({ text }: { text: string }) {
   return (
     <View style={pdf.bullet}>
       <Text style={pdf.bulletMark}>•</Text>
-      <Text style={pdf.bulletText}>{text}</Text>
+      <Text hyphenationCallback={noSplit} style={pdf.bulletText}>{text}</Text>
     </View>
   )
 }
 
-function Entry({ role, org, dates, brief, points }: {
-  role: string; org: string; dates: string; brief?: string | null; points?: string[]
+/** Organisation name, hyperlinked to its site when one is on file. */
+function Org({ name, href }: { name: string; href?: string | null }) {
+  return href ? <Link src={href} style={pdf.orgLink}>{name}</Link> : <Text>{name}</Text>
+}
+
+function Entry({ role, org, href, dates, brief, points }: {
+  role: string; org: string; href?: string | null; dates: string; brief?: string | null; points?: string[]
 }) {
   return (
     <View style={pdf.entry} wrap={false}>
@@ -85,9 +92,18 @@ function Entry({ role, org, dates, brief, points }: {
         <Text style={pdf.role}>{role}</Text>
         <Text style={pdf.date}>{dates}</Text>
       </View>
-      <Text style={pdf.org}>{org}</Text>
-      {brief ? <Text style={pdf.brief}>{brief}</Text> : null}
+      <Text style={pdf.org}><Org name={org} href={href} /></Text>
+      {brief ? <Text hyphenationCallback={noSplit} style={pdf.brief}>{brief}</Text> : null}
       {points?.filter(Boolean).map((pt, i) => <Bullet key={i} text={pt} />)}
+    </View>
+  )
+}
+
+function SkillLine({ skill }: { skill: Skill }) {
+  return (
+    <View style={pdf.line} wrap={false}>
+      <Text style={pdf.lineLabel}>{skill.category}</Text>
+      <Text hyphenationCallback={noSplit} style={pdf.lineValue}>{skill.items.join(', ')}</Text>
     </View>
   )
 }
@@ -102,12 +118,12 @@ export function CVDocument({ data }: { data: PortfolioData }) {
   const ventures = [...projects].sort((a, b) => a.order - b.order)
   const jobs = [...experiences].sort((a, b) => a.order - b.order)
 
-  // Competencies (what he does) before tools (what he uses).
+  // Same split as the site: competencies (no tool marks) vs tools (any item has a mark).
   const byOrder = (a: Skill, b: Skill) => a.order - b.order
-  const skillLines = [
-    ...skills.filter((s) => s.type === 'soft').sort(byOrder),
-    ...skills.filter((s) => s.type !== 'soft').sort(byOrder),
-  ].filter((s) => s.items?.length)
+  const isTools = (s: Skill) => s.items.some((item) => s.logos?.[item])
+  const filled = skills.filter((s) => s.items?.length).sort(byOrder)
+  const competencies = filled.filter((s) => !isTools(s))
+  const tools = filled.filter(isTools)
 
   const contactItems = [
     { label: 'Cali, Colombia' },
@@ -134,28 +150,29 @@ export function CVDocument({ data }: { data: PortfolioData }) {
         </Text>
 
         <Section title="Summary">
-          <Text style={pdf.summary}>{profile.summary}</Text>
+          <Text hyphenationCallback={noSplit} style={pdf.summary}>{profile.summary}</Text>
         </Section>
 
         <Section title="Experience">
           {ventures.map((p) => (
-            <Entry key={`p${p.id}`} role={p.role} org={p.name}
+            <Entry key={`p${p.id}`} role={p.role} org={p.name} href={p.website}
               dates={range(p.start_date, p.end_date, p.years)} brief={p.brief} points={p.points} />
           ))}
           {jobs.map((e) => (
-            <Entry key={`e${e.id}`} role={e.role.replace(/\s*&\s*/g, ' and ')} org={e.company}
+            <Entry key={`e${e.id}`} role={e.role.replace(/\s*&\s*/g, ' and ')} org={e.company} href={e.website}
               dates={e.years} points={e.points?.slice(0, 3)} />
           ))}
         </Section>
 
-        {skillLines.length > 0 && (
+        {competencies.length > 0 && (
           <Section title="Skills">
-            {skillLines.map((s) => (
-              <View key={s.id} style={pdf.line} wrap={false}>
-                <Text style={pdf.lineLabel}>{s.category}</Text>
-                <Text style={pdf.lineValue}>{s.items.join(', ')}</Text>
-              </View>
-            ))}
+            {competencies.map((s) => <SkillLine key={s.id} skill={s} />)}
+          </Section>
+        )}
+
+        {tools.length > 0 && (
+          <Section title="Tools and Technologies">
+            {tools.map((s) => <SkillLine key={s.id} skill={s} />)}
           </Section>
         )}
 
@@ -169,7 +186,7 @@ export function CVDocument({ data }: { data: PortfolioData }) {
                 </Text>
                 <Text style={pdf.date}>{eduYears(e.start_date, e.end_date, e.years)}</Text>
               </View>
-              <Text style={pdf.org}>{e.institution}</Text>
+              <Text style={pdf.org}><Org name={e.institution} href={e.website} /></Text>
             </View>
           ))}
         </Section>
@@ -178,7 +195,7 @@ export function CVDocument({ data }: { data: PortfolioData }) {
           <Section title="Certifications">
             {certificates.map((c) => (
               <View key={c.id} style={[pdf.entryRow, { marginBottom: 3 }]} wrap={false}>
-                <Text style={pdf.bulletText}><Text style={{ fontFamily: 'Helvetica-Bold' }}>{c.name}</Text>, {c.issuer}</Text>
+                <Text style={pdf.bulletText}><Text style={{ fontFamily: 'Helvetica-Bold' }}>{c.name}</Text>, <Org name={c.issuer} href={c.website} /></Text>
                 <Text style={pdf.date}>{c.year}</Text>
               </View>
             ))}

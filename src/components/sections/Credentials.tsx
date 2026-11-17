@@ -1,10 +1,12 @@
 import type { Achievement, Certificate, Education, Volunteering } from '@/lib/types'
-import { domainOf, yearSpan } from '@/lib/portfolio-format'
+import { yearSpan } from '@/lib/portfolio-format'
 import { DocLink, DocSection, OrgMark } from '@/components/home/primitives'
 
 interface Entry {
   key: string
   title: string
+  /** Organisation named in the meta line; it carries the link. */
+  org?: string | null
   meta: string
   url?: string | null
   logo?: string | null
@@ -33,9 +35,14 @@ function Column({ label, entries }: { label: string; entries: Entry[] }) {
           <li key={e.key} className="group flex gap-3.5">
             <OrgMark src={e.logo} size="size-10" />
             <div className="min-w-0">
-              <p className="font-medium leading-snug">{e.title}</p>
-              <p className="figures mt-1 text-mono-xs leading-relaxed text-ink-muted">{e.meta}</p>
-              {e.url && <DocLink href={e.url} className="mt-1 inline-block text-mono-xs">{domainOf(e.url)}</DocLink>}
+              <p className="font-medium leading-snug">
+                {e.org ? e.title : <DocLink href={e.url}>{e.title}</DocLink>}
+              </p>
+              <p className="figures mt-1 text-mono-xs leading-relaxed text-ink-muted">
+                {e.org && <DocLink href={e.url}>{e.org}</DocLink>}
+                {e.org && e.meta && ' · '}
+                {e.meta}
+              </p>
             </div>
           </li>
         ))}
@@ -60,7 +67,8 @@ export default function Credentials({ education, certificates, volunteering, ach
   const edu: Entry[] = newestFirst(education.map((e) => ({
     key: `edu-${e.id}`,
     title: e.field_of_study ? `${e.degree}, ${e.field_of_study}` : e.degree,
-    meta: [e.institution, e.description, yearSpan(e.years, e.start_date, e.end_date)].filter(Boolean).join(' · '),
+    org: e.institution,
+    meta: [e.description, yearSpan(e.years, e.start_date, e.end_date)].filter(Boolean).join(' · '),
     url: e.website,
     logo: e.logo_url,
     year: latestYear(e.years, e.start_date, e.end_date),
@@ -69,7 +77,8 @@ export default function Credentials({ education, certificates, volunteering, ach
   const certs: Entry[] = newestFirst(certificates.map((c) => ({
     key: `cert-${c.id}`,
     title: c.name,
-    meta: [c.issuer, c.year].filter(Boolean).join(' · '),
+    org: c.issuer,
+    meta: [c.year].filter(Boolean).join(' · '),
     url: c.website,
     logo: c.logo_url,
     year: latestYear(c.year),
@@ -87,7 +96,8 @@ export default function Credentials({ education, certificates, volunteering, ach
     ...volunteering.map((v) => ({
       key: `vol-${v.id}`,
       title: volunteerTitle(v.reason),
-      meta: [v.issuer.trim(), v.year].filter(Boolean).join(' · '),
+      org: v.issuer.trim(),
+      meta: [v.year].filter(Boolean).join(' · '),
       url: /ethereum foundation/i.test(v.issuer) ? EF_URL : undefined,
       logo: v.logo_url,
       year: latestYear(v.year),

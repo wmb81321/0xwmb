@@ -6,14 +6,14 @@ export const Logo = OpticalLogo
 
 /**
  * Organisation mark: the logo printed on the paper beside the entry that names
- * it. Greyscale at rest; colour returns when the entry (a `.group`) is hovered or
- * focused. Decorative, because the name is always printed next to it.
+ * it. It illuminates from grey to full colour as it scrolls into the reading
+ * zone (and on hover or focus). Decorative, because the name is printed next to it.
  */
 export function OrgMark({ src, size = 'size-12' }: { src?: string | null; size?: string }) {
   if (!src) return null
   return (
     <div className={`shrink-0 ${size}`} aria-hidden>
-      <Logo src={src} alt="" box="size-full" fill={0.84} surface="light" className="logo-quiet mix-blend-multiply" />
+      <Logo src={src} alt="" box="size-full" fill={0.84} surface="light" className="logo-quiet illuminate mix-blend-multiply" />
     </div>
   )
 }
@@ -58,5 +58,36 @@ export function DocSection({ id, title, children }: { id: string; title: string;
         <div className="lg:col-span-9">{children}</div>
       </div>
     </section>
+  )
+}
+
+/**
+ * One record in the ledger, shared by Projects founded and Experience so both
+ * read the same way: period in the margin, the mark beside the role, the
+ * organisation as its link, details aligned under the role.
+ */
+export function RecordRow({ period, logo, role, org, href, first, children }: {
+  period: string
+  logo?: string | null
+  role: string
+  org: string
+  href?: string | null
+  first?: boolean
+  children?: ReactNode
+}) {
+  return (
+    <li className={`group reveal grid gap-2 py-6 md:grid-cols-9 md:gap-10 ${first ? 'pt-0' : 'border-t border-rule'}`}>
+      <p className="figures text-ui text-ink-muted md:col-span-2 md:whitespace-nowrap md:pt-1.5">{period}</p>
+      <div className="md:col-span-7">
+        <div className="flex items-center gap-4 md:gap-5">
+          <OrgMark src={logo} size="size-10 md:size-12" />
+          <div className="min-w-0">
+            <h3 className="font-display text-title-md font-semibold">{role}</h3>
+            <p className="mt-0.5 text-ui"><DocLink href={href}>{org}</DocLink></p>
+          </div>
+        </div>
+        {children && <div className="mt-3 max-w-2xl text-ink-muted md:pl-17">{children}</div>}
+      </div>
+    </li>
   )
 }

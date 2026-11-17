@@ -6,7 +6,7 @@ import { DocSection, Logo } from '@/components/home/primitives'
 const order = (i: number) => ({ '--i': i }) as CSSProperties
 const hasLogos = (s: Skill) => s.items.some((item) => s.logos?.[item])
 
-/** Expertise: what William does (practice areas without logos), as ruled text rows. */
+/** Expertise: what William does (practice areas without logos), as ruled rows of hairline chips. */
 export function ExpertiseSection({ skills }: { skills: Skill[] }) {
   const practice = skills.filter((s) => !hasLogos(s))
   if (practice.length === 0) return null
@@ -15,8 +15,14 @@ export function ExpertiseSection({ skills }: { skills: Skill[] }) {
       <dl>
         {practice.map((s, i) => (
           <div key={s.id} className={`reveal grid gap-1 py-4 md:grid-cols-9 md:gap-10 ${i > 0 ? 'border-t border-rule' : 'pt-0'}`}>
-            <dt className="text-ui font-semibold md:col-span-2">{s.category}</dt>
-            <dd className="text-ink-muted md:col-span-7">{s.items.join(' · ')}</dd>
+            <dt className="text-ui font-semibold md:col-span-2 md:pt-1.5">{s.category}</dt>
+            <dd className="md:col-span-7">
+              <ul className="mt-2 flex flex-wrap gap-2 md:mt-0">
+                {s.items.map((item) => (
+                  <li key={item} className="border border-rule px-3 py-1.5 text-ui leading-tight text-ink">{item}</li>
+                ))}
+              </ul>
+            </dd>
           </div>
         ))}
       </dl>
