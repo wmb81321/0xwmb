@@ -41,7 +41,7 @@
       "name": "Primary Email Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The one filled action: email. Hero 52px, header 44px.",
+      "description": "The one filled action: email. Hero 52px.",
       "html": "<a class=\"ds-btn\" href=\"#\">Email hi@0xwomb.xyz</a>",
       "css": ".ds-btn { display:inline-flex; align-items:center; min-height:52px; padding:0 28px; background:#123a8c; color:#f7f7f5; font:500 0.9375rem/1.4 'Public Sans', system-ui, sans-serif; text-decoration:none; border-radius:0; transition:background-color 160ms ease, transform 160ms cubic-bezier(0.23,1,0.32,1); } .ds-btn:hover { background:#0c2a6b; } .ds-btn:active { transform:scale(0.98); }"
     },

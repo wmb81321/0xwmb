@@ -274,15 +274,6 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
       animation-range: entry 0% cover 30%;
     }
   }
-
-  @supports (animation-timeline: scroll()) {
-    /* Reading progress: a hairline under the header that tracks the page. */
-    .read-progress {
-      transform-origin: left center;
-      animation: rule-draw linear both;
-      animation-timeline: scroll(root block);
-    }
-  }
 }
 @keyframes reveal {
   from { opacity: 0; transform: translateY(24px); }
@@ -296,9 +287,6 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
-.read-progress { transform: scaleX(0); }
-@media (prefers-reduced-motion: reduce) { .read-progress { display: none; } }
-@supports not (animation-timeline: scroll()) { .read-progress { display: none; } }
 
 /* Primary action: press feedback. */
 .press { transition: background-color 160ms ease, transform 160ms var(--ease-out-strong); }
@@ -314,7 +302,7 @@ html:has(.prospectus), html:has(.prospectus) body { background-color: var(--colo
 
 @layer utilities {
   .section-anchor {
-    scroll-margin-top: 64px;
+    scroll-margin-top: 24px;
   }
 
   /* Data Pulse — the 4×4px cyan square that breathes */

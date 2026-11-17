@@ -12,7 +12,7 @@ export default function Hero({ data }: { data: PortfolioData }) {
   const { profile, contact } = data
 
   return (
-    <section id="top" className={`${CONTAINER} grid gap-8 pt-8 pb-6 lg:grid-cols-12 lg:gap-10 lg:pt-12 lg:pb-10`}>
+    <section id="top" className={`${CONTAINER} grid gap-8 pt-12 pb-6 lg:grid-cols-12 lg:gap-10 lg:pt-20 lg:pb-10`}>
       <div className="flex flex-col lg:col-span-8">
         <h1 style={order(0)} className="enter font-display font-normal whitespace-nowrap text-[calc((100vw-2.5rem)/12.8)] sm:text-[min(4.5rem,calc((100vw-5rem)/12.2))] lg:text-[calc((min(100vw,80rem)-10rem)/18.5)] leading-[1.02] tracking-[-0.025em]">
           {profile.name}
@@ -25,7 +25,7 @@ export default function Hero({ data }: { data: PortfolioData }) {
           {contact.email && (
             <a href={`mailto:${contact.email}`}
               className="press inline-flex min-h-13 items-center bg-inst px-7 text-ui font-medium text-paper hover:bg-inst-strong">
-              Email {contact.email}
+              Email
             </a>
           )}
           <DownloadCV data={data} className="text-ui text-inst hover:text-inst-strong" />

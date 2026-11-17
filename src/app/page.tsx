@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import type { PortfolioData } from '@/lib/types'
-import Navbar from '@/components/Navbar'
 import Hero from '@/components/sections/Hero'
 import ExperienceSection from '@/components/sections/Experience'
 import ProjectsSection from '@/components/sections/Projects'
@@ -60,7 +59,6 @@ export default async function Page() {
 
   return (
     <div className="prospectus min-h-screen">
-      <Navbar name={data.profile.name} email={data.contact.email} />
       <main>
         <Hero data={data} />
         <ExperienceSection experiences={data.experiences} />

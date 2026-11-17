@@ -71,23 +71,12 @@ components:
   button-primary-hover:
     backgroundColor: "{colors.inst-strong}"
     textColor: "{colors.paper}"
-  button-primary-header:
-    backgroundColor: "{colors.inst}"
-    textColor: "{colors.paper}"
-    typography: "{typography.label}"
-    rounded: "{rounded.none}"
-    padding: "0 20px"
-    height: "44px"
   doc-link:
     textColor: "{colors.inst}"
   doc-link-hover:
     textColor: "{colors.inst-strong}"
   doc-link-on-navy:
     textColor: "{colors.navy-ink}"
-  header:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    height: "64px"
   org-mark:
     size: "48px"
   tool-tile:
@@ -136,7 +125,7 @@ A near monochrome document palette with a single institutional accent and a navy
 - **Cool Paper** (paper): page ground and the text colour on the blue button.
 - **Ink** (ink): headings, body emphasis, and the full width rule that opens each section. 17.6:1 on paper.
 - **Muted Ink** (ink-muted): summaries, bullets, dates, labels, source notes. 7.3:1 on paper, safe at the 12px small size.
-- **Hairline** (rule): row dividers, column tops, the header bottom border, portrait placeholder fill. 1.5:1 on paper; decorative only, never the sole carrier of information.
+- **Hairline** (rule): row dividers, column tops, portrait placeholder fill. 1.5:1 on paper; decorative only, never the sole carrier of information.
 
 ### Named Rules
 **The One Blue Rule.** Institutional Blue marks only what can be acted on (email, links) plus the hero title line and a hovered profile handle. It never fills a surface larger than a button.
@@ -174,13 +163,13 @@ One container for everything: max width 1280px (max-w-7xl), side gutters 20px on
 - **DocSection (the margin heading pattern):** a full width 1px ink rule, then 20px down (24px desktop) a grid where the section title takes 3 columns and the content the remaining 9. Sections pad 32px vertically, 48px on desktop: the page is compact. Every section below the fold except the closing band uses it: Experience, Projects founded, Credentials, Expertise, Tools.
 - **Inside a DocSection:** record rows use a 9 column subgrid (2 for the date or category, 7 for content) separated by hairlines with 24px row padding; projects and credentials use 3 equal columns, each topped by a hairline.
 - **Bands:** navy sections bleed full width; content still sits in the container.
-- Anchored sections offset 64px for the sticky header.
+- There is no header: the cover opens the page. Anchored sections offset 24px.
 
 **The Margin Heading Rule.** Section titles live in the left margin column, never centred above content.
 
 ## Elevation & Depth
 
-Flat. There are no shadows anywhere in the public site. Depth is expressed by two means only: hairline rules on paper, and the tonal step from navy to raised navy inside bands. The single translucency is the sticky header: paper at 92% with a small backdrop blur, separated by a hairline bottom border.
+Flat. There are no shadows anywhere in the public site. Depth is expressed by two means only: hairline rules on paper, and the tonal step from navy to raised navy inside bands.
 
 **The Paper Rule.** Surfaces never lift. Hover states change colour or underline weight, not elevation. The one exception is a tool mark, which rises 3px inside its tile.
 
@@ -190,12 +179,12 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 
 ## Components
 
-### Header
-Sticky, 64px, translucent paper with a hairline bottom border. Name left in the display serif (600, 1rem to 1.125rem). Right: four section links in Label, Muted Ink turning Ink on hover (hidden below 768px), then the compact blue Email button.
+### No header
+The page has no header or sticky bar. The cover already prints the name and the Email action, and the closing band prints the address, so a bar would only repeat them.
 
 ### Buttons
 - **Shape:** square (0px).
-- **Primary (Email):** Institutional Blue fill, paper text, Label weight 500. Hero size is 52px tall with 28px side padding and reads "Email" plus the address; the header size is 44px tall with 20px padding and reads "Email".
+- **Primary (Email):** Institutional Blue fill, paper text, Label weight 500. Hero size is 52px tall with 28px side padding and reads "Email". The address is spelled out once, in the closing band.
 - **Hover / Press:** fill shifts to inst-strong; on press scales to 0.98 over 160ms with the strong ease out.
 - **Focus:** 2px Institutional Blue outline, 3px offset (navy ink on bands).
 - There is exactly one filled button type. Everything else is a document link.
@@ -227,7 +216,6 @@ The document settles in once; nothing loops. All motion is CSS and is removed un
 - **Rules typeset in:** hairlines scale in from the left (`.rule-in` on load; `.rule-scroll` draws section rules as the section arrives).
 - **Scroll settle:** rows and columns fade up 24px as they enter the viewport and then stay put (`.reveal`, scroll-driven, `entry 0%` to `entry 45%`). Browsers without scroll timelines show content static.
 - **Tool cascade:** tool tiles rise 18px from 0.96 scale one after another as their row scrolls in (`.tile-in`, scroll-driven, each tile's range offset 4% by its position `--i`).
-- **Reading progress:** a 1px ink hairline under the header tracks the page (`.read-progress`).
 - **Anchors:** in-page navigation scrolls smoothly.
 - **Feedback:** colour transitions (160 to 200ms), underline thickening, button press 0.98, organisation marks regain colour with a 1.04 scale, tool marks lift 3px with a 1.06 scale.
 
