@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import type { CSSProperties } from 'react'
 import type { PortfolioData } from '@/lib/types'
-import DownloadCV from '@/components/DownloadCVNoSSR'
 import { socialsOf } from '@/components/home/socials'
 import { CONTAINER, ExtLink } from '@/components/home/primitives'
 
@@ -21,15 +20,6 @@ export default function Hero({ data }: { data: PortfolioData }) {
           {profile.title.split(/\s*·\s*/).map((line) => <span key={line}>{line}</span>)}
         </p>
         <p style={order(2)} className="enter mt-4 max-w-152 text-lg leading-relaxed text-ink-muted lg:text-lead">{profile.summary}</p>
-        <div style={order(3)} className="enter mt-6 flex flex-wrap items-center gap-x-8 gap-y-3">
-          {contact.email && (
-            <a href={`mailto:${contact.email}`}
-              className="press inline-flex min-h-13 items-center bg-inst px-7 text-ui font-medium text-paper hover:bg-inst-strong">
-              Email
-            </a>
-          )}
-          <DownloadCV data={data} className="text-ui text-inst hover:text-inst-strong" />
-        </div>
       </div>
 
       <aside className="lg:col-span-4" aria-label="Profiles">

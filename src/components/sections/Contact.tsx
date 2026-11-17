@@ -3,7 +3,7 @@ import DownloadCV from '@/components/DownloadCVNoSSR'
 import { socialsOf } from '@/components/home/socials'
 import { CONTAINER, ExtLink } from '@/components/home/primitives'
 
-/** Closing band: one email, the CV as backup, then the document's foot. */
+/** Closing band: the page's two actions as clear buttons, then the document's foot. */
 export default function ContactSection({ data, year }: { data: PortfolioData; year: number }) {
   const { contact, profile } = data
 
@@ -17,14 +17,15 @@ export default function ContactSection({ data, year }: { data: PortfolioData; ye
           Open to senior product roles and consulting.
         </p>
 
-        <div className="reveal mt-8 flex flex-col gap-6 border-t border-navy-raised pt-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="reveal mt-8 flex flex-col gap-3 border-t border-navy-raised pt-8 sm:flex-row sm:items-center sm:gap-4">
           {contact.email && (
             <a href={`mailto:${contact.email}`}
-              className="doc-link font-display text-title-lg font-semibold break-all text-navy-ink sm:text-title-xl">
-              {contact.email}
+              className="press inline-flex min-h-13 items-center justify-center bg-paper px-7 text-ui font-medium text-navy hover:bg-navy-ink">
+              Email {contact.email}
             </a>
           )}
-          <DownloadCV data={data} className="text-ui text-navy-ink" />
+          <DownloadCV data={data} variant="button"
+            className="press min-h-13 justify-center border border-navy-muted px-7 text-ui font-medium text-navy-ink hover:border-navy-ink hover:bg-navy-raised" />
         </div>
 
         <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-ui text-navy-muted">

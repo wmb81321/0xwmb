@@ -180,17 +180,19 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 ## Components
 
 ### No header
-The page has no header or sticky bar. The cover already prints the name and the Email action, and the closing band prints the address, so a bar would only repeat them.
+The page has no header or sticky bar. The cover prints the name, and the page's actions (Email, Download CV) live only in the closing band, so a bar would only repeat them.
 
 ### Buttons
 - **Shape:** square (0px).
-- **Primary (Email):** Institutional Blue fill, paper text, Label weight 500. Hero size is 52px tall with 28px side padding and reads "Email". The address is spelled out once, in the closing band.
+- **Actions live only in the closing band.** The cover has no buttons; the page ends on its two actions.
+- **Primary (Email):** paper fill, navy text, Label weight 500, 52px tall with 28px side padding, reading "Email" plus the address. Hover fills Navy Ink.
+- **Secondary (Download CV):** transparent, 1px Navy Muted border, Navy Ink text, same size; hover raises to navy-raised with a Navy Ink border.
 - **Hover / Press:** fill shifts to inst-strong; on press scales to 0.98 over 160ms with the strong ease out.
 - **Focus:** 2px Institutional Blue outline, 3px offset (navy ink on bands).
-- There is exactly one filled button type. Everything else is a document link.
+- There is exactly one filled button and one outlined button, both on the navy band. Everything else is a document link.
 
 ### Document links
-Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (160ms). Blue on paper (inst, hovering to inst-strong); Navy Ink on bands. Download CV is a document link beside the Email button, minimum 44px tall.
+Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (160ms). Blue on paper (inst, hovering to inst-strong); Navy Ink on bands.
 
 ### Profile links
 Under the portrait: one row per profile (LinkedIn, GitHub, X, Telegram, Farcaster), 48px tall, each topped by a hairline with one closing the list. The icon (24px, greyscale at rest, multiplied onto paper) sits left with the network name in 500; the handle sits right in Small Muted Ink. Hover tints the row (ink at 3%), restores the icon's colour and turns the handle blue.
@@ -207,11 +209,11 @@ Experience rows: period left (Label, Muted Ink, tabular); then the organisation 
 Skills are split in two sections. **Expertise** lists what William does (practice areas without logos) as ruled text rows: category left (Label 600), items joined by middots. **Tools** lists what he works with as a grid: category left, tiles right in 4, 5 or 6 columns with no borders: only the mark and its name. Each tile shows the tool's own mark in full colour (32px box, 36px from 640px, optically sized for paper) above its name in Small Muted Ink, so the stack is recognisable at a glance. Marks come from each brand's official artwork, stored in `public/brand/tools/`; marks whose brand colour fails on paper are set in Ink. Hover lifts the mark 3px with a 1.06 scale and darkens the name. A skill row is a Tools row when any of its items has a logo.
 
 ### Closing band
-Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the email address as a large serif document link with Download CV opposite. Socials follow as 44px tall document links in Navy Muted. The foot sits under another hairline in Small: copyright left, place and updated date right.
+Navy band with generous top space (96px, 128px desktop): "Let’s talk." in display serif, one Lead line in Navy Muted, then a raised navy hairline over the two action buttons side by side (stacked full width on phones): Email with the address, then Download CV. Socials follow as 44px tall document links in Navy Muted. The foot sits under another hairline in Small: copyright left, place and updated date right.
 
 ### Motion
 The document settles in once; nothing loops. All motion is CSS and is removed under reduced motion.
-- **Cover entrance:** name, title, summary, actions and profile links fade up 14px in order (`.enter` with `--i`, 70ms stagger, 700ms, cubic-bezier(0.23, 1, 0.32, 1)).
+- **Cover entrance:** name, title, summary and profile links fade up 14px in order (`.enter` with `--i`, 70ms stagger, 700ms, cubic-bezier(0.23, 1, 0.32, 1)).
 - **Portrait plate:** the photo is revealed from the bottom edge with a slight settle from 1.06 scale (`.plate-in`, 1100ms).
 - **Rules typeset in:** hairlines scale in from the left (`.rule-in` on load; `.rule-scroll` draws section rules as the section arrives).
 - **Scroll settle:** rows and columns fade up 24px as they enter the viewport and then stay put (`.reveal`, scroll-driven, `entry 0%` to `entry 45%`). Browsers without scroll timelines show content static.
