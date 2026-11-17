@@ -180,7 +180,7 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 ## Components
 
 ### Brand mark (WM)
-William's monogram is a WM ligature in a high-contrast serif: the W's last stroke is the M's first. Two forms, both in Storage `portfolio-assets/v2/brand/`:
+William's monogram is a WM ligature in a high-contrast serif: the W's last stroke is the M's first. Source files and rules live in `brand/` (see `brand/README.md`); delivery copies in Storage `portfolio-assets/v2/brand/`. Two forms:
 - **Ligature** (`wm-ligature.svg`, paper on transparent): the favicon, app icon and Apple touch icon (`src/app/favicon.ico`, `icon.png`, `apple-icon.png`), set paper on a navy square and fitted to 90% of the tile at 16 to 48px, 74% above.
 - **Seal** (`wm-seal.svg` paper on navy; `wm-seal-ink.svg` / `.png` navy on transparent): the ligature inside a hairline square frame. Used where it is shown large, such as the CV header (52pt, top right). Never below 32px: the frame does not survive.
 
