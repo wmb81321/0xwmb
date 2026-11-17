@@ -17,7 +17,7 @@ OWN-WORLD: Cool paper white ground, ink near black, one institutional blue reser
 
 STORY: In one viewport the visitor knows who William is, his level, three ventures and how to reach him. Below, the record backs every figure, then the close asks for one email.
 
-FIRST VIEWPORT: No header. Left two thirds: name as serif display, title line, short summary, then the ruled Languages table pinned to the column foot. Right third: NYC portrait above the profile links, whose lower rule aligns with the Languages table. Actions (Email, Download CV) live only in the closing navy band.
+FIRST VIEWPORT: No header. Left two thirds: name as serif display, title line, short summary, then the ruled Languages table pinned to the column foot. Right third: NYC portrait above a logo-only row (blue Email tile, then five profiles), whose lower rule aligns with the Languages table. Buttons (Email, Download CV) live only in the closing navy band.
 
 FORM: The Prospectus, my top grounded candidate (pick card, list position 1). seed:ac4ec218c974cd40
 

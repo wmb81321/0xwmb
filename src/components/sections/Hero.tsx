@@ -45,21 +45,30 @@ export default function Hero({ data }: { data: PortfolioData }) {
         )}
       </div>
 
-      <aside className="lg:col-span-4" aria-label="Profiles">
+      <aside className="lg:col-span-4" aria-label="Portrait and profiles">
         {profile.photo_url && (
           <div className="plate-in relative aspect-[4/3] w-full overflow-hidden bg-rule sm:aspect-square">
             <Image src={profile.photo_url} alt={profile.name} fill priority
               sizes="(min-width: 1024px) 380px, 100vw" className="object-cover object-[50%_72%]" />
           </div>
         )}
-        <ul style={order(5)} className="enter mt-5 grid grid-cols-1 border-b border-rule sm:grid-cols-2 lg:grid-cols-1">
+        <ul style={order(5)} aria-label="Contact and profiles"
+          className="enter mt-5 grid grid-cols-6 border-y border-rule">
+          {contact.email && (
+            <li className="flex justify-center">
+              <a href={`mailto:${contact.email}`} aria-label={`Email ${contact.email}`} title={contact.email}
+                className="group flex size-12 items-center justify-center">
+                <Image src="/socials/email.svg" alt="" width={28} height={28}
+                  className="size-7 transition-transform duration-300 ease-(--ease-out-strong) group-hover:scale-[1.04]" />
+              </a>
+            </li>
+          )}
           {socialsOf(contact).map((s) => (
-            <li key={s.key} className="border-t border-rule">
+            <li key={s.key} className="flex justify-center">
               <ExtLink href={s.url} label={`${s.label}: ${s.handle}`}
-                className="group flex min-h-11 items-center gap-3 text-ui transition-colors hover:bg-ink/[0.03] sm:pr-4 lg:pr-0">
-                <Image src={s.icon} alt="" width={24} height={24} className="logo-quiet size-6 mix-blend-multiply" />
-                <span className="font-medium">{s.label}</span>
-                <span className="ml-auto truncate text-mono-xs text-ink-muted group-hover:text-inst">{s.handle}</span>
+                className="group flex size-12 items-center justify-center">
+                <Image src={s.icon} alt="" width={28} height={28} title={`${s.label} ${s.handle}`}
+                  className="logo-quiet size-7 mix-blend-multiply" />
               </ExtLink>
             </li>
           ))}

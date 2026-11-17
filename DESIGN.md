@@ -180,11 +180,11 @@ Square everything (0px radius, enforced globally). Rules are 1px. The portrait i
 ## Components
 
 ### No header
-The page has no header or sticky bar. The cover prints the name, and the page's actions (Email, Download CV) live only in the closing band, so a bar would only repeat them.
+The page has no header or sticky bar. The cover prints the name and the profile row (with Email), and the buttons (Email, Download CV) close the page, so a bar would only repeat them.
 
 ### Buttons
 - **Shape:** square (0px).
-- **Actions live only in the closing band.** The cover has no buttons; the page ends on its two actions.
+- **Buttons live only in the closing band.** The cover has no buttons (its only contact point is the blue Email tile in the profile row); the page ends on its two actions.
 - **Primary (Email):** paper fill, navy text, Label weight 500, 52px tall with 28px side padding, reading "Email" plus the address. Hover fills Navy Ink.
 - **Secondary (Download CV):** transparent, 1px Navy Muted border, Navy Ink text, same size; hover raises to navy-raised with a Navy Ink border.
 - **Hover / Press:** fill shifts to inst-strong; on press scales to 0.98 over 160ms with the strong ease out.
@@ -195,10 +195,10 @@ The page has no header or sticky bar. The cover prints the name, and the page's 
 Underlined text, 1px underline at 0.2em offset that thickens to 2px on hover (160ms). Blue on paper (inst, hovering to inst-strong); Navy Ink on bands.
 
 ### Languages
-A ruled three column table closing the cover text: hairline above and below, hairline dividers between columns, each cell the language (Label 600, Ink) over its level (Small, Muted Ink, "Native (C2)"). On phones it sits between the summary and the portrait; on desktop it is pinned to the bottom of the text column so its lower rule aligns with the lower rule of the profile list beside the portrait.
+A ruled three column table closing the cover text: hairline above and below, hairline dividers between columns, each cell the language (Label 600, Ink) over its level (Small, Muted Ink, "Native (C2)"). On phones it sits between the summary and the portrait; on desktop it is pinned to the bottom of the text column so its lower rule aligns with the lower rule of the profile row beside the portrait.
 
 ### Profile links
-Under the portrait: one row per profile (LinkedIn, GitHub, X, Telegram, Farcaster), 48px tall, each topped by a hairline with one closing the list. The icon (24px, greyscale at rest, multiplied onto paper) sits left with the network name in 500; the handle sits right in Small Muted Ink. Hover tints the row (ink at 3%), restores the icon's colour and turns the handle blue.
+One hairline-ruled row under the portrait, six equal cells, logos only (no names or handles on screen): Email first, then LinkedIn, GitHub, X, Telegram, Farcaster. Each cell is a 48px target holding a 28px square tile; the accessible name carries the network and handle ("LinkedIn: williammartinez8"), with the handle as a native tooltip. The Email tile is drawn in Institutional Blue (`public/socials/email.svg`) and stays in colour, because it is the action; the profile tiles are greyscale at rest and regain colour, with a 1.04 scale, on hover or focus.
 
 ### Organisation marks
 Every organisation appears where it is mentioned: the logo is printed on the paper beside the entry (40px on phones and 48px on desktop in Projects founded and Experience, 40px in Credentials), multiplied onto the paper so white backgrounds drop out. Logos drawn white or pale for dark grounds get an ink version in Storage (`v2/*-ink.png`). The mark is decorative (empty alt) because the name is printed next to it. **Illumination:** marks rest in grey ink and warm into their real colours as they rise into the reading zone (scroll-linked, from 40% entered to mid viewport, then they stay lit); hovering or focusing the entry also restores colour, with a 1.04 scale. Only `filter` is animated, because `opacity` belongs to the optical-logo load fade. Profile icons in the cover do not illuminate. There is no separate logo wall.
