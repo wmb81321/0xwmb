@@ -40,7 +40,6 @@ const pdf = StyleSheet.create({
   entryRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' },
   role:        { fontFamily: 'Helvetica-Bold', fontSize: 10, flex: 1, paddingRight: 8 },
   date:        { fontSize: 8.5, color: C.muted },
-  org:         { fontSize: 9.5, color: C.muted, marginTop: 1 },
   brief:       { marginTop: 3 },
   bullet:      { flexDirection: 'row', marginTop: 2.5 },
   bulletMark:  { width: 10, color: C.muted },
@@ -95,10 +94,10 @@ function Entry({ role, org, href, dates, brief, points }: {
   return (
     <View style={pdf.entry} wrap={false}>
       <View style={pdf.entryRow}>
-        <Text style={pdf.role}>{role}</Text>
+        {/* "Role, Organisation" on one line: saves a line and parses cleanly in ATS. */}
+        <Text style={pdf.role}>{role}, <Org name={org} href={href} /></Text>
         <Text style={pdf.date}>{dates}</Text>
       </View>
-      <Text style={pdf.org}><Org name={org} href={href} /></Text>
       {brief ? <Text hyphenationCallback={noSplit} style={pdf.brief}>{brief}</Text> : null}
       {points?.filter(Boolean).map((pt, i) => <Bullet key={i} text={pt} />)}
     </View>
@@ -194,11 +193,11 @@ export function CVDocument({ data }: { data: PortfolioData }) {
               <View style={pdf.entryRow}>
                 <Text style={pdf.role}>
                   {e.degree}{e.field_of_study ? `, ${e.field_of_study}` : ''}
-                  {e.description ? <Text style={{ fontFamily: 'Helvetica', color: C.muted }}>  ({e.description})</Text> : null}
+                  {e.description ? <Text style={{ fontFamily: 'Helvetica', color: C.muted }}> ({e.description})</Text> : null}
+                  , <Org name={e.institution} href={e.website} />
                 </Text>
                 <Text style={pdf.date}>{eduYears(e.start_date, e.end_date, e.years)}</Text>
               </View>
-              <Text style={pdf.org}><Org name={e.institution} href={e.website} /></Text>
             </View>
           ))}
         </Section>
