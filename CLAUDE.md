@@ -54,7 +54,7 @@ To add a job: parse `posting.md` → admin panel `/admin` → Jobs tab → creat
 ## PDF Notes
 - Fonts: built-in PDF fonts (Helvetica/Helvetica-Bold) — no external font files needed
 - Stylesheet object named `pdf` (not `s`) to avoid arrow-function param shadowing
-- ATS-friendly single column A4, real text in reading order. Sections: Summary, Experience (ventures from `projects` first, then `experiences`), Skills (competencies), Tools and Technologies (skill rows with logos), Education, Certifications, Awards (achievements of type `achievement` only), Volunteering, Languages
+- ATS-friendly single column A4, real text in reading order. Sections: Summary, Languages, Experience (ventures from `projects` first, then `experiences`), Education, Skills (competencies), Tools and Technologies (skill rows with logos), Certifications, Awards (achievements of type `achievement` only), Volunteering
 - Header: name, title, contact links left; the WM seal (`v2/brand/wm-seal-ink.png` in Storage) right
 - Organisation names are hyperlinks (`Link`) when a website is on file
 - No word splitting: `Font.registerHyphenationCallback` plus `hyphenationCallback={noSplit}` on long text blocks

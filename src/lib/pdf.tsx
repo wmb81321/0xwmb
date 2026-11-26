@@ -3,8 +3,8 @@ import type { PortfolioData, Skill } from './types'
 
 /*
  * ATS-friendly CV: one column, real text in reading order, standard section
- * names (Summary, Experience, Skills, Education, Certifications, Awards,
- * Volunteering, Languages), no tables, icons or images. Built-in Helvetica only.
+ * names (Summary, Languages, Experience, Education, Skills, Certifications, Awards,
+ * Volunteering), no tables, icons or images. Built-in Helvetica only.
  * Colours mirror the Prospectus tokens in DESIGN.md (react-pdf cannot read CSS vars).
  */
 // Never split words: hyphenated fragments read as sloppy and confuse ATS keyword matching.
@@ -65,9 +65,10 @@ function eduYears(start?: string | null, end?: string | null, years?: string | n
   return uniq.join(' – ')
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/** `keep` holds a short section on one page so no lone row is orphaned. */
+function Section({ title, keep, children }: { title: string; keep?: boolean; children: React.ReactNode }) {
   return (
-    <View style={pdf.section}>
+    <View style={pdf.section} wrap={!keep}>
       <Text style={pdf.heading} minPresenceAhead={40}>{title}</Text>
       {children}
     </View>
@@ -91,6 +92,7 @@ function Org({ name, href }: { name: string; href?: string | null }) {
 function Entry({ role, org, href, dates, brief, points }: {
   role: string; org: string; href?: string | null; dates: string; brief?: string | null; points?: string[]
 }) {
+  const lines = points?.filter(Boolean) ?? []
   return (
     <View style={pdf.entry} wrap={false}>
       <View style={pdf.entryRow}>
@@ -99,7 +101,10 @@ function Entry({ role, org, href, dates, brief, points }: {
         <Text style={pdf.date}>{dates}</Text>
       </View>
       {brief ? <Text hyphenationCallback={noSplit} style={pdf.brief}>{brief}</Text> : null}
-      {points?.filter(Boolean).map((pt, i) => <Bullet key={i} text={pt} />)}
+      {/* A single point reads as a plain line, like a venture brief; several become bullets. */}
+      {lines.length === 1
+        ? <Text hyphenationCallback={noSplit} style={pdf.brief}>{lines[0]}</Text>
+        : lines.map((pt, i) => <Bullet key={i} text={pt} />)}
     </View>
   )
 }
@@ -164,6 +169,14 @@ export function CVDocument({ data }: { data: PortfolioData }) {
           <Text hyphenationCallback={noSplit} style={pdf.summary}>{profile.summary}</Text>
         </Section>
 
+        {languages.length > 0 && (
+          <Section title="Languages" keep>
+            <Text>
+              {languages.map((l) => `${l.name} (${l.level.replace(/\s*[-–—]\s*/, ', ')})`).join('   |   ')}
+            </Text>
+          </Section>
+        )}
+
         <Section title="Experience">
           {ventures.map((p) => (
             <Entry key={`p${p.id}`} role={p.role} org={p.name} href={p.website}
@@ -174,18 +187,6 @@ export function CVDocument({ data }: { data: PortfolioData }) {
               dates={e.years} points={e.points?.slice(0, 3)} />
           ))}
         </Section>
-
-        {competencies.length > 0 && (
-          <Section title="Skills">
-            {competencies.map((s) => <SkillLine key={s.id} skill={s} />)}
-          </Section>
-        )}
-
-        {tools.length > 0 && (
-          <Section title="Tools and Technologies">
-            {tools.map((s) => <SkillLine key={s.id} skill={s} />)}
-          </Section>
-        )}
 
         <Section title="Education">
           {[...education].sort((a, b) => a.order - b.order).map((e) => (
@@ -201,6 +202,20 @@ export function CVDocument({ data }: { data: PortfolioData }) {
             </View>
           ))}
         </Section>
+
+
+        {competencies.length > 0 && (
+          <Section title="Skills" keep>
+            {competencies.map((s) => <SkillLine key={s.id} skill={s} />)}
+          </Section>
+        )}
+
+        {tools.length > 0 && (
+          <Section title="Tools and Technologies">
+            {tools.map((s) => <SkillLine key={s.id} skill={s} />)}
+          </Section>
+        )}
+
 
         {certificates.length > 0 && (
           <Section title="Certifications">
@@ -239,13 +254,6 @@ export function CVDocument({ data }: { data: PortfolioData }) {
           </Section>
         )}
 
-        {languages.length > 0 && (
-          <Section title="Languages">
-            <Text>
-              {languages.map((l) => `${l.name} (${l.level.replace(/\s*[-–—]\s*/, ', ')})`).join('   |   ')}
-            </Text>
-          </Section>
-        )}
 
       </Page>
     </Document>
